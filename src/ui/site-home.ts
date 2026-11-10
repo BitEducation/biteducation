@@ -57,10 +57,18 @@ export function mountSiteHome(root: HTMLElement, config: SiteConfig, deps: PageD
     const first = lessons[0];
     render(
       root,
-      html`<div class="page">${topbarHtml(site, { search: true, progress: sitePercent(config, progress) })}
+      html`<div class="page">${topbarHtml(site, { progress: sitePercent(config, progress) })}
         <main class="page-main" id="main" tabindex="-1">
-          <section class="hero"><div class="accent-bar"></div><h1>${t(`brand.${site}`)}</h1><p>${catalog.tagline}</p>
-            ${lessons.length ? html`<p class="micro">${t("home.lessons", { n: lessons.length })} · ${t("home.published", { n: lessons.filter((l) => l.status === "published").length })}</p>` : ""}
+          <section class="hub-hero site-hero"><h1>${t(`brand.${site}`)}</h1><p>${catalog.tagline}</p>
+            ${
+              lessons.length
+                ? html`<p class="site-count">${t("home.lessons", { n: lessons.length })}${
+                    lessons.filter((l) => l.status === "published").length < lessons.length
+                      ? html`, ${t("home.published", { n: lessons.filter((l) => l.status === "published").length })}`
+                      : ""
+                  }</p>`
+                : ""
+            }
             <div class="continue">${
               cont
                 ? html`<a class="btn primary" href="${lessonUrl(site, cont.slug, { step: progress.lessons[cont.slug]?.lastStep ?? null })}">${icons.play()} ${t("home.continue", { title: cont.title })}</a>`
@@ -97,7 +105,7 @@ export function mountSiteHome(root: HTMLElement, config: SiteConfig, deps: PageD
             </div></section>
         </main>${footerHtml()}</div>`,
     );
-    offTop = bindTopbar(root, { onSearch: deps.openSearch, onHelp: openHelp, onLang: deps.onLang });
+    offTop = bindTopbar(root, { onHelp: openHelp, onLang: deps.onLang });
   };
   draw();
 

@@ -198,5 +198,14 @@
   "hub.title": "See the computer working from the inside",
   "hub.lead": "{n} lessons with step-by-step simulations, from the logic gate to the packet on the network. Everything runs in your browser, with no account and no ads.",
   "hub.topics": "Topics",
-  "hub.resume": "You stopped at: {title}"
+  "hub.resume": "You stopped at: {title}",
+  "view.label": "Scene view",
+  "view.net": "Network",
+  "view.seq": "Sequence",
+  "seq.label": "Sequence diagram of the messages exchanged so far",
+  "seq.step": "Step {n}: {title}",
+  "seq.empty": "Messages appear here as the lesson moves on.",
+  "crumbs.topic": "Topic {n} of {total}: {title}",
+  "crumbs.overview": "Overview · {n} steps",
+  "view.diagram": "Diagram"
 }

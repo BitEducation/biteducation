@@ -39,6 +39,16 @@ test("teclado: setas, I, Esc e espaço", async ({ page }) => {
   await expect(count).toHaveText(/Passo \d de 7|Resumo/);
 });
 
+test("vista Sequência desenha as mensagens e fica salva", async ({ page }) => {
+  // Step 2 by link: the handshake of step 1 is already drawn, without its quiz in the way.
+  await page.goto("/redes/tcp-conexao/?passo=s2-envio");
+  await page.locator('.view-switch [data-view="seq"]').click();
+  await expect(page.locator(".seq-host")).toBeVisible();
+  await expect(page.locator(".seq-msg")).toHaveCount(3);
+  await page.reload();
+  await expect(page.locator('.view-switch [data-view="seq"]')).toHaveAttribute("aria-pressed", "true");
+});
+
 test("busca (Ctrl+K) leva à lição", async ({ page }) => {
   await page.goto("/redes/");
   await page.keyboard.press("Control+k");

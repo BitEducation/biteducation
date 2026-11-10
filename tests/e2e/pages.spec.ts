@@ -28,7 +28,7 @@ for (const path of PAGES)
 test("404 mostra a busca", async ({ page, errors }) => {
   const res = await page.goto("/nao-existe/");
   expect(res?.status()).toBe(404);
-  await expect(page.locator(".search-btn")).toBeVisible();
+  await expect(page.locator(".nf-search")).toBeVisible();
   await page.keyboard.press("Control+k");
   await expect(page.locator(".palette-input")).toBeFocused();
   // The browser logs the 404 status of the document itself; that one is expected.

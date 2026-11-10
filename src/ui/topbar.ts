@@ -18,7 +18,7 @@ const REPO_URL = ((): string => {
 
 export function topbarHtml(
   site: AnySite,
-  opts: { crumbs?: SafeHtml; progress?: number | null; search?: boolean; indexToggle?: boolean },
+  opts: { crumbs?: SafeHtml; progress?: number | null; indexToggle?: boolean },
 ): SafeHtml {
   const theme = getTheme();
   const themeIcon = theme === "dark" ? icons.moon() : theme === "light" ? icons.sun() : icons.auto();
@@ -41,11 +41,6 @@ export function topbarHtml(
     </div>
     <nav class="crumbs" aria-label="${t("crumbs.label")}">${opts.crumbs ?? ""}</nav>
     <div class="top-tools">
-      ${
-        opts.search
-          ? html`<button class="search-btn" type="button" aria-haspopup="dialog" aria-label="${t("search.open")}">${icons.search()}<span class="search-label">${t("search.open")}</span><kbd>/</kbd></button>`
-          : ""
-      }
       ${
         opts.progress !== undefined && opts.progress !== null
           ? html`<span class="site-progress" title="${t("progress.site", { pct: opts.progress })}"><span class="ring" data-v="--p:${opts.progress}"></span><span>${opts.progress}%</span></span>`
@@ -74,7 +69,6 @@ export function topbarHtml(
 export function bindTopbar(
   root: HTMLElement,
   handlers: {
-    onSearch?: () => void;
     onHelp: () => void;
     onLang: (code: string) => void;
     onTheme?: () => void;
@@ -100,12 +94,6 @@ export function bindTopbar(
     const btn = root.querySelector<HTMLElement>(b);
     const menu = root.querySelector<HTMLElement>(m);
     if (btn && menu) cleanups.push(bindMenu(btn, menu, pick));
-  }
-  const search = root.querySelector<HTMLElement>(".search-btn");
-  if (search && handlers.onSearch) {
-    const f = () => handlers.onSearch?.();
-    search.addEventListener("click", f);
-    cleanups.push(() => search.removeEventListener("click", f));
   }
   const help = root.querySelector<HTMLElement>(".help-btn");
   if (help) {

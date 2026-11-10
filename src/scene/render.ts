@@ -13,7 +13,7 @@ import {
   textWidth,
   vertexOffsets,
 } from "./geometry.ts";
-import { pictogram } from "./pictograms.ts";
+import { PICT_SIZE, pictogram } from "./pictograms.ts";
 
 export interface SceneRenderer {
   update(state: SceneState, highlight: readonly string[]): void;
@@ -43,13 +43,13 @@ function staticLayer(spec: SceneSpec): SafeHtml {
     const [w, h] = nodeSize(n, hasPict);
     const x = n.at[0] - w / 2;
     const y = n.at[1] - h / 2;
-    const tx = hasPict ? x + 40 : n.at[0];
+    const tx = hasPict ? x + PICT_SIZE + 16 : n.at[0];
     const anchor = hasPict ? "start" : "middle";
     const ty = n.sub ? n.at[1] - 3 : n.at[1] + 4;
     return html`<g class="node kind-${n.kind}" data-node="${n.id}" data-hidden="${n.hidden ? "true" : "false"}" role="button" tabindex="-1" aria-label="${n.label}${n.sub ? `, ${n.sub}` : ""}">
       <rect class="halo" x="${x - 5}" y="${y - 5}" width="${w + 10}" height="${h + 10}" rx="10"/>
       <rect class="box" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/>
-      ${hasPict ? html`<g class="pict" transform="translate(${x + 12} ${n.at[1] - 10})">${raw(pict)}</g>` : ""}
+      ${hasPict ? html`<g class="pict" transform="translate(${x + 8} ${n.at[1] - PICT_SIZE / 2})">${raw(pict)}</g>` : ""}
       <text class="label" x="${tx}" y="${ty}" text-anchor="${anchor}">${n.label}</text>
       ${n.sub ? html`<text class="sub" x="${tx}" y="${ty + 15}" text-anchor="${anchor}">${n.sub}</text>` : ""}
       <text class="state" x="${n.at[0]}" y="${y + h + 15}" text-anchor="middle"></text>

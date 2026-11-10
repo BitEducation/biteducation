@@ -12,7 +12,7 @@ export function mountGlossaryPage(root: HTMLElement, config: SiteConfig, deps: P
   const termOf = (id: string) => glossary.find((g) => g.id === id)?.term ?? id;
   render(
     root,
-    html`<div class="page">${topbarHtml(catalog.site, { search: true })}
+    html`<div class="page">${topbarHtml(catalog.site, {})}
       <main class="page-main" id="main" tabindex="-1">
         <section class="hero"><div class="accent-bar"></div><h1>${t("glossary.title")}</h1><p>${t(`brand.${catalog.site}`)}</p></section>
         <dl class="glossary prose">${sorted.map(
@@ -25,7 +25,7 @@ export function mountGlossaryPage(root: HTMLElement, config: SiteConfig, deps: P
         )}</dl>
       </main>${footerHtml()}</div>`,
   );
-  const offTop = bindTopbar(root, { onSearch: deps.openSearch, onHelp: openHelp, onLang: deps.onLang });
+  const offTop = bindTopbar(root, { onHelp: openHelp, onLang: deps.onLang });
   const offKeys = pageShortcuts(deps.openSearch);
   document.title = `${t("glossary.title")} · ${t(`brand.${catalog.site}`)}`;
   if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView();

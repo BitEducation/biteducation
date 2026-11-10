@@ -32,7 +32,7 @@ export function createEventsTable(
 
   const rowHtml = (r: (typeof rows)[number], n: number, isNew: boolean, sel: boolean) =>
     html`<tr data-index="${r.index}" tabindex="0" aria-selected="${sel}" class="role-${r.ev.role}${isNew ? " is-new" : ""}" data-v="--c:var(--${roleVar(r.ev.role)})">
-      <td data-label="Nº">${n}</td>
+      <td data-label="Nº"><span class="ev-n">${n}</span></td>
       ${columns.map((c, i) => html`<td data-label="${c.label}">${r.ev.row?.cols[c.key] ?? ""}${i === columns.length - 1 && r.ev.lost ? html` <span class="flag">✕ ${t("events.lost")}</span>` : ""}</td>`)}
     </tr>`;
 

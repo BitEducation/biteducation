@@ -9,7 +9,9 @@ import {
   getEventsHeight,
   getFlag,
   getSpeed,
+  getView,
   resolvedTheme,
+  type SceneView,
   SPEEDS,
   type Speed,
   setContinuous,
@@ -17,6 +19,7 @@ import {
   setFlag,
   setSpeed,
   setTheme,
+  setView,
 } from "../core/prefs.ts";
 import {
   lessonPercent,
@@ -40,6 +43,7 @@ import { icons } from "./icons.ts";
 import { createIndexPanel } from "./index-panel.ts";
 import { createInspector } from "./inspector.ts";
 import { checkQuiz, narrativeHtml, readLabForm, type Tab } from "./narrative.ts";
+import { createSequenceView, hasSequence } from "./sequence.ts";
 import type { SiteConfig } from "./site-config.ts";
 import { copyText, toast } from "./toast.ts";
 import { bindTopbar, syncThemeButton, topbarHtml } from "./topbar.ts";
@@ -120,18 +124,32 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
   const group = catalog.groups.find((g) => g.id === entry.group);
 
   /* ---------- layout ---------- */
+  const seqOk = hasSequence(run, scene);
+  let view: SceneView = getView();
   const indexOpen = getFlag("index", true);
   const eventsOpen = getFlag("events", true);
   render(
     root,
     html`<div class="app" data-index="${indexOpen ? "open" : "closed"}" data-events="${eventsOpen ? "open" : "closed"}" data-present="false" data-drawer="closed">
-      ${topbarHtml(site, { search: true, indexToggle: true, progress: sitePercent(config, progress) })}
+      ${topbarHtml(site, { indexToggle: true, progress: sitePercent(config, progress) })}
       <aside class="index" id="lesson-index" aria-label="${t("index.title")}"></aside>
       <div class="scrim"></div>
       <main class="stage" id="main" tabindex="-1">
-        <div class="scene-wrap"><div class="scene-host"></div><div class="scene-badge">${
-          labActive ? html`<span class="pill role-ctrl"><span class="dot"></span>${t("tabs.lab")}</span>` : ""
-        }</div><p class="sr-only scene-live" aria-live="polite"></p></div>
+        ${
+          seqOk || labActive
+            ? html`<div class="scene-bar">${
+                seqOk
+                  ? html`<div class="view-switch" role="group" aria-label="${t("view.label")}">${(
+                      ["net", "seq"] as const
+                    ).map(
+                      (v) =>
+                        html`<button type="button" data-view="${v}" aria-pressed="${v === view}">${v === "net" ? icons.layers() : icons.list()} ${v === "net" && site !== "redes" ? t("view.diagram") : t(`view.${v}`)}</button>`,
+                    )}</div>`
+                  : ""
+              }${labActive ? html`<span class="pill role-ctrl"><span class="dot"></span>${t("tabs.lab")}</span>` : ""}</div>`
+            : ""
+        }
+        <div class="scene-wrap" data-view="${seqOk ? view : "net"}"><div class="scene-host"></div>${seqOk ? html`<div class="seq-host"></div>` : ""}<p class="sr-only scene-live" aria-live="polite"></p></div>
         <div class="controls" role="toolbar" aria-label="${t("controls.label")}"></div>
       </main>
       <aside class="side" aria-label="${lesson.meta.title}">
@@ -186,6 +204,21 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
     () => closeInspector(),
     (id) => inspector.show(id),
   );
+  const seqHost = app.querySelector<HTMLElement>(".seq-host");
+  const sequence = seqHost ? createSequenceView(seqHost, scene, run) : null;
+  const sceneWrap = q(".scene-wrap");
+  const onViewClick = (e: MouseEvent) => {
+    const b = (e.target as Element).closest<HTMLElement>(".view-switch [data-view]");
+    if (!b) return;
+    view = b.dataset.view === "seq" ? "seq" : "net";
+    setView(view);
+    sceneWrap.dataset.view = view;
+    for (const x of app.querySelectorAll(".view-switch [data-view]"))
+      x.setAttribute("aria-pressed", String((x as HTMLElement).dataset.view === view));
+    sequence?.update(store.get().cursor);
+  };
+  const stageEl = q(".stage");
+  stageEl.addEventListener("click", onViewClick);
   const table = createEventsTable(q(".events-scroll"), config.columns, run, (index) => {
     store.set({ selected: index });
     const ev = run.trace[index];
@@ -199,6 +232,7 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
       const step = run.steps[store.get().stepIndex];
       renderer.update(state, focusOf(step, run.trace, scene));
       table.update(cursor, store.get().selected);
+      sequence?.update(cursor);
       sceneLive.textContent = renderer.describe(state);
     },
     animate: (ev, _i, speed) => renderer.animate(ev, speed),
@@ -344,17 +378,30 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
     markPickTargets();
   }
 
+  /** Top bar: where the lesson sits among the site's topics, then its steps as pips. */
   function updateCrumbs(stepIndex: number) {
     const crumbs = app.querySelector(".crumbs");
     if (!crumbs) return;
     const step = run?.steps[stepIndex];
+    const groups = catalog.groups.filter((g) => visibleLessons(catalog).some((l) => l.group === g.id));
+    const gi = groups.findIndex((g) => g.id === group?.id);
+    const seen = new Set(progress.lessons[slug]?.seen ?? []);
     render(
       crumbs,
-      html`<span class="sep g">${group?.title ?? ""}</span><span class="sep g">›</span><b>${lesson.meta.title}</b>${
-        step
-          ? html`<span class="sep">›</span><span class="crumb-step">${t("controls.step", { n: stepIndex + 1, total: run.steps.length })} · ${step.title}</span>`
+      html`${
+        gi >= 0
+          ? html`<span class="topic" title="${t("crumbs.topic", { n: gi + 1, total: groups.length, title: group?.title ?? "" })}"><span class="topic-strip" aria-hidden="true">${groups.map(
+              (g, i) => html`<span data-on="${i === gi}" data-past="${i < gi}" title="${g.title}"></span>`,
+            )}</span><span class="topic-name">${group?.title ?? ""}</span></span>`
           : ""
-      }`,
+      }<span class="crumb-lesson"><b>${lesson.meta.title}</b><span class="crumb-meta"><span class="pips" aria-hidden="true">${run.steps.map(
+        (st, i) =>
+          html`<span data-state="${i === stepIndex ? "current" : seen.has(st.id) ? "seen" : "new"}"></span>`,
+      )}</span><span class="crumb-step">${
+        step
+          ? `${t("controls.step", { n: stepIndex + 1, total: run.steps.length })} · ${step.title}`
+          : t("crumbs.overview", { n: run.steps.length })
+      }</span></span></span>`,
     );
   }
 
@@ -743,11 +790,13 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
   );
 
   cleanups.push(
-    bindTopbar(app, { onSearch: deps.openSearch, onHelp: openHelp, onLang: deps.onLang }),
+    bindTopbar(app, { onHelp: openHelp, onLang: deps.onLang }),
     bindGlossary(app, glossary),
     () => player.dispose(),
     () => controls.dispose(),
     () => index.dispose(),
+    () => sequence?.dispose(),
+    () => stageEl.removeEventListener("click", onViewClick),
   );
 
   /* ---------- initial step ---------- */

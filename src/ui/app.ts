@@ -171,11 +171,11 @@ export async function bootSite(config: SiteConfig): Promise<void> {
 function messagePage(root: HTMLElement, site: SiteId, message: string, common: PageDeps): () => void {
   render(
     root,
-    html`<div class="page">${topbarHtml(site, { search: true })}
+    html`<div class="page">${topbarHtml(site, {})}
       <main class="page-main" id="main" tabindex="-1"><div class="hero"><div class="accent-bar"></div><h1>${message}</h1>
       <p><a href="${siteUrl(site)}">${t(`brand.${site}`)}</a></p></div></main>${footerHtml()}</div>`,
   );
-  const offTop = bindTopbar(root, { onSearch: common.openSearch, onHelp: openHelp, onLang: common.onLang });
+  const offTop = bindTopbar(root, { onHelp: openHelp, onLang: common.onLang });
   const offKeys = pageShortcuts(common.openSearch);
   return () => {
     offTop();

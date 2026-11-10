@@ -75,8 +75,46 @@
   stroke: var(--line-strong);
   stroke-width: 1.25;
 }
+/* Device drawings: faces lit from the top, tinted with the site color; the outline is
+   the same ink as the box so drawings and boxes read as one object. */
 .node .pict {
-  color: var(--ink-2);
+  --dev: var(--accent);
+  --dev-line: color-mix(in srgb, var(--dev) 55%, var(--ink));
+}
+.node.kind-attacker .pict {
+  --dev: var(--role-bad);
+}
+.node .pict :is(polygon, polyline, path, rect, circle, ellipse) {
+  stroke: var(--dev-line);
+  stroke-width: 0.9;
+  stroke-linejoin: round;
+}
+.node .pict .ft {
+  fill: color-mix(in srgb, var(--dev) 34%, var(--surface));
+}
+.node .pict .fl {
+  fill: color-mix(in srgb, var(--dev) 16%, var(--surface));
+}
+.node .pict .fr {
+  fill: color-mix(in srgb, var(--dev) 7%, var(--surface));
+}
+.node .pict .fs {
+  fill: color-mix(in srgb, var(--dev) 26%, var(--bg));
+}
+.node .pict .lit,
+.node .pict .lit.ft {
+  fill: var(--dev);
+}
+.node .pict .lit.fl,
+.node .pict .lit.fr {
+  fill: color-mix(in srgb, var(--dev) 70%, var(--surface));
+}
+.node .pict circle.lit {
+  stroke: none;
+}
+.node .pict .ln {
+  fill: none;
+  stroke-linecap: round;
 }
 .node .label {
   font-size: 13px;
@@ -327,4 +365,156 @@
 }
 .scene-host[data-pick="true"] [data-pickable] > .w-halo {
   opacity: 1;
+}
+
+/* Scene view switch (network / sequence) */
+.view-switch {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.view-switch button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  color: var(--ink-2);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+.view-switch button:hover {
+  color: var(--ink);
+  background: var(--surface-2);
+}
+.view-switch button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.view-switch svg {
+  width: 15px;
+  height: 15px;
+}
+.scene-wrap[data-view="seq"] .scene-host,
+.scene-wrap[data-view="net"] .seq-host {
+  visibility: hidden;
+}
+
+/* Sequence diagram */
+.seq-host {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+}
+.seq-scroll {
+  height: 100%;
+  overflow: auto;
+}
+.seq-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: grid;
+  padding: 12px 0 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg);
+}
+.seq-lane {
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+  padding: 0 6px;
+  text-align: center;
+}
+.seq-lane:first-child {
+  grid-column: 2;
+}
+.seq-lane b,
+.seq-lane span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.seq-lane b {
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--ink);
+}
+.seq-lane span {
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+}
+.seq-svg {
+  display: block;
+  font-family: var(--font-sans);
+}
+.seq-life {
+  stroke: var(--line-strong);
+  stroke-dasharray: 3 5;
+}
+.seq-step line {
+  stroke: var(--line);
+}
+.seq-step text {
+  fill: var(--ink-3);
+  font-size: 11px;
+  font-weight: 600;
+}
+.seq-t {
+  fill: var(--ink-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.seq-msg {
+  color: var(--c, var(--ink-2));
+}
+.seq-msg line {
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.seq-msg circle,
+.seq-msg .head {
+  fill: currentColor;
+}
+.seq-msg .x {
+  stroke: var(--role-bad);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.seq-msg.lost line {
+  stroke-dasharray: 4 4;
+}
+.seq-label {
+  fill: currentColor;
+  font-size: 12px;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.seq-msg.latest line {
+  stroke-width: 2.25;
+}
+.seq-empty {
+  fill: var(--ink-3);
+  font-size: 13px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .seq-msg.latest {
+    animation: seq-in 200ms var(--ease-out);
+  }
+}
+@keyframes seq-in {
+  from {
+    opacity: 0;
+  }
 }

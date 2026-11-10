@@ -58,7 +58,7 @@ export function createIndexPanel(
           return html`<a class="lesson-link" href="${lessonUrl(catalog.site, l.slug)}" data-nav ${isCur ? html`aria-current="page"` : ""}>
             ${ringHtml(pct, lessonStatus(lp))}
             <span><span class="t">${l.title}${l.status !== "published" ? html`<span class="draft">${t(`index.${l.status}`)}</span>` : ""}</span>
-            <span class="s">${l.subtitle} · ${t("minutes", { n: l.minutes })}</span></span></a>
+            ${isCur ? html`<span class="s">${l.subtitle}</span>` : ""}</span><span class="min">${t("minutes", { n: l.minutes })}</span></a>
             ${
               isCur && steps.length
                 ? html`<ol class="step-list">${steps.map((s, i) => {
@@ -73,6 +73,7 @@ export function createIndexPanel(
     );
   };
 
+  let scrolled = false;
   const onClick = (e: MouseEvent) => {
     const el = e.target as Element;
     const step = el.closest<HTMLElement>("[data-step]");
@@ -92,6 +93,12 @@ export function createIndexPanel(
         last.steps === opts.steps;
       last = opts;
       if (!same) draw();
+      // Open the list where the reader is, not at the first group.
+      if (!scrolled && opts.current) {
+        scrolled = true;
+        const cur = scroll.querySelector<HTMLElement>('[aria-current="page"]');
+        if (cur) scroll.scrollTop = Math.max(0, cur.offsetTop - scroll.offsetTop - 48);
+      }
     },
     dispose() {
       host.removeEventListener("click", onClick);

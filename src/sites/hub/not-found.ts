@@ -6,6 +6,7 @@ import type { SearchItem } from "../../core/search.ts";
 import { visibleLessons } from "../../core/visibility.ts";
 import { bootCommon, changeLang } from "../../ui/app.ts";
 import { openHelp } from "../../ui/help.ts";
+import { icons } from "../../ui/icons.ts";
 import { pageShortcuts } from "../../ui/page-shortcuts.ts";
 import { openPalette } from "../../ui/palette.ts";
 import { isSearchItems } from "../../ui/search-index.ts";
@@ -60,9 +61,10 @@ function mount() {
   off();
   render(
     root,
-    html`<div class="page">${topbarHtml("hub", { search: true })}
+    html`<div class="page">${topbarHtml("hub", {})}
       <main class="page-main" id="main" tabindex="-1"><section class="hero"><div class="accent-bar"></div>
         <h1>${t("notfound.title")}</h1><p>${t("notfound.text")}</p>
+        <p><button class="btn nf-search" type="button">${icons.search()} ${t("search.open")}</button></p>
         <div class="continue side-actions">${(["arq", "so", "redes", "hub"] as const).map(
           (s) =>
             html`<a class="btn${s === "hub" ? " primary" : ""}" href="${siteUrl(s)}">${t(`brand.${s}`)}</a>`,
@@ -70,9 +72,9 @@ function mount() {
   );
   off = bindTopbar(root, {
     onHelp: openHelp,
-    onSearch: openSearch,
     onLang: (code) => void changeLang(code, mount),
   });
+  root.querySelector(".nf-search")?.addEventListener("click", openSearch);
   document.title = `${t("notfound.title")} · ${t("brand.hub")}`;
 }
 

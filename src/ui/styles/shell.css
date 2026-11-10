@@ -70,8 +70,8 @@
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: 12px;
   overflow: hidden;
   white-space: nowrap;
   color: var(--ink-2);
@@ -93,6 +93,69 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Topic strip: one segment per group of the site, the lesson's group lit. */
+.crumbs .topic {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  padding-inline-end: 14px;
+  margin-inline-end: 2px;
+  border-inline-end: 1px solid var(--line);
+  align-self: stretch;
+}
+.topic-strip {
+  display: inline-flex;
+  gap: 3px;
+}
+.topic-strip span {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+}
+.topic-strip span[data-past="true"] {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--line-strong));
+}
+.topic-strip span[data-on="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.topic-name {
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.crumbs .crumb-lesson {
+  display: grid;
+  min-width: 0;
+  line-height: 1.25;
+}
+.crumb-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--ink-3);
+  font-size: var(--fs-micro);
+}
+.pips {
+  display: inline-flex;
+  gap: 2px;
+  flex: none;
+}
+.pips span {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+}
+.pips span[data-state="seen"] {
+  background: color-mix(in srgb, var(--accent) 50%, var(--line));
+}
+.pips span[data-state="current"] {
+  background: var(--accent);
+}
 /* Menus on the right edge open leftward so they never leave the viewport. */
 .top-tools .menu {
   right: 0;
@@ -102,22 +165,6 @@
   align-items: center;
   gap: 4px;
   flex: none;
-}
-.search-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 34px;
-  padding: 0 8px 0 10px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--bg);
-  color: var(--ink-3);
-  font-size: var(--fs-small);
-}
-.search-btn:hover {
-  border-color: var(--line-strong);
-  color: var(--ink-2);
 }
 .site-progress {
   display: inline-flex;
@@ -170,7 +217,7 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 8px;
+  padding: 7px 8px;
   border-radius: var(--radius);
   color: var(--ink);
   text-decoration: none;
@@ -193,8 +240,20 @@
   font-weight: 600;
   line-height: 1.3;
 }
+.lesson-link > span:nth-of-type(2) {
+  flex: 1;
+  min-width: 0;
+}
+.lesson-link .min {
+  flex: none;
+  margin-top: 1px;
+  color: var(--ink-3);
+  font-size: var(--fs-micro);
+  font-variant-numeric: tabular-nums;
+}
 .lesson-link .s {
   display: block;
+  margin-top: 2px;
   font-size: var(--fs-micro);
   color: var(--ink-3);
   line-height: 1.35;
@@ -255,7 +314,7 @@
 .stage {
   grid-area: stage;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   min-width: 0;
   min-height: 0;
 }
@@ -272,13 +331,22 @@
   width: 100%;
   height: 100%;
 }
-.scene-badge {
-  position: absolute;
-  inset-inline-start: 12px;
-  top: 12px;
+/* Scene header: view switch and mode badges, never over the drawing. */
+.scene-bar {
+  grid-row: 1;
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.scene-wrap {
+  grid-row: 2;
+}
+.controls {
+  grid-row: 3;
 }
 
 /* Controls */
@@ -553,8 +621,24 @@
 .ev-table tbody tr[aria-selected="true"] td {
   background: var(--accent-soft);
 }
-.ev-table tbody tr td:first-child {
-  border-inline-start: 3px solid var(--c, transparent);
+.ev-table td:first-child {
+  width: 1%;
+  padding-block: 3px;
+}
+/* Event number in the event's color, as the arrow and token in the scene. */
+.ev-n {
+  display: inline-grid;
+  place-items: center;
+  min-width: 24px;
+  height: 22px;
+  padding: 0 6px;
+  border: 1.5px solid var(--c, var(--line-strong));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--c, var(--line-strong)) 18%, var(--surface));
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-micro);
+  font-weight: 700;
 }
 .ev-table tbody tr.is-new td {
   animation: row-in 400ms var(--ease-out);
@@ -693,6 +777,15 @@
   font-size: 1.125rem;
   line-height: 1.55;
   text-wrap: pretty;
+}
+.site-hero .site-count {
+  margin-top: 8px;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
+  font-weight: 600;
+}
+.site-hero .continue {
+  margin-top: 24px;
 }
 .layers {
   margin: 40px 0 0;
@@ -1031,12 +1124,10 @@
     height: auto;
     max-height: 60vh;
   }
-  .crumbs .crumb-group,
-  .crumbs .sep.g {
+  .crumbs .topic,
+  .crumbs .pips {
     display: none;
   }
-  .search-btn .search-label,
-  .search-btn kbd,
   .site-progress span {
     display: none;
   }
@@ -1077,6 +1168,14 @@
   .crumbs {
     display: none;
   }
+  .events-head {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+  .events-head h2 {
+    flex-basis: 100%;
+    padding-top: 6px;
+  }
   .ev-table thead {
     display: none;
   }
@@ -1089,7 +1188,6 @@
   .ev-table tbody tr {
     padding: 8px 12px;
     border-bottom: 1px solid var(--line);
-    border-inline-start: 3px solid var(--c, transparent);
   }
   .ev-table td {
     padding: 0;
@@ -1098,7 +1196,12 @@
     white-space: normal;
   }
   .ev-table tbody tr td:first-child {
+    width: auto;
+    margin-bottom: 4px;
     border: 0;
+  }
+  .ev-table td:first-child::before {
+    content: none;
   }
   .ev-table td::before {
     content: attr(data-label) " ";
@@ -1135,8 +1238,30 @@
   .help-btn {
     display: none;
   }
-  .search-btn .search-label,
-  .search-btn kbd {
-    display: none;
+}
+
+/* Wide screens: every region is a framed panel on the page background, so the layout
+   reads at a glance (lessons, scene, explanation, events). */
+@container app (min-width: 1200px) {
+  .app {
+    gap: 10px;
+    padding: 0 10px 10px;
+    background: var(--bg);
+  }
+  .app .topbar {
+    margin-inline: -10px;
+  }
+  .index,
+  .stage,
+  .side,
+  .events {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .index-head,
+  .side .tabs,
+  .events-head {
+    min-height: 44px;
   }
 }

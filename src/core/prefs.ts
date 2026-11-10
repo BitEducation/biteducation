@@ -11,6 +11,7 @@ const KEYS = {
   events: "biteducation:events",
   eventsH: "biteducation:events-h",
   mode: "biteducation:mode",
+  view: "biteducation:view",
 } as const;
 
 export function getTheme(): ThemeChoice {
@@ -68,4 +69,12 @@ export function getContinuous(): boolean {
 }
 export function setContinuous(v: boolean): void {
   writeString(KEYS.mode, v ? "continuous" : "step");
+}
+
+export type SceneView = "net" | "seq";
+export function getView(): SceneView {
+  return readString(KEYS.view) === "seq" ? "seq" : "net";
+}
+export function setView(v: SceneView): void {
+  writeString(KEYS.view, v);
 }
