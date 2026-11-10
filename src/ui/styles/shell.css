@@ -318,13 +318,16 @@
   min-width: 0;
   min-height: 0;
 }
+/* Isometric drafting grid with a vignette: the same 30° axes the devices are drawn on. */
 .scene-wrap {
   position: relative;
   min-height: 0;
   overflow: hidden;
-  background-color: var(--bg);
-  background-image: radial-gradient(var(--line) 1px, transparent 1.2px);
-  background-size: 16px 16px;
+  background-color: var(--scene-bg);
+  background-image:
+    radial-gradient(ellipse at 50% 45%, transparent 45%, var(--scene-vignette) 100%),
+    repeating-linear-gradient(30deg, var(--scene-grid) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(150deg, var(--scene-grid) 0 1px, transparent 1px 26px);
 }
 .scene-wrap > svg {
   display: block;
@@ -776,6 +779,46 @@
   color: var(--ink-2);
   font-size: 1.125rem;
   line-height: 1.55;
+  text-wrap: pretty;
+}
+/* Hub hero: the claim beside a real lesson excerpt playing in its sequence view. */
+.hub-hero-split {
+  display: grid;
+  gap: 32px;
+  align-items: center;
+}
+@media (min-width: 1000px) {
+  .hub-hero-split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+}
+.hub-demo {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.demo-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 6px 4px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-small);
+}
+.demo-stage {
+  position: relative;
+  height: 330px;
+  background: var(--scene-bg);
+}
+.hub-demo figcaption {
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-2);
+  font-size: var(--fs-small);
   text-wrap: pretty;
 }
 .site-hero .site-count {

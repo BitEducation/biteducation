@@ -61,11 +61,11 @@
   --surface: #ffffff;
   --surface-2: #e9edf6;
   --ink: #0e1422;
-  --ink-2: #3a4560;
-  --ink-3: #5a6580;
+  --ink-2: #323c56;
+  --ink-3: #4e5974;
   --warn-ink: #854d0e;
-  --line: #d2d9e7;
-  --line-strong: #7b87a1;
+  --line: #c5cee0;
+  --line-strong: #6b7894;
   --focus: #1f6feb;
   --scrim: rgb(14 20 34 / 0.42);
   --shadow: 0 1px 2px rgb(14 20 34 / 0.06), 0 8px 24px rgb(14 20 34 / 0.1);
@@ -83,18 +83,61 @@
   --series-5: #4d7c0f;
   --series-6: #475569;
 
+  /* scene canvas: drafting grid, vignette, device shadows and component fill */
+  --scene-bg: #f7f9fd;
+  --scene-grid: #e1e7f2;
+  --scene-vignette: rgb(14 20 34 / 0.05);
+  --scene-shadow: rgb(14 20 34 / 0.12);
+  --node-fill: #ffffff;
+
   /* brand tile behind the BitEducation symbol (same in both themes) */
   --brand-tile: #0a1430;
 
+  /* Topic scales in OKLCH, one hue per site: 300 is the dark-theme accent and 700 the
+     light-theme one; the other steps follow the same line, tapering chroma to the ends. */
+  --redes-50: oklch(0.975 0.012 181.9);
+  --redes-100: oklch(0.94 0.034 181.9);
+  --redes-200: oklch(0.875 0.075 181.9);
+  --redes-300: oklch(0.785 0.133 181.9);
+  --redes-400: oklch(0.716 0.121 183);
+  --redes-500: oklch(0.648 0.109 184.2);
+  --redes-600: oklch(0.579 0.098 185.3);
+  --redes-700: oklch(0.511 0.086 186.4);
+  --redes-800: oklch(0.426 0.068 186.4);
+  --redes-900: oklch(0.341 0.049 186.4);
+  --redes-950: oklch(0.271 0.034 186.4);
+  --so-50: oklch(0.975 0.012 42.7);
+  --so-100: oklch(0.94 0.031 42.7);
+  --so-200: oklch(0.875 0.069 42.7);
+  --so-300: oklch(0.748 0.151 42.7);
+  --so-400: oklch(0.695 0.152 41.7);
+  --so-500: oklch(0.641 0.153 40.7);
+  --so-600: oklch(0.588 0.154 39.7);
+  --so-700: oklch(0.535 0.155 38.7);
+  --so-800: oklch(0.45 0.122 38.7);
+  --so-900: oklch(0.365 0.089 38.7);
+  --so-950: oklch(0.295 0.062 38.7);
+  --arq-50: oklch(0.975 0.012 296.2);
+  --arq-100: oklch(0.94 0.031 296.2);
+  --arq-200: oklch(0.875 0.067 296.2);
+  --arq-300: oklch(0.753 0.135 296.2);
+  --arq-400: oklch(0.687 0.161 295.3);
+  --arq-500: oklch(0.622 0.188 294.4);
+  --arq-600: oklch(0.556 0.215 293.5);
+  --arq-700: oklch(0.491 0.241 292.6);
+  --arq-800: oklch(0.406 0.19 292.6);
+  --arq-900: oklch(0.321 0.139 292.6);
+  --arq-950: oklch(0.251 0.096 292.6);
+
   /* topic colors: one per site, used by the site itself and wherever the hub names it */
-  --redes: #0f766e;
-  --redes-soft: #d5f0ec;
+  --redes: var(--redes-700);
+  --redes-soft: var(--redes-100);
   --on-redes: #ffffff;
-  --so: #b4441b;
-  --so-soft: #f8e1d6;
+  --so: var(--so-700);
+  --so-soft: var(--so-100);
   --on-so: #ffffff;
-  --arq: #6d28d9;
-  --arq-soft: #e9e0fb;
+  --arq: var(--arq-700);
+  --arq-soft: var(--arq-100);
   --on-arq: #ffffff;
 
   /* site accent (hub default: the logo blue; cyan in dark) */
@@ -128,11 +171,11 @@
   --surface: #0a1430;
   --surface-2: #101d42;
   --ink: #f2f6ff;
-  --ink-2: #c4cee6;
-  --ink-3: #9dabca;
+  --ink-2: #d0d9ee;
+  --ink-3: #aab7d4;
   --warn-ink: #fbbf24;
-  --line: #1c2a52;
-  --line-strong: #5b6b98;
+  --line: #263a6b;
+  --line-strong: #7385b6;
   --focus: #79b8ff;
   --scrim: rgb(3 6 14 / 0.6);
   --shadow: 0 1px 2px rgb(3 6 14 / 0.4), 0 10px 30px rgb(3 6 14 / 0.5);
@@ -149,15 +192,21 @@
   --series-5: #a3d65c;
   --series-6: #c3cad8;
 
-  --redes: #2dd4bf;
-  --redes-soft: #0f2e2b;
-  --on-redes: #04201d;
-  --so: #fb8a5b;
-  --so-soft: #3a1c10;
-  --on-so: #2a1006;
-  --arq: #b79cfa;
-  --arq-soft: #2a1a4a;
-  --on-arq: #1a0e33;
+  --scene-bg: #0c1631;
+  --scene-grid: #172752;
+  --scene-vignette: rgb(2 5 12 / 0.55);
+  --scene-shadow: rgb(0 0 0 / 0.45);
+  --node-fill: #101d42;
+
+  --redes: var(--redes-300);
+  --redes-soft: var(--redes-950);
+  --on-redes: var(--redes-950);
+  --so: var(--so-300);
+  --so-soft: var(--so-950);
+  --on-so: var(--so-950);
+  --arq: var(--arq-300);
+  --arq-soft: var(--arq-950);
+  --on-arq: var(--arq-950);
 
   --accent: #22d3ee;
   --accent-soft: #082640;

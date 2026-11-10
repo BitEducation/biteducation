@@ -125,7 +125,9 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
 
   /* ---------- layout ---------- */
   const seqOk = hasSequence(run, scene);
-  let view: SceneView = getView();
+  // ?vista= wins over the saved choice, so a shared link opens the view it was copied from.
+  const urlView = new URLSearchParams(location.search).get("vista");
+  let view: SceneView = urlView === "sequencia" ? "seq" : urlView === "rede" ? "net" : getView();
   const indexOpen = getFlag("index", true);
   const eventsOpen = getFlag("events", true);
   render(
@@ -212,6 +214,9 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
     if (!b) return;
     view = b.dataset.view === "seq" ? "seq" : "net";
     setView(view);
+    const u = new URL(location.href);
+    u.searchParams.set("vista", view === "seq" ? "sequencia" : "rede");
+    history.replaceState(history.state, "", u);
     sceneWrap.dataset.view = view;
     for (const x of app.querySelectorAll(".view-switch [data-view]"))
       x.setAttribute("aria-pressed", String((x as HTMLElement).dataset.view === view));

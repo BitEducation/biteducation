@@ -14,6 +14,7 @@ import { catalog as arq } from "../arq/catalog.ts";
 import { catalog as redes } from "../redes/catalog.ts";
 import { cross } from "../shared/cross.ts";
 import { catalog as so } from "../so/catalog.ts";
+import { mountDemo } from "./demo.ts";
 
 const CATALOGS: Record<SiteId, Catalog> = { arq, so, redes };
 const ORDER: SiteId[] = ["arq", "so", "redes"];
@@ -61,13 +62,22 @@ function draw(root: HTMLElement): () => void {
     root,
     html`<div class="page">${topbarHtml("hub", {})}
       <main class="page-main" id="main" tabindex="-1">
-        <section class="hub-hero"><h1>${t("hub.title")}</h1><p>${t("hub.lead", { n: total })}</p></section>
+        <section class="hub-hero hub-hero-split"><div class="hub-hero-text"><h1>${t("hub.title")}</h1><p>${t("hub.lead", { n: total })}</p></div><div class="hub-demo-host"></div></section>
         <ol class="layers">${ORDER.map(layerHtml)}</ol>
         ${trailsHtml(cross, null)}
         <section class="group-section" aria-labelledby="teachers-h"><h2 class="micro" id="teachers-h">${t("hub.teachers")}</h2><p class="prose">${t("hub.teachersText")}</p></section>
       </main>${footerHtml()}</div>`,
   );
-  return bindTopbar(root, { onHelp: openHelp, onLang: (code) => void changeLang(code, () => mount()) });
+  const offTop = bindTopbar(root, {
+    onHelp: openHelp,
+    onLang: (code) => void changeLang(code, () => mount()),
+  });
+  const demoHost = root.querySelector<HTMLElement>(".hub-demo-host");
+  const offDemo = demoHost ? mountDemo(demoHost) : () => {};
+  return () => {
+    offDemo();
+    offTop();
+  };
 }
 
 let off: () => void = () => {};

@@ -29,13 +29,13 @@ export function topbarHtml(
     <div class="site-switch">
       <button class="brand" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="${t("site.switch")}">
         <span class="brand-mark ${site}">${siteMark(site, site === "hub" ? 22 : 18)}</span>
-        <span>${t(`brand.${site}`)}</span>
+        <span translate="no">${t(`brand.${site}`)}</span>
         ${icons.chevronDown()}
       </button>
       <div class="menu site-menu" role="menu" hidden>
         ${SITES.map(
           (s) =>
-            html`<a role="menuitem" href="${siteUrl(s)}" ${s === site ? html`aria-current="page"` : ""}><span class="swatch ${s}"></span>${t(`brand.${s}`)}</a>`,
+            html`<a role="menuitem" href="${siteUrl(s)}" ${s === site ? html`aria-current="page"` : ""}><span class="swatch ${s}"></span><span translate="no">${t(`brand.${s}`)}</span></a>`,
         )}
       </div>
     </div>

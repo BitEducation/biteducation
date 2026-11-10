@@ -8,13 +8,13 @@
 
 /* zones */
 .zone rect {
-  fill: color-mix(in srgb, var(--surface-2) 55%, transparent);
-  stroke: var(--line-strong);
+  fill: color-mix(in srgb, var(--surface-2) 45%, transparent);
+  stroke: color-mix(in srgb, var(--accent) 35%, var(--line-strong));
   stroke-width: 1.25;
   stroke-dasharray: 6 5;
 }
 .zone text {
-  fill: var(--ink-3);
+  fill: var(--ink-2);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -33,15 +33,16 @@
 }
 
 /* links */
+/* Links are tinted with the site color so they read on the grid. */
 .link path {
   fill: none;
-  stroke: var(--line-strong);
-  stroke-width: 1.5;
+  stroke: color-mix(in srgb, var(--accent) 45%, var(--line-strong));
+  stroke-width: 1.75;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
 .link.style-dashed path {
-  stroke-dasharray: 5 4;
+  stroke-dasharray: 6 5;
 }
 .link.style-bus path {
   stroke-width: 5;
@@ -71,7 +72,7 @@
   pointer-events: none;
 }
 .node .box {
-  fill: var(--surface);
+  fill: var(--node-fill);
   stroke: var(--line-strong);
   stroke-width: 1.25;
 }
@@ -101,6 +102,13 @@
 .node .pict .fs {
   fill: color-mix(in srgb, var(--dev) 26%, var(--bg));
 }
+.node .pict .sh {
+  fill: var(--scene-shadow);
+  stroke: none;
+}
+.node .pict .lit-soft {
+  fill: color-mix(in srgb, var(--dev) 55%, var(--surface));
+}
 .node .pict .lit,
 .node .pict .lit.ft {
   fill: var(--dev);
@@ -118,12 +126,49 @@
 }
 .node .label {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
 }
 .node .sub {
   font-family: var(--font-mono);
   font-size: 11px;
-  fill: var(--ink-3);
+  fill: var(--ink-2);
+}
+/* Equipment: no box, the drawing is the node. The box stays as the hit and focus area. */
+.node.device[data-tone] .box {
+  fill: transparent;
+  stroke: transparent;
+}
+.node.device .label {
+  font-size: 14px;
+}
+.node.device .label,
+.node.device .sub {
+  paint-order: stroke;
+  stroke: var(--scene-bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.node.device[data-tone="bad"] .pict {
+  --dev: var(--role-bad);
+}
+.node.device[data-tone="good"] .pict {
+  --dev: var(--role-crypto);
+}
+.node.device[data-tone="warn"] .pict {
+  --dev: var(--role-warn);
+}
+.node.device[data-tone="active"] .pict {
+  --dev-line: var(--accent);
+}
+.node.device[data-tone="active"] .pict :is(polygon, polyline, path, rect, circle, ellipse) {
+  stroke-width: 1.3;
+}
+.node.device[data-tone="bad"] .label {
+  fill: var(--role-bad);
+}
+.node.device[role="button"]:focus-visible .box {
+  stroke: var(--focus);
+  stroke-width: 2;
 }
 .node .state {
   font-family: var(--font-mono);
@@ -410,7 +455,7 @@
 .seq-host {
   position: absolute;
   inset: 0;
-  background: var(--bg);
+  background: var(--scene-bg);
 }
 .seq-scroll {
   height: 100%;
@@ -423,7 +468,7 @@
   display: grid;
   padding: 12px 0 10px;
   border-bottom: 1px solid var(--line);
-  background: var(--bg);
+  background: var(--scene-bg);
 }
 .seq-lane {
   display: grid;
@@ -497,7 +542,7 @@
   font-size: 12px;
   font-weight: 600;
   paint-order: stroke;
-  stroke: var(--bg);
+  stroke: var(--scene-bg);
   stroke-width: 4px;
   stroke-linejoin: round;
 }
@@ -517,4 +562,19 @@
   from {
     opacity: 0;
   }
+}
+
+/* Step focus on equipment: a light dashed frame, so the drawing stays the node. */
+.node.device .halo {
+  stroke-width: 1.25;
+  stroke-dasharray: 4 4;
+}
+.seq-detail {
+  fill: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  paint-order: stroke;
+  stroke: var(--scene-bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
 }

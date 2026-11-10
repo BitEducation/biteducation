@@ -33,11 +33,31 @@ function theme(site: string, dark: boolean): Record<string, string> {
   return Object.fromEntries(Object.entries(merged).map(([k, v]) => [k, resolve(v)]));
 }
 
-function luminance(hex: string): number {
-  const h = hex.replace("#", "");
+/** Linear sRGB channels of a #rrggbb or oklch(L C H) value (out-of-gamut values clamped). */
+function linearRgb(color: string): [number, number, number] {
+  const ok = /^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/.exec(color);
+  if (ok) {
+    const [L, C, H] = [Number(ok[1]), Number(ok[2]), (Number(ok[3]) * Math.PI) / 180];
+    const [a, b] = [C * Math.cos(H), C * Math.sin(H)];
+    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+    const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+    const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+    const clamp = (v: number) => Math.min(1, Math.max(0, v));
+    return [
+      clamp(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
+      clamp(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
+      clamp(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
+    ];
+  }
+  const h = color.replace("#", "");
   const ch = [0, 2, 4].map((i) => Number.parseInt(h.slice(i, i + 2), 16) / 255);
   const lin = ch.map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
-  return 0.2126 * (lin[0] ?? 0) + 0.7152 * (lin[1] ?? 0) + 0.0722 * (lin[2] ?? 0);
+  return [lin[0] ?? 0, lin[1] ?? 0, lin[2] ?? 0];
+}
+
+function luminance(color: string): number {
+  const [r, g, b] = linearRgb(color);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
 function contrast(a: string, b: string): number {

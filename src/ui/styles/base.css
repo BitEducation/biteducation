@@ -79,6 +79,15 @@ button {
   cursor: pointer;
 }
 
+/* No double-tap zoom delay on controls; the tap flash is replaced by our own states. */
+button,
+a,
+summary,
+[role="tab"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
 a {
   color: var(--accent);
   text-decoration-thickness: 1px;

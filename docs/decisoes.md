@@ -59,3 +59,22 @@ dizer que só o mantenedor pode fechar.
   ao passo de cada previsão errada.
 - **D28. Vários diagramas de Gantt numa cena.** Eventos `gantt` podem dizer a qual widget
   pertencem (`gantt: "<id>"`); sem isso, vão para todo Gantt que tenha a raia.
+- **D29. Cores de tópico em escalas OKLCH.** Cada site tem uma escala de 11 tons
+  (`--redes-50` a `--redes-950`, idem `so` e `arq`) com o mesmo matiz. O tom 300 é o destaque
+  do tema escuro e o 700 o do claro; os tons claros e escuros servem de fundo suave e de texto
+  sobre o destaque. `.tone-<site>` aplica a cor de um site a qualquer elemento (hub, trilhas).
+  `tokens.test.ts` lê `oklch()` e confere os contrastes.
+- **D30. Busca sem botão no topo.** O topo fica com marca, tema, idioma e ajuda; a busca abre com
+  `/` ou Ctrl+K, e a página 404 mantém um botão de busca no corpo.
+- **D31. Vista Sequência.** Toda lição com mensagens entre dois ou mais nós ganha a alternância
+  Rede (Diagrama, fora de redes) / Sequência, gerada do mesmo trace (`src/ui/sequence.ts`). A
+  escolha fica salva e vai na URL (`?vista=sequencia`) para que um link compartilhado abra a
+  mesma vista.
+- **D32. Equipamentos desenhados.** Nós de equipamento (notebook, servidor, roteador, switch,
+  nuvem, DNS, firewall, atacante, dispositivo) são desenhos isométricos sem caixa, sobre uma
+  grade isométrica; peças internas (CPU, memória, kernel, cache…) mantêm a caixa, porque as
+  cenas de SO e arquitetura são densas. Os desenhos saem de caixas 3D projetadas em
+  `src/scene/pictograms.ts`, todos com a mesma luz.
+- **D33. Trecho real no hub.** O hub mostra os três primeiros passos da lição de TCP na vista
+  Sequência, carregados sob demanda, com os números da própria simulação e botão de pausa; com
+  movimento reduzido, aparece parado e completo.

@@ -61,7 +61,12 @@ export function hasSequence(run: LessonRun, scene: SceneSpec): boolean {
  * Sequence diagram of the same run: one lane per node, one arrow per message, grouped by step.
  * Arrows appear as the player reaches them, like the rows of the events table.
  */
-export function createSequenceView(host: HTMLElement, scene: SceneSpec, run: LessonRun): SequenceView {
+export function createSequenceView(
+  host: HTMLElement,
+  scene: SceneSpec,
+  run: LessonRun,
+  opts: { detail?: boolean } = {},
+): SequenceView {
   const arrows = arrowsOf(run);
   const lanes = lanesOf(scene, arrows);
   const laneIx = new Map(lanes.map((n, i) => [n.id, i]));
@@ -117,9 +122,10 @@ export function createSequenceView(host: HTMLElement, scene: SceneSpec, run: Les
           <line x1="${x1}" y1="${y}" x2="${xe}" y2="${ye}"/>
           ${a.ev.lost ? html`<path class="x" d="M${xe - 5} ${ye - 5}l10 10m0-10-10 10"/>` : arrowHead(x1, y, xe, ye)}
           <text class="seq-label" x="${(x1 + xe) / 2}" y="${(y + ye) / 2 - 7}" text-anchor="middle">${label}</text>
+          ${opts.detail && a.ev.row?.cols.detail ? html`<text class="seq-detail" x="${(x1 + xe) / 2}" y="${(y + ye) / 2 + 16}" text-anchor="middle">${a.ev.row.cols.detail}</text>` : ""}
         </g>`,
       );
-      y += ROW;
+      y += opts.detail ? ROW + 12 : ROW;
     });
     if (!visible.length)
       parts.push(

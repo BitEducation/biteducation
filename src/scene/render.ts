@@ -1,4 +1,4 @@
-import type { Role, SceneSpec, TraceEvent, Widget } from "../contracts/types.ts";
+import type { Role, SceneNode, SceneSpec, TraceEvent, Widget } from "../contracts/types.ts";
 import { html, prefersReducedMotion, raw, render, type SafeHtml } from "../core/dom.ts";
 import type { SceneState } from "../core/scene-state.ts";
 import { fastMode } from "../core/test-hooks.ts";
@@ -13,7 +13,7 @@ import {
   textWidth,
   vertexOffsets,
 } from "./geometry.ts";
-import { PICT_SIZE, pictogram } from "./pictograms.ts";
+import { DEVICE_SIZE, isDevice, PICT_SIZE, pictogram } from "./pictograms.ts";
 
 export interface SceneRenderer {
   update(state: SceneState, highlight: readonly string[]): void;
@@ -25,31 +25,59 @@ export interface SceneRenderer {
 
 const n1 = (v: number) => Number(v.toFixed(1));
 
+/** Moves the ends of a link from the node centers to just outside their footprints. */
+function trimEnds(pts: Pt[], a: SceneNode, b: SceneNode): Pt[] {
+  if (pts.length < 2) return pts;
+  const cut = (n: SceneNode, from: Pt, toward: Pt): Pt => {
+    const [w, h] = nodeSize(n, pictogram(n.kind) !== "");
+    const dx = toward[0] - from[0];
+    const dy = toward[1] - from[1];
+    const t = Math.min(
+      dx ? (w / 2 + 4) / Math.abs(dx) : Infinity,
+      dy ? (h / 2 + 4) / Math.abs(dy) : Infinity,
+    );
+    return t < 1 ? [from[0] + dx * t, from[1] + dy * t] : from;
+  };
+  const out = [...pts];
+  out[0] = cut(a, pts[0] as Pt, pts[1] as Pt);
+  const last = pts.length - 1;
+  out[last] = cut(b, pts[last] as Pt, pts[last - 1] as Pt);
+  return out;
+}
+
 function staticLayer(spec: SceneSpec): SafeHtml {
   const zones = (spec.zones ?? []).map(
     (z) => html`<g class="zone tone-${z.tone ?? "user"}" data-zone="${z.id}">
       <rect x="${z.rect.x}" y="${z.rect.y}" width="${z.rect.w}" height="${z.rect.h}" rx="10"/>
       <text x="${z.rect.x + 12}" y="${z.rect.y + 18}">${z.title}</text></g>`,
   );
+  // Links stop at the edge of each node: devices have no opaque box to hide the line under.
   const links = (spec.links ?? []).map((l) => {
     const pts = linkPoints(spec, l);
-    return pts
-      ? html`<g class="link style-${l.style ?? "solid"}" data-link="${l.id}"><path d="${roundedPath(pts)}"/></g>`
+    const a = spec.nodes.find((n) => n.id === l.from);
+    const b = spec.nodes.find((n) => n.id === l.to);
+    const trimmed = pts && a && b ? trimEnds(pts, a, b) : pts;
+    return trimmed
+      ? html`<g class="link style-${l.style ?? "solid"}" data-link="${l.id}"><path d="${roundedPath(trimmed)}"/></g>`
       : html``;
   });
   const nodes = spec.nodes.map((n) => {
     const pict = pictogram(n.kind);
     const hasPict = pict !== "";
+    const device = isDevice(n.kind);
     const [w, h] = nodeSize(n, hasPict);
     const x = n.at[0] - w / 2;
     const y = n.at[1] - h / 2;
-    const tx = hasPict ? x + PICT_SIZE + 16 : n.at[0];
+    // Equipment stands free on the grid, drawn large; components keep their box.
+    const ps = device ? DEVICE_SIZE : PICT_SIZE;
+    const tx = hasPict ? x + (device ? 4 : 8) + ps + 10 : n.at[0];
     const anchor = hasPict ? "start" : "middle";
     const ty = n.sub ? n.at[1] - 3 : n.at[1] + 4;
-    return html`<g class="node kind-${n.kind}" data-node="${n.id}" data-hidden="${n.hidden ? "true" : "false"}" role="button" tabindex="-1" aria-label="${n.label}${n.sub ? `, ${n.sub}` : ""}">
+    const scale = ps / PICT_SIZE;
+    return html`<g class="node kind-${n.kind}${device ? " device" : ""}" data-node="${n.id}" data-hidden="${n.hidden ? "true" : "false"}" role="button" tabindex="-1" aria-label="${n.label}${n.sub ? `, ${n.sub}` : ""}">
       <rect class="halo" x="${x - 5}" y="${y - 5}" width="${w + 10}" height="${h + 10}" rx="10"/>
       <rect class="box" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/>
-      ${hasPict ? html`<g class="pict" transform="translate(${x + 8} ${n.at[1] - PICT_SIZE / 2})">${raw(pict)}</g>` : ""}
+      ${hasPict ? html`<g class="pict" transform="translate(${x + (device ? 4 : 8)} ${n1(n.at[1] - ps / 2)}) scale(${n1(scale * 100) / 100})">${raw(pict)}</g>` : ""}
       <text class="label" x="${tx}" y="${ty}" text-anchor="${anchor}">${n.label}</text>
       ${n.sub ? html`<text class="sub" x="${tx}" y="${ty + 15}" text-anchor="${anchor}">${n.sub}</text>` : ""}
       <text class="state" x="${n.at[0]}" y="${y + h + 15}" text-anchor="middle"></text>
@@ -471,8 +499,18 @@ export function createSceneRenderer(host: HTMLElement, spec: SceneSpec, label: s
   };
 
   function pulse(id: string) {
-    const el = nodeEls.get(id)?.querySelector(".box");
-    if (!el || prefersReducedMotion()) return;
+    const node = nodeEls.get(id);
+    if (!node || prefersReducedMotion()) return;
+    if (node.classList.contains("device")) {
+      const pict = node.querySelector(".pict");
+      if (pict)
+        running.push(
+          pict.animate([{ opacity: 0.45 }, { opacity: 1 }], { duration: 300, easing: "ease-out" }),
+        );
+      return;
+    }
+    const el = node.querySelector(".box");
+    if (!el) return;
     running.push(
       el.animate([{ strokeWidth: "3.5" }, { strokeWidth: "1.25" }], { duration: 300, easing: "ease-out" }),
     );

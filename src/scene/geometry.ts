@@ -1,4 +1,5 @@
 import type { NodeKind, SceneLink, SceneNode, SceneSpec } from "../contracts/types.ts";
+import { isDevice } from "./pictograms.ts";
 
 export type Pt = readonly [number, number];
 
@@ -21,7 +22,7 @@ const SUB_EM = 6.7;
 export function nodeSize(n: SceneNode, pict = false): readonly [number, number] {
   const base = SIZES[n.kind] ?? [128, 54];
   const text = Math.max(n.label.length * LABEL_EM, (n.sub ?? "").length * SUB_EM);
-  const need = Math.ceil(text + (pict ? 60 : 24));
+  const need = Math.ceil(text + (pict ? (isDevice(n.kind) ? 70 : 60) : 24));
   return [Math.max(n.w ?? base[0], need), n.h ?? base[1]];
 }
 

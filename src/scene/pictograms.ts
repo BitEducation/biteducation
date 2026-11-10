@@ -54,7 +54,28 @@ function boxFaces([x, y, z, w, d, h]: readonly number[]): { poly: P3[]; cls: str
 const f = (n: number) => Number(n.toFixed(2));
 
 /** Projects the shapes and fits them, centered, into the 32×32 box (30 px of drawing). */
-function iso(shapes: Shape[]): string {
+function iso(input: Shape[]): string {
+  // Ground shadow under the first box, cast toward the lower right as in the light above.
+  const first = input.find((x) => "box" in x);
+  const shapes: Shape[] =
+    first && "box" in first && first.box[2] === 0
+      ? [
+          {
+            cls: "sh",
+            poly: (() => {
+              const [x, y, , w, d] = first.box;
+              const [sx, sy] = [x + 3.5, y + 0.5];
+              return [
+                [sx, sy, 0],
+                [sx + w, sy, 0],
+                [sx + w, sy + d, 0],
+                [sx, sy + d, 0],
+              ] as P3[];
+            })(),
+          },
+          ...input,
+        ]
+      : input;
   const pts: [number, number][] = [];
   for (const s of shapes) {
     if ("box" in s) for (const face of boxFaces(s.box)) pts.push(...face.poly.map(project));
@@ -292,8 +313,8 @@ const ISO: Partial<Record<NodeKind, Shape[]>> = {
 
 /** Shapes that have no box form, drawn flat in the same 32×32 box and the same face colors. */
 const FLAT: Partial<Record<NodeKind, string>> = {
-  cloud: `<path class="fl" d="M9 25h15.5a5.5 5.5 0 0 0 .6-11A8 8 0 0 0 9.8 12.6 6.3 6.3 0 0 0 9 25z"/><path class="ln" d="M12.5 18.5a3.4 3.4 0 0 1 3.2-2.6"/>`,
-  dns: `<circle class="fl" cx="16" cy="16" r="12"/><path class="ln" d="M4 16h24M16 4c-4.5 4-4.5 20 0 24M16 4c4.5 4 4.5 20 0 24M6 10h20M6 22h20"/>`,
+  cloud: `<ellipse class="sh" cx="18.5" cy="26" rx="11" ry="2.4"/><path class="fl" d="M9 25h15.5a5.5 5.5 0 0 0 .6-11A8 8 0 0 0 9.8 12.6 6.3 6.3 0 0 0 9 25z"/><path class="ln" d="M12.5 18.5a3.4 3.4 0 0 1 3.2-2.6"/>`,
+  dns: `<ellipse class="sh" cx="18" cy="29" rx="9" ry="2"/><circle class="fl" cx="16" cy="16" r="12"/><path class="ln" d="M4 16h24M16 4c-4.5 4-4.5 20 0 24M16 4c4.5 4 4.5 20 0 24M6 10h20M6 22h20"/>`,
   attacker: `<path class="fl" d="M5 14c2.5-8 19.5-8 22 0z"/><path class="ft" d="M3.5 14h25l-2 2.5h-21z"/><circle class="fs" cx="11" cy="21.5" r="3.2"/><circle class="fs" cx="21" cy="21.5" r="3.2"/><path class="ln" d="M14.2 21.5h3.6"/>`,
   process: `<rect class="fl" x="4" y="6" width="24" height="20" rx="2"/><path class="ft" d="M6 6h20a2 2 0 0 1 2 2v3H4V8a2 2 0 0 1 2-2z"/><circle class="lit" cx="7.5" cy="8.5" r="1"/><path class="ln" d="M8 16h11M8 20h7"/>`,
   timer: `<circle class="fl" cx="16" cy="18" r="10"/><path class="ft" d="M13 4h6v3h-6z"/><path class="ln" d="M16 18v-6M16 18l4 2.5"/>`,
@@ -314,3 +335,21 @@ export function pictogram(kind: NodeKind): string {
 
 /** Size of the drawing box, used by the renderer and by nodeSize(). */
 export const PICT_SIZE = 32;
+/** Equipment is drawn larger and without a box around it. */
+export const DEVICE_SIZE = 50;
+
+const DEVICES: ReadonlySet<NodeKind> = new Set([
+  "laptop",
+  "server",
+  "router",
+  "switch",
+  "cloud",
+  "attacker",
+  "firewall",
+  "dns",
+  "device",
+] as NodeKind[]);
+
+export function isDevice(kind: NodeKind): boolean {
+  return DEVICES.has(kind);
+}
