@@ -31,6 +31,7 @@ import {
   saveProgress,
 } from "../core/progress.ts";
 import { lessonUrl, type Route, sanitizeParams, siteUrl } from "../core/router.ts";
+import { reduceScene } from "../core/scene-state.ts";
 import { bindShortcuts } from "../core/shortcuts.ts";
 import { createStore } from "../core/store.ts";
 import { visibleLessons } from "../core/visibility.ts";
@@ -133,7 +134,7 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
   render(
     root,
     html`<div class="app" data-index="${indexOpen ? "open" : "closed"}" data-events="${eventsOpen ? "open" : "closed"}" data-present="false" data-drawer="closed">
-      ${topbarHtml(site, { indexToggle: true, progress: sitePercent(config, progress) })}
+      ${topbarHtml(site, { back: true, indexToggle: true, progress: sitePercent(config, progress) })}
       <aside class="index" id="lesson-index" aria-label="${t("index.title")}"></aside>
       <div class="scrim"></div>
       <main class="stage" id="main" tabindex="-1">
@@ -151,7 +152,7 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
               }${labActive ? html`<span class="pill role-ctrl"><span class="dot"></span>${t("tabs.lab")}</span>` : ""}</div>`
             : ""
         }
-        <div class="scene-wrap" data-view="${seqOk ? view : "net"}"><div class="scene-host"></div>${seqOk ? html`<div class="seq-host"></div>` : ""}<p class="sr-only scene-live" aria-live="polite"></p></div>
+        <div class="scene-wrap" data-view="${seqOk ? view : "net"}"><div class="scene-host"></div>${seqOk ? html`<div class="seq-host"></div>` : ""}<p class="sr-only scene-live" aria-live="polite"></p><section class="inspector" hidden aria-label="${t("ins.title")}"></section></div>
         <div class="controls" role="toolbar" aria-label="${t("controls.label")}"></div>
       </main>
       <aside class="side" aria-label="${lesson.meta.title}">
@@ -160,7 +161,6 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
             html`<button role="tab" type="button" id="tab-${k}" data-tab="${k}" aria-controls="side-body" aria-selected="${k === tab}" tabindex="${k === tab ? 0 : -1}">${t(`tabs.${k}`)}</button>`,
         )}</div>
         <div class="side-body" id="side-body" role="tabpanel" tabindex="0" aria-labelledby="tab-${tab}"></div>
-        <section class="inspector" hidden aria-label="${t("ins.title")}"></section>
       </aside>
       <section class="events" aria-labelledby="events-title">
         <div class="events-head" title="${t("events.resize")}">
@@ -187,6 +187,11 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
     scene,
     `${lesson.meta.title}: ${lesson.meta.summary}`,
   );
+  // States the scene can reach: the end of each step, with that step's notes showing.
+  renderer.fit([
+    reduceScene(scene, run.trace, run.trace.length, run.trace.length),
+    ...run.steps.map((st) => reduceScene(scene, run.trace, st.events[1], st.events[0])),
+  ]);
   const store = createStore<PlayerState>({
     phase: "overview",
     stepIndex: -1,
@@ -199,12 +204,21 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
   for (const ev of run.trace)
     if (ev.frame && run.frames[ev.frame] && !frameOrder.includes(ev.frame)) frameOrder.push(ev.frame);
 
+  // Where each frame travels, from the first move that carries it: context for the inspector
+  // when the lesson did not write a "where" line.
+  const routes: Record<string, string> = {};
+  const nodeLabel = (id: string) => scene.nodes.find((n) => n.id === id)?.label ?? id;
+  for (const ev of run.trace)
+    if (ev.kind === "move" && ev.frame && !routes[ev.frame])
+      routes[ev.frame] = t("ins.route", { from: nodeLabel(ev.from), to: nodeLabel(ev.to) });
+
   const inspector = createInspector(
     q(".inspector"),
     run.frames,
     frameOrder,
+    routes,
     () => closeInspector(),
-    (id) => inspector.show(id),
+    (id) => showInspector(id),
   );
   const seqHost = app.querySelector<HTMLElement>(".seq-host");
   const sequence = seqHost ? createSequenceView(seqHost, scene, run) : null;
@@ -227,7 +241,7 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
   const table = createEventsTable(q(".events-scroll"), config.columns, run, (index) => {
     store.set({ selected: index });
     const ev = run.trace[index];
-    if (ev?.frame && run.frames[ev.frame]) inspector.show(ev.frame);
+    if (ev?.frame && run.frames[ev.frame]) showInspector(ev.frame);
     else toast(t("ins.none"));
     table.update(store.get().cursor, index);
   });
@@ -526,7 +540,7 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
       void copyText(absolute(lessonUrl(site, slug, { step: step.id })), t("narr.copied"), t("narr.copyFail"));
     else if (el.closest(".now-inspect")) {
       const id = el.closest<HTMLElement>(".now-inspect")?.dataset.frame;
-      if (id) inspector.show(id);
+      if (id) showInspector(id);
     } else if (el.closest(".practice-next")) {
       practice = { index: practice.index, seed: newSeed(), fb: null };
       drawNarrative(true);
@@ -612,9 +626,25 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
   });
 
   /* ---------- inspector, index, events, presentation ---------- */
+  // On mid-size screens the dissector needs the room: fold the index while it is open and give
+  // it back on close, without touching the saved preference.
+  let foldedForInspector = false;
+  function showInspector(id: string) {
+    if (!isNarrow() && root.clientWidth < 1600 && app.dataset.index === "open") {
+      app.dataset.index = "closed";
+      q(".index-toggle")?.setAttribute("aria-expanded", "false");
+      foldedForInspector = true;
+    }
+    inspector.show(id);
+  }
   function closeInspector() {
     inspector.hide();
     store.set({ selected: null });
+    if (foldedForInspector && app.dataset.index === "closed") {
+      app.dataset.index = "open";
+      q(".index-toggle")?.setAttribute("aria-expanded", "true");
+    }
+    foldedForInspector = false;
   }
 
   function inspectCurrent() {
@@ -623,7 +653,7 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
       const ev = run.trace[k];
       if (ev?.frame && run.frames[ev.frame]) {
         store.set({ selected: k });
-        inspector.show(ev.frame);
+        showInspector(ev.frame);
         return;
       }
     }
@@ -649,6 +679,7 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
       else openDrawer();
       return;
     }
+    foldedForInspector = false;
     const open = app.dataset.index !== "open";
     app.dataset.index = open ? "open" : "closed";
     q(".index-toggle")?.setAttribute("aria-expanded", String(open));

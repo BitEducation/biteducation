@@ -21,17 +21,40 @@ export function ipv4(o: Ipv4Opts): Layer {
   if (total > 0xffff) throw new Error("Datagrama grande demais");
   const ttl = o.ttl ?? 64;
   const b = layerBuilder("ip", "IPv4", "b");
-  b.field("Versão e IHL", "4 e 5 (20 bytes)", u8(0x45));
-  b.field("DSCP/ECN", String(o.dscp ?? 0), u8((o.dscp ?? 0) << 2));
-  b.field("Comprimento total", `${total} bytes`, u16(total));
-  b.field("Identificação", hexN(o.id ?? 0, 4), u16(o.id ?? 0));
+  b.field("Versão e IHL", "4 e 5 (20 bytes)", u8(0x45), {
+    note: "IPv4, com cabeçalho de 5 palavras de 32 bits: o mínimo, sem opções",
+  });
+  b.field("DSCP/ECN", String(o.dscp ?? 0), u8((o.dscp ?? 0) << 2), {
+    note: o.dscp
+      ? "Marca de prioridade: a rede pode dar a este pacote uma fila preferencial"
+      : "Prioridade e aviso de congestionamento; zero é tráfego comum",
+  });
+  b.field("Comprimento total", `${total} bytes`, u16(total), {
+    note: "Este cabeçalho mais tudo o que vem dentro dele",
+  });
+  b.field("Identificação", hexN(o.id ?? 0, 4), u16(o.id ?? 0), {
+    note: "Junta os pedaços de novo se o pacote for fragmentado no caminho",
+    example: true,
+  });
   const df = o.df ?? true;
-  b.field("Flags e deslocamento", df ? "DF (não fragmentar), 0" : "0, 0", u16(df ? 0x4000 : 0));
-  b.field("TTL", String(ttl), u8(ttl), { note: "Cada roteador subtrai 1; em 0 o pacote é descartado" });
-  b.field("Protocolo", `${o.proto} (${PROTO_NAME[o.proto] ?? "?"})`, u8(o.proto));
-  const at = b.field("Checksum do cabeçalho", "", u16(0));
-  b.field("IP de origem", o.src, ip4(o.src));
-  b.field("IP de destino", o.dst, ip4(o.dst));
+  b.field("Flags e deslocamento", df ? "DF (não fragmentar), 0" : "0, 0", u16(df ? 0x4000 : 0), {
+    note: df
+      ? "DF: um roteador com enlace pequeno demais descarta e avisa por ICMP, em vez de partir o pacote"
+      : "Sem DF: um roteador pode partir o pacote se o próximo enlace for pequeno demais",
+  });
+  b.field("TTL", String(ttl), u8(ttl), {
+    note: `Cada roteador subtrai 1; em 0 o pacote é descartado${ttl === 64 ? ". Linux e macOS começam em 64" : ttl === 128 ? ". Windows começa em 128" : ""}`,
+  });
+  b.field("Protocolo", `${o.proto} (${PROTO_NAME[o.proto] ?? "?"})`, u8(o.proto), {
+    note: "A quem o destino entrega o conteúdo",
+  });
+  const at = b.field("Checksum do cabeçalho", "", u16(0), {
+    note: "Cobre só este cabeçalho; cada roteador recalcula depois de baixar o TTL",
+  });
+  b.field("IP de origem", o.src, ip4(o.src), { note: "Quem criou o pacote" });
+  b.field("IP de destino", o.dst, ip4(o.dst), {
+    note: "O destino final; cada roteador escolhe o próximo salto olhando este campo",
+  });
   const sum = inetChecksum(known(b.bytes));
   b.patch(at, u16(sum), `${hexN(sum, 4)} (RFC 1071)`);
   return b.done();

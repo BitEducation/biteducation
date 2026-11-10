@@ -1,3 +1,4 @@
+/* Opens over the scene, like a packet dissector: the step text and the controls stay in view. */
 .inspector {
   position: absolute;
   inset: 0;
@@ -6,7 +7,7 @@
   flex-direction: column;
   min-height: 0;
   background: var(--surface);
-  box-shadow: var(--shadow);
+  container: ins / inline-size;
 }
 .ins-head {
   display: flex;
@@ -45,7 +46,7 @@
   display: flex;
   gap: 2px;
   margin-top: 10px;
-  height: 30px;
+  min-height: 40px;
 }
 .ins-seg {
   flex: var(--w) 1 0;
@@ -53,13 +54,14 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 6px;
+  padding: 4px 8px;
   border: 0;
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--c) 18%, var(--surface));
   border-top: 3px solid var(--c);
   color: var(--ink);
-  font-size: 0.68rem;
+  font-size: var(--fs-micro);
+  line-height: 1.25;
   text-align: start;
   overflow: hidden;
   white-space: nowrap;
@@ -143,7 +145,7 @@
 }
 .hex {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--fs-data);
   line-height: 1.7;
 }
 .hex-row {
@@ -241,4 +243,28 @@
   border-top: 1px solid var(--line);
   color: var(--ink-3);
   font-size: var(--fs-micro);
+}
+
+/* Wide: fields and notes on the left, the bytes on the right, kept in view while reading. */
+@container ins (min-width: 1100px) {
+  .ins-cols[data-unit="byte"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) max-content;
+    gap: 24px;
+    align-items: start;
+  }
+  .ins-cols[data-unit="byte"] .ins-data {
+    position: sticky;
+    top: 0;
+    margin-top: 12px;
+    padding-inline-start: 20px;
+    border-inline-start: 1px solid var(--line);
+  }
+  .ins-field {
+    grid-template-columns: minmax(150px, 30%) minmax(0, 1fr);
+  }
+  /* The note reads as the meaning of the value, so it sits under the value. */
+  .ins-field .note {
+    grid-column: 2;
+  }
 }

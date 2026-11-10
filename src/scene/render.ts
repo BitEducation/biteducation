@@ -20,6 +20,8 @@ export interface SceneRenderer {
   animate(ev: TraceEvent, speed: number): Promise<void>;
   cancel(): void;
   describe(state: SceneState): string;
+  /** Crops the viewBox to what the given states draw, so the drawing fills the canvas. */
+  fit(states: readonly SceneState[]): void;
   readonly svg: SVGSVGElement;
 }
 
@@ -79,7 +81,7 @@ function staticLayer(spec: SceneSpec): SafeHtml {
       <rect class="box" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/>
       ${hasPict ? html`<g class="pict" transform="translate(${x + (device ? 4 : 8)} ${n1(n.at[1] - ps / 2)}) scale(${n1(scale * 100) / 100})">${raw(pict)}</g>` : ""}
       <text class="label" x="${tx}" y="${ty}" text-anchor="${anchor}">${n.label}</text>
-      ${n.sub ? html`<text class="sub" x="${tx}" y="${ty + 15}" text-anchor="${anchor}">${n.sub}</text>` : ""}
+      ${n.sub ? html`<text class="sub" x="${tx}" y="${ty + 16}" text-anchor="${anchor}">${n.sub}</text>` : ""}
       <text class="state" x="${n.at[0]}" y="${y + h + 15}" text-anchor="middle"></text>
     </g>`;
   });
@@ -281,10 +283,15 @@ function widgetDynamic(w: Widget, s: SceneState): SafeHtml {
           .join(" ");
         const lastPt = se.points[se.points.length - 1];
         return html`<g class="role-${se.role}" data-key="s${name}"><polyline class="series" points="${pts}"/>
-          ${lastPt ? html`<text class="tick" x="${n1(x + (lastPt[0] / w.x.max) * w.width + 4)}" y="${n1(y + w.height - (lastPt[1] / w.y.max) * w.height - 4)}">${name}</text>` : ""}</g>`;
+          ${lastPt ? html`<text class="tick" x="${n1(x + (lastPt[0] / w.x.max) * w.width + 4)}" y="${n1(seriesLabelY(y + w.height - (lastPt[1] / w.y.max) * w.height, y))}">${name}</text>` : ""}</g>`;
       })}`;
     }
   }
+}
+
+/** Series name sits above its last point, or below it when the point is at the top (the title is there). */
+function seriesLabelY(py: number, top: number): number {
+  return py - 4 < top + 12 ? py + 13 : py - 4;
 }
 
 /* ---------- renderer ---------- */
@@ -357,8 +364,43 @@ export function createSceneRenderer(host: HTMLElement, spec: SceneSpec, label: s
     prevVals = next;
   }
 
-  return {
+  const api: SceneRenderer = {
     svg,
+    fit(states) {
+      // Lessons lay out on a fixed canvas (often 960 wide) and use part of it; measuring every
+      // step's end state catches rows, notes and state labels that only appear later.
+      const box = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
+      const grow = () => {
+        for (const g of svg.querySelectorAll<SVGGElement>(
+          ".l-zones, .l-links, .l-widgets, .l-nodes, .l-notes",
+        )) {
+          let b: DOMRect;
+          try {
+            b = g.getBBox();
+          } catch {
+            return; // no layout engine (tests)
+          }
+          if (!b.width && !b.height) continue;
+          box.x0 = Math.min(box.x0, b.x);
+          box.y0 = Math.min(box.y0, b.y);
+          box.x1 = Math.max(box.x1, b.x + b.width);
+          box.y1 = Math.max(box.y1, b.y + b.height);
+        }
+      };
+      for (const st of states) {
+        api.update(st, []);
+        grow();
+      }
+      prevVals = new Map();
+      if (!Number.isFinite(box.x0)) return;
+      const pad = 20;
+      // Never grows past the authored canvas: notes clamp to it.
+      const x = Math.max(0, box.x0 - pad);
+      const y = Math.max(0, box.y0 - pad);
+      const w = Math.min(vw, box.x1 + pad) - x;
+      const h = Math.min(vh, box.y1 + pad) - y;
+      if (w > 0 && h > 0) svg.setAttribute("viewBox", `${n1(x)} ${n1(y)} ${n1(w)} ${n1(h)}`);
+    },
     update(state, highlight) {
       for (const [id, el] of nodeEls) {
         const ns = state.nodes[id];
@@ -390,7 +432,7 @@ export function createSceneRenderer(host: HTMLElement, spec: SceneSpec, label: s
         if (!p) return html``;
         const target = spec.nodes.find((n) => n.id === nt.at);
         const h = target ? nodeSize(target)[1] : 0;
-        const w = Math.min(320, textWidth(nt.text, 11.5, false) + 22);
+        const w = Math.min(320, textWidth(nt.text, 12.5, false) + 22);
         const nx = Math.max(4, Math.min(vw - w - 4, p[0] - w / 2));
         const ny = Math.max(4, p[1] - h / 2 - 36 - (i % 2) * 0);
         return html`<g class="note tone-${nt.tone}"><rect x="${n1(nx)}" y="${n1(ny)}" width="${n1(w)}" height="26" rx="6"/>
@@ -406,7 +448,7 @@ export function createSceneRenderer(host: HTMLElement, spec: SceneSpec, label: s
       if (!pts) return wait(200, speed);
       const len = polylineLength(pts);
       const label = ev.label;
-      const w = Math.max(34, textWidth(label) + 18);
+      const w = Math.max(34, textWidth(label, 12) + 18);
       const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
       g.setAttribute("class", `token role-${ev.role}${ev.lost ? " lost" : ""}`);
       render(
@@ -527,6 +569,7 @@ export function createSceneRenderer(host: HTMLElement, spec: SceneSpec, label: s
       );
     });
   }
+  return api;
 }
 
 function pointAt(pts: readonly Pt[], frac: number): Pt {

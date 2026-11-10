@@ -27,16 +27,22 @@ const ZERO = "0.0.0.0";
 export function dhcp(m: DhcpMsg): Layer {
   const reply = m.type === "OFFER" || m.type === "ACK" || m.type === "NAK";
   const b = layerBuilder("dhcp", "DHCP", "s4");
-  b.field("Operação", reply ? "2 (resposta do servidor)" : "1 (pedido do cliente)", u8(reply ? 2 : 1));
-  b.field("Hardware", "1 (Ethernet), 6 bytes, 0 saltos", [1, 6, 0]);
+  b.field("Operação", reply ? "2 (resposta do servidor)" : "1 (pedido do cliente)", u8(reply ? 2 : 1), {
+    note: "Campo do BOOTP, o antecessor; o tipo DHCP de verdade vem na opção 53",
+  });
+  b.field("Hardware", "1 (Ethernet), 6 bytes, 0 saltos", [1, 6, 0], {
+    note: "Tipo e tamanho do endereço físico, e quantos relays a mensagem atravessou",
+  });
   b.field("Transação (xid)", hexN(m.xid, 8), u32(m.xid), {
     note: "Número aleatório do cliente; as respostas repetem para ele reconhecer as suas",
   });
-  b.field("Segundos", "0", u16(0));
+  b.field("Segundos", "0", u16(0), { note: "Há quanto tempo o cliente tenta conseguir um endereço" });
   b.field("Flags", m.broadcast ? "broadcast" : "nenhuma", u16(m.broadcast ? 0x8000 : 0), {
     note: "Broadcast: o cliente ainda não tem IP e pede a resposta para todos",
   });
-  b.field("ciaddr (IP atual do cliente)", m.ciaddr ?? ZERO, ip4(m.ciaddr ?? ZERO));
+  b.field("ciaddr (IP atual do cliente)", m.ciaddr ?? ZERO, ip4(m.ciaddr ?? ZERO), {
+    note: m.ciaddr ? "O cliente já tem este IP e quer renová-lo" : "Zerado: o cliente ainda não tem endereço",
+  });
   b.field(
     "yiaddr (seu IP)",
     m.yiaddr ?? ZERO,
@@ -46,30 +52,49 @@ export function dhcp(m: DhcpMsg): Layer {
   b.field("siaddr e giaddr", `${ZERO}, ${ZERO}`, [...ip4(ZERO), ...ip4(ZERO)], {
     note: "giaddr seria o relay, quando o servidor fica em outra rede",
   });
-  b.field("chaddr (MAC do cliente)", m.clientMac, [...mac(m.clientMac), ...Array(10).fill(0)]);
+  b.field("chaddr (MAC do cliente)", m.clientMac, [...mac(m.clientMac), ...Array(10).fill(0)], {
+    note: "É por este MAC que o servidor reconhece o cliente e guarda a concessão",
+  });
   b.field("sname e file", "vazios (192 bytes)", Array(192).fill(0), { note: "Herança do BOOTP" });
   b.field("Magic cookie", "99.130.83.99", [99, 130, 83, 99], { note: "Daqui em diante vêm as opções DHCP" });
-  b.field("Opção 53: tipo", `${TYPE[m.type]} (${m.type})`, [53, 1, TYPE[m.type]]);
-  if (m.requested) b.field("Opção 50: IP pedido", m.requested, [50, 4, ...ip4(m.requested)]);
+  b.field("Opção 53: tipo", `${TYPE[m.type]} (${m.type})`, [53, 1, TYPE[m.type]], {
+    note: "A etapa da conversa: DISCOVER, OFFER, REQUEST, ACK (ou NAK, recusa)",
+  });
+  if (m.requested)
+    b.field("Opção 50: IP pedido", m.requested, [50, 4, ...ip4(m.requested)], {
+      note: "O endereço que o cliente quer: o da oferta, ou o que já usava",
+    });
   if (m.serverId)
     b.field("Opção 54: servidor", m.serverId, [54, 4, ...ip4(m.serverId)], {
       note: "No REQUEST, diz qual das ofertas o cliente aceitou",
     });
-  if (m.lease !== undefined) b.field("Opção 51: concessão", `${m.lease} s`, [51, 4, ...u32(m.lease)]);
-  if (m.mask) b.field("Opção 1: máscara", m.mask, [1, 4, ...ip4(m.mask)]);
-  if (m.router) b.field("Opção 3: roteador", m.router, [3, 4, ...ip4(m.router)]);
+  if (m.lease !== undefined)
+    b.field("Opção 51: concessão", `${m.lease} s`, [51, 4, ...u32(m.lease)], {
+      note: "Por quanto tempo o endereço é do cliente; na metade dele o cliente tenta renovar",
+    });
+  if (m.mask)
+    b.field("Opção 1: máscara", m.mask, [1, 4, ...ip4(m.mask)], {
+      note: "Separa a parte da rede da parte do host",
+    });
+  if (m.router)
+    b.field("Opção 3: roteador", m.router, [3, 4, ...ip4(m.router)], {
+      note: "O gateway padrão: para onde vai tudo o que não é desta rede",
+    });
   if (m.dns?.length)
-    b.field("Opção 6: DNS", m.dns.join(", "), [6, 4 * m.dns.length, ...m.dns.flatMap((d) => ip4(d))]);
+    b.field("Opção 6: DNS", m.dns.join(", "), [6, 4 * m.dns.length, ...m.dns.flatMap((d) => ip4(d))], {
+      note: "Os resolvedores DNS que o cliente deve usar",
+    });
   if (m.hostname)
-    b.field("Opção 12: nome", m.hostname, [
-      12,
-      m.hostname.length,
-      ...[...m.hostname].map((c) => c.charCodeAt(0)),
-    ]);
+    b.field(
+      "Opção 12: nome",
+      m.hostname,
+      [12, m.hostname.length, ...[...m.hostname].map((c) => c.charCodeAt(0))],
+      { note: "O nome com que o cliente se apresenta à rede" },
+    );
   if (m.paramList?.length)
     b.field("Opção 55: lista de pedidos", m.paramList.join(", "), [55, m.paramList.length, ...m.paramList], {
       note: "1 máscara, 3 roteador, 6 DNS, 15 domínio, 42 NTP",
     });
-  b.field("Fim", "255", [255]);
+  b.field("Fim", "255", [255], { note: "Marca o fim das opções" });
   return b.done();
 }

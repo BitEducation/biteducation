@@ -21,6 +21,20 @@ const clamp = (v: unknown, lo: number, hi: number, d: number) => {
   const n = Number(v);
   return Number.isFinite(n) ? Math.min(hi, Math.max(lo, Math.round(n))) : d;
 };
+/** Which stretch of the network a DNS packet was captured on. */
+function dnsHop(src: string, dst: string): string {
+  const far: Record<string, string> = {
+    [ROOT_NS.ip]: "um servidor raiz",
+    [TLD_NS.ip]: "o servidor do .example",
+    [AUTH_NS.ip]: "o servidor autoritativo de campus.example",
+  };
+  const other = far[src] ?? far[dst];
+  if (other) return `Na internet, entre o resolvedor do campus e ${other}`;
+  return src === LIA.ip
+    ? "Na rede do campus, saindo do notebook da Lia rumo ao resolvedor"
+    : "Na rede do campus, do resolvedor de volta ao notebook da Lia";
+}
+
 const hex = (n: number) => `0x${n.toString(16).padStart(4, "0")}`;
 
 const scene = seqScene(
@@ -86,6 +100,7 @@ export function build(p: Params) {
       title,
       summary,
       names: dport === 53 ? { dport: "53 = DNS" } : { sport: "53 = DNS" },
+      where: dnsHop(src, dst),
     });
   const answer = { name: NAME, type: "A" as const, ttl, data: DAVI.ip };
 

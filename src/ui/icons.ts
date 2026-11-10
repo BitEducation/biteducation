@@ -16,6 +16,7 @@ export const icons = {
   pause: () => svg(`<path d="M7 4.5v11M13 4.5v11" ${P} stroke-width="2.4"/>`),
   replay: () => svg(`<path d="M4.5 10a5.5 5.5 0 1 0 1.8-4.1" ${P}/><path d="M4 3.5v3.2h3.2" ${P}/>`),
   prev: () => svg(`<path d="M12.5 4.5 7 10l5.5 5.5" ${P}/>`),
+  back: () => svg(`<path d="M16 10H4.5M9.5 5 4.5 10l5 5" ${P}/>`),
   next: () => svg(`<path d="M7.5 4.5 13 10l-5.5 5.5" ${P}/>`),
   stepOne: () => svg(`<path d="M5 4.5 11 10l-6 5.5" ${P}/><path d="M15 4.5v11" ${P}/>`),
   stepBack: () => svg(`<path d="M15 4.5 9 10l6 5.5" ${P}/><path d="M5 4.5v11" ${P}/>`),

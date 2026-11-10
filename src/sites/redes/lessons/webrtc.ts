@@ -115,7 +115,13 @@ export function build(p: Params) {
         frame: udpFrame(
           { src: LIA.ip, dst: STUN_SRV.ip, sport: LIA_LOCAL, dport: STUN_SRV.port },
           stun({ response: false, tid: t1 }),
-          { id: "f-stun-req", title: "Pedido STUN", summary: "Como me vê?", names: { dport: "3478 = STUN" } },
+          {
+            id: "f-stun-req",
+            title: "Pedido STUN",
+            summary: "Como me vê?",
+            names: { dport: "3478 = STUN" },
+            where: "Dentro do campus, saindo da Lia (antes do NAT)",
+          },
         ),
       });
       c.send("stun", "lia", `${GW.wanIp}:${LIA_PUB}`, {
@@ -125,7 +131,12 @@ export function build(p: Params) {
         frame: udpFrame(
           { src: STUN_SRV.ip, dst: GW.wanIp, sport: STUN_SRV.port, dport: LIA_PUB },
           stun({ response: true, tid: t1, mapped: liaPub, note: "O mesmo ID do pedido" }),
-          { id: "f-stun-res", title: "Resposta STUN", summary: "Seu endereço público." },
+          {
+            id: "f-stun-res",
+            title: "Resposta STUN",
+            summary: "Seu endereço público.",
+            where: "Na internet, chegando ao lado público do NAT do campus",
+          },
         ),
         detail: "candidato refletido",
       });
@@ -208,7 +219,12 @@ export function build(p: Params) {
         frame: udpFrame(
           { src: GW.wanIp, dst: ANA.pub, sport: LIA_PUB, dport: ANA_PUB },
           stun({ response: false, tid: t2 }),
-          { id: "f-ice-l", title: "Teste ICE da Lia", summary: "Abre o furo no NAT do campus." },
+          {
+            id: "f-ice-l",
+            title: "Teste ICE da Lia",
+            summary: "Abre o furo no NAT do campus.",
+            where: "Na internet, já traduzido pelo NAT do campus, rumo ao NAT da casa da Ana",
+          },
         ),
       });
       if (sym) {
@@ -229,7 +245,12 @@ export function build(p: Params) {
           frame: udpFrame(
             { src: ANA.pub, dst: GW.wanIp, sport: ANA_PUB, dport: LIA_PUB },
             stun({ response: false, tid: t3 }),
-            { id: "f-ice-a", title: "Teste ICE da Ana", summary: "Passa: parece resposta." },
+            {
+              id: "f-ice-a",
+              title: "Teste ICE da Ana",
+              summary: "Passa: parece resposta.",
+              where: "Na internet, saindo do NAT da casa da Ana rumo ao do campus",
+            },
           ),
         });
         c.send("lia", "ana", "teste ICE", { dt: 30, via: ["natl", "nata"], detail: "agora passa" });
@@ -285,7 +306,12 @@ export function build(p: Params) {
           frame: udpFrame(
             { src: GW.wanIp, dst: STUN_SRV.ip, sport: LIA_PUB, dport: STUN_SRV.port },
             opaque("srtp", "SRTP", 120, "vídeo cifrado"),
-            { id: "f-turn", title: "Mídia para o TURN", summary: "Cifrada." },
+            {
+              id: "f-turn",
+              title: "Mídia para o TURN",
+              summary: "Cifrada.",
+              where: "Na internet, do NAT do campus para o servidor TURN, que repassa à Ana",
+            },
           ),
         });
         c.send("stun", "ana", "mídia (SRTP)", { dt: 20, via: ["nata"], role: "crypto" });
@@ -299,7 +325,12 @@ export function build(p: Params) {
           frame: udpFrame(
             { src: GW.wanIp, dst: ANA.pub, sport: LIA_PUB, dport: ANA_PUB },
             opaque("srtp", "SRTP", 120, "vídeo cifrado"),
-            { id: "f-media", title: "Pacote de vídeo", summary: "Direto, cifrado." },
+            {
+              id: "f-media",
+              title: "Pacote de vídeo",
+              summary: "Direto, cifrado.",
+              where: "Na internet, direto entre os dois NATs, sem servidor no meio",
+            },
           ),
         });
       }

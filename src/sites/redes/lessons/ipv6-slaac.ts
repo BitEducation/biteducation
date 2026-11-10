@@ -93,7 +93,14 @@ export function build(p: Params) {
       payloadLen: icmp.bytes.length,
       hopLimit: 255,
     });
-    return frameOf(id, title, summary, [ethernet(ethDst, ethSrc, ETHERTYPE.ipv6, names), ip, icmp]);
+    // Neighbor Discovery only accepts hop limit 255: proof the packet never crossed a router.
+    return frameOf(
+      id,
+      title,
+      summary,
+      [ethernet(ethDst, ethSrc, ETHERTYPE.ipv6, names), ip, icmp],
+      `Na LAN, saindo ${names.src === "roteador" ? "do roteador" : "do notebook da Lia"}; com limite 255, nunca passou por roteador`,
+    );
   };
 
   b.step(

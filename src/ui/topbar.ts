@@ -18,13 +18,14 @@ const REPO_URL = ((): string => {
 
 export function topbarHtml(
   site: AnySite,
-  opts: { crumbs?: SafeHtml; progress?: number | null; indexToggle?: boolean },
+  opts: { crumbs?: SafeHtml; progress?: number | null; indexToggle?: boolean; back?: boolean },
 ): SafeHtml {
   const theme = getTheme();
   const themeIcon = theme === "dark" ? icons.moon() : theme === "light" ? icons.sun() : icons.auto();
   const lang = LOCALES.find((l) => l.code === locale()) ?? LOCALES[0];
   return html`<header class="topbar">
     <a class="skip-link" href="#main">${t("skip")}</a>
+    ${opts.back ? html`<a class="icon-btn back-btn" href="${siteUrl(site)}" aria-label="${t("back.lessons")}" data-tip="${t("back.lessons")}">${icons.back()}</a>` : ""}
     ${opts.indexToggle ? html`<button class="icon-btn index-toggle" type="button" aria-controls="lesson-index" aria-expanded="true" aria-label="${t("index.toggle")}" data-tip="${t("index.toggle")} (L)">${icons.sidebar()}</button>` : ""}
     <div class="site-switch">
       <button class="brand" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="${t("site.switch")}">

@@ -50,6 +50,11 @@ export function build(p: Params) {
     { ip: FTP_SRV.ip, port: 21 },
     randInt(rand, 1, 2 ** 31),
     randInt(rand, 1, 2 ** 31),
+    64,
+    {
+      up: "Na rede do campus, saindo da Lia (antes do NAT): conexão de controle",
+      down: "Na rede do campus, chegando à Lia (depois do NAT): conexão de controle",
+    },
   );
   const dataPort = LIA.port + 1;
   const dat = ativo
@@ -58,12 +63,22 @@ export function build(p: Params) {
         { ip: LIA.ip, port: dataPort },
         randInt(rand, 1, 2 ** 31),
         randInt(rand, 1, 2 ** 31),
+        64,
+        {
+          up: "Na rede do campus, chegando à Lia: conexão de dados aberta pelo servidor (modo ativo)",
+          down: "Na rede do campus, saindo da Lia: conexão de dados (modo ativo)",
+        },
       )
     : tcpSession(
         { ip: LIA.ip, port: dataPort },
         { ip: FTP_SRV.ip, port: PASV_PORT },
         randInt(rand, 1, 2 ** 31),
         randInt(rand, 1, 2 ** 31),
+        64,
+        {
+          up: "Na rede do campus, saindo da Lia (antes do NAT): conexão de dados aberta pela Lia (modo passivo)",
+          down: "Na rede do campus, chegando à Lia (depois do NAT): conexão de dados (modo passivo)",
+        },
       );
   let n = 0;
   const say = (fromCli: boolean, text: string, label: string, notes: Record<number, string> = {}) => {

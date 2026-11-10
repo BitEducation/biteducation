@@ -57,6 +57,10 @@ export function build(p: Params) {
     randInt(rand, 1, 2 ** 31),
     randInt(rand, 1, 2 ** 31),
     64,
+    {
+      up: "Saindo do notebook da Lia, rumo ao servidor web",
+      down: "Chegando ao notebook da Lia, vindo do servidor web",
+    },
   );
   const half = RTT / 2;
   const go = (from: "lia" | "davi", label: string, o: Parameters<typeof c.send>[3] = {}) =>

@@ -22,11 +22,17 @@ export function sshPacket(msg: number, name: string, parts: Part[], role: Layer[
   let pad = 8 - ((5 + payloadLen) % 8);
   if (pad < 4) pad += 8;
   const b = layerBuilder("ssh", "SSH", role);
-  b.field("Tamanho do pacote", `${1 + payloadLen + pad} bytes`, u32(1 + payloadLen + pad));
-  b.field("Tamanho do enchimento", `${pad} bytes`, u8(pad));
-  b.field("Tipo da mensagem", `${msg} (${name})`, u8(msg));
+  b.field("Tamanho do pacote", `${1 + payloadLen + pad} bytes`, u32(1 + payloadLen + pad), {
+    note: "Quanto vem depois deste campo; depois das chaves trocadas, até ele vai cifrado",
+  });
+  b.field("Tamanho do enchimento", `${pad} bytes`, u8(pad), {
+    note: "Enchimento leva o total a múltiplo de 8 e disfarça o tamanho real",
+  });
+  b.field("Tipo da mensagem", `${msg} (${name})`, u8(msg), { note: "Que mensagem do protocolo é esta" });
   for (const p of parts) b.field(p.label, p.value, p.bytes, p.note ? { note: p.note } : {});
-  b.field("Enchimento", `${pad} bytes aleatórios`, Array(pad).fill(null));
+  b.field("Enchimento", `${pad} bytes aleatórios`, Array(pad).fill(null), {
+    note: "Bytes aleatórios, descartados por quem recebe",
+  });
   return b.done();
 }
 

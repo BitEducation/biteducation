@@ -46,6 +46,11 @@ export function build(p: Params) {
     { ip: DEST_MX.ip, port: 25 },
     randInt(rand, 1, 2 ** 31),
     randInt(rand, 1, 2 ** 31),
+    64,
+    {
+      up: "Na internet, do correio do campus para o de pesquisa.example",
+      down: "Na internet, do correio de pesquisa.example para o do campus",
+    },
   );
   const dnsId = randInt(rand, 1, 0xffff);
   let n = 0;
@@ -108,7 +113,12 @@ export function build(p: Params) {
         frame: udpFrame(
           { src: CAMPUS_MTA.ip, dst: RESOLVER.ip, sport: 41000, dport: 53 },
           dns({ id: dnsId, response: false, rd: true, question: q }),
-          { id: "f-mx-q", title: "Pergunta MX", summary: "Quem recebe o correio deste domínio?" },
+          {
+            id: "f-mx-q",
+            title: "Pergunta MX",
+            summary: "Quem recebe o correio deste domínio?",
+            where: "Na rede do campus, do correio do campus para o resolvedor",
+          },
         ),
       });
       c.send("res", "mta", `MX ${DEST_MX.host}`, {
@@ -133,7 +143,12 @@ export function build(p: Params) {
             ],
             additional: [{ name: DEST_MX.host, type: "A", ttl: 3600, data: DEST_MX.ip }],
           }),
-          { id: "f-mx-r", title: "Resposta MX", summary: "O servidor de correio e o seu IP." },
+          {
+            id: "f-mx-r",
+            title: "Resposta MX",
+            summary: "O servidor de correio e o seu IP.",
+            where: "Na rede do campus, do resolvedor de volta ao correio do campus",
+          },
         ),
       });
     },

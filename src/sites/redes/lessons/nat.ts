@@ -15,6 +15,14 @@ export const FIRST_PORT = 40001;
 const INTERNAL = { ip: "10.20.0.80", port: 8443 } as const;
 export const DEFAULTS = { timeout: 300 };
 
+/** The side of the NAT a capture was taken on: private addresses only exist inside the campus. */
+function natSide(src: string, dst: string): string {
+  const inside = (ip: string) => ip.startsWith("10.");
+  if (inside(src)) return "Dentro do campus, antes do roteador: o endereço de origem ainda é privado";
+  if (inside(dst)) return "Dentro do campus, depois do roteador: o destino já voltou a ser privado";
+  return "Na internet, do lado público do roteador com NAT";
+}
+
 const clamp = (v: unknown, lo: number, hi: number, d: number) => {
   const n = Number(v);
   return Number.isFinite(n) ? Math.min(hi, Math.max(lo, Math.round(n))) : d;
@@ -100,6 +108,7 @@ export function build(p: Params) {
       id,
       title,
       summary,
+      where: natSide(src, dst),
     });
   const synAck = (
     src: string,
@@ -116,6 +125,7 @@ export function build(p: Params) {
       id,
       title,
       summary,
+      where: natSide(src, dst),
     });
 
   b.step(

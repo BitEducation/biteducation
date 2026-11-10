@@ -183,7 +183,15 @@ function paFrame(id: string, a: Access, offsetBits: number): Frame {
         role: "b",
         from: frameBits,
         to: width,
-        fields: [{ label: "Deslocamento", value: hex(a.offset, 3), from: frameBits, to: width }],
+        fields: [
+          {
+            label: "Deslocamento",
+            value: hex(a.offset, 3),
+            from: frameBits,
+            to: width,
+            note: "Passa igual do endereço virtual para o físico: a tradução troca só o número da página",
+          },
+        ],
       },
     ],
   };

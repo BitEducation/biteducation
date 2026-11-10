@@ -57,37 +57,37 @@
 :root {
   color-scheme: light;
   /* neutral base */
-  --bg: #f4f6fb;
+  --bg: #f5f8fe;
   --surface: #ffffff;
-  --surface-2: #e9edf6;
-  --ink: #0e1422;
-  --ink-2: #323c56;
-  --ink-3: #4e5974;
+  --surface-2: #eaf0fc;
+  --ink: #00238a;
+  --ink-2: #1d3a8a;
+  --ink-3: #4d64a0;
   --warn-ink: #854d0e;
-  --line: #c5cee0;
-  --line-strong: #6b7894;
-  --focus: #1f6feb;
-  --scrim: rgb(14 20 34 / 0.42);
-  --shadow: 0 1px 2px rgb(14 20 34 / 0.06), 0 8px 24px rgb(14 20 34 / 0.1);
+  --line: #c8d6ec;
+  --line-strong: #6f94c9;
+  --focus: #1f5fe0;
+  --scrim: rgb(0 20 70 / 0.38);
+  --shadow: 0 1px 2px rgb(0 35 138 / 0.06), 0 8px 24px rgb(0 35 138 / 0.1);
 
   /* data roles (shared by the three sites) */
-  --role-a: #2563eb;
+  --role-a: #1f5fe0;
   --role-b: #c2410c;
-  --role-ctrl: #7c3aed;
-  --role-crypto: #047857;
+  --role-ctrl: #6d4bdc;
+  --role-crypto: #0c8a58;
   --role-bad: #be123c;
-  --role-muted: #64748b;
-  --role-warn: #a16207;
-  --series-3: #0e7490;
+  --role-muted: #5d6f95;
+  --role-warn: #a26f00;
+  --series-3: #0a7c88;
   --series-4: #9d174d;
   --series-5: #4d7c0f;
   --series-6: #475569;
 
   /* scene canvas: drafting grid, vignette, device shadows and component fill */
-  --scene-bg: #f7f9fd;
-  --scene-grid: #e1e7f2;
-  --scene-vignette: rgb(14 20 34 / 0.05);
-  --scene-shadow: rgb(14 20 34 / 0.12);
+  --scene-bg: #f8faff;
+  --scene-grid: #e3ebfc;
+  --scene-vignette: rgb(0 35 138 / 0.04);
+  --scene-shadow: rgb(0 35 138 / 0.12);
   --node-fill: #ffffff;
 
   /* brand tile behind the BitEducation symbol (same in both themes) */
@@ -140,21 +140,21 @@
   --arq-soft: var(--arq-100);
   --on-arq: #ffffff;
 
-  /* site accent (hub default: the logo blue; cyan in dark) */
-  --accent: #1d4ed8;
-  --accent-soft: #dfe8fd;
+  /* site accent (hub default: the active blue of the reference palette) */
+  --accent: #1f5fe0;
+  --accent-soft: #e2ebfc;
   --on-accent: #ffffff;
 
   /* type */
   --font-sans: "Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  --fs-display: 2.25rem;
-  --fs-h1: 1.5rem;
-  --fs-h2: 1.125rem;
+  --fs-display: 2.5rem;
+  --fs-h1: 1.625rem;
+  --fs-h2: 1.1875rem;
   --fs-body: 1rem;
-  --fs-small: 0.875rem;
-  --fs-micro: 0.75rem;
-  --fs-data: 0.8125rem;
+  --fs-small: 0.9375rem;
+  --fs-micro: 0.8125rem;
+  --fs-data: 0.875rem;
 
   /* shape and motion */
   --radius: 6px;
@@ -167,36 +167,36 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #040917;
-  --surface: #0a1430;
-  --surface-2: #101d42;
-  --ink: #f2f6ff;
-  --ink-2: #d0d9ee;
-  --ink-3: #aab7d4;
+  --bg: #0b1020;
+  --surface: #0f1628;
+  --surface-2: #131c33;
+  --ink: #d3e0ff;
+  --ink-2: #afc4f2;
+  --ink-3: #8ea3cf;
   --warn-ink: #fbbf24;
-  --line: #263a6b;
-  --line-strong: #7385b6;
-  --focus: #79b8ff;
-  --scrim: rgb(3 6 14 / 0.6);
+  --line: #1d304e;
+  --line-strong: #3c649f;
+  --focus: #6f97f5;
+  --scrim: rgb(5 8 18 / 0.62);
   --shadow: 0 1px 2px rgb(3 6 14 / 0.4), 0 10px 30px rgb(3 6 14 / 0.5);
 
-  --role-a: #7aa7ff;
+  --role-a: #6f97f5;
   --role-b: #ff9b6a;
-  --role-ctrl: #b99bff;
-  --role-crypto: #4ade9b;
+  --role-ctrl: #a58ef2;
+  --role-crypto: #19e595;
   --role-bad: #ff7a93;
-  --role-muted: #9aa5ba;
-  --role-warn: #f5c451;
-  --series-3: #5cc8e0;
+  --role-muted: #8495b2;
+  --role-warn: #f8b900;
+  --series-3: #14d1e5;
   --series-4: #f38bb8;
   --series-5: #a3d65c;
   --series-6: #c3cad8;
 
-  --scene-bg: #0c1631;
-  --scene-grid: #172752;
-  --scene-vignette: rgb(2 5 12 / 0.55);
+  --scene-bg: #0d1424;
+  --scene-grid: #17253f;
+  --scene-vignette: rgb(3 5 12 / 0.5);
   --scene-shadow: rgb(0 0 0 / 0.45);
-  --node-fill: #101d42;
+  --node-fill: #131c33;
 
   --redes: var(--redes-300);
   --redes-soft: var(--redes-950);
@@ -208,9 +208,9 @@
   --arq-soft: var(--arq-950);
   --on-arq: var(--arq-950);
 
-  --accent: #22d3ee;
-  --accent-soft: #082640;
-  --on-accent: #021018;
+  --accent: #5b8ef7;
+  --accent-soft: #142a55;
+  --on-accent: #050b1a;
 }
 
 /* After the dark block so the site wins at equal specificity; the topic tokens already

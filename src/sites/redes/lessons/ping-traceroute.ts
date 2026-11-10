@@ -79,6 +79,10 @@ export function build(p: Params) {
       reply ? `Echo reply ${seq}` : `Echo request ${seq}`,
       reply ? "A resposta devolve os mesmos dados." : "32 bytes de dados que voltarão iguais.",
       [ip, ic],
+      // The TTL tells where the capture was taken: as sent, or as it arrives after the hops.
+      reply
+        ? "Chegando ao notebook da Lia, depois dos roteadores (o TTL já foi descontado)"
+        : "Saindo do notebook da Lia, antes do primeiro roteador",
     );
   };
 
@@ -188,15 +192,18 @@ export function build(p: Params) {
       type === 11 ? `Tempo excedido (${hop.name})` : "Porta inalcançável (biblioteca)",
       type === 11 ? `O TTL chegou a zero no ${hop.name}.` : "A sonda chegou: não há programa nessa porta.",
       [ip, ic],
+      `Saindo do ${hop.name}, de volta para a Lia`,
     );
   };
   const probeFrame = (ttl: number, k: number) => {
     const pr = probe(ttl, k);
-    return frameOf(`f-probe-${k}`, `Sonda com TTL ${ttl}`, "UDP para uma porta alta que ninguém usa.", [
-      pr.ip,
-      pr.u,
-      payloadLayer("dados", "Dados", Array(24).fill(0), "24 bytes zerados", "muted"),
-    ]);
+    return frameOf(
+      `f-probe-${k}`,
+      `Sonda com TTL ${ttl}`,
+      "UDP para uma porta alta que ninguém usa.",
+      [pr.ip, pr.u, payloadLayer("dados", "Dados", Array(24).fill(0), "24 bytes zerados", "muted")],
+      "Saindo do notebook da Lia, antes do primeiro roteador",
+    );
   };
   const traceRow = (k: number) => {
     const hop = HOPS[k - 1] as (typeof HOPS)[number];

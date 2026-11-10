@@ -51,6 +51,11 @@ export function build(_p: Params) {
     { ip: DAVI.ip, port: 80 },
     randInt(rand, 1, 2 ** 31),
     randInt(rand, 1, 2 ** 31),
+    64,
+    {
+      up: "Saindo do navegador da Lia, rumo à biblioteca",
+      down: "Chegando ao navegador da Lia, vindo da biblioteca",
+    },
   );
   const key = base64(Array.from({ length: 16 }, () => randInt(rand, 0, 255)));
   const accept = acceptOf(key);

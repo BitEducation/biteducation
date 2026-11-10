@@ -93,6 +93,10 @@ export function build(p: Params) {
       title,
       summary,
       eth,
+      where:
+        dst === BC
+          ? "Na LAN da biblioteca, saindo do notebook da Lia: broadcast, o switch entrega a todas as portas"
+          : "Na LAN da biblioteca, saindo do notebook da Lia direto para o roteador",
       names: { sport: "68 = cliente DHCP", dport: "67 = servidor DHCP" },
     });
   const toClient = (m: DhcpMsg, id: string, title: string, summary: string, dst = BC, eth = fromGw) =>
@@ -101,6 +105,10 @@ export function build(p: Params) {
       title,
       summary,
       eth,
+      where:
+        dst === BC
+          ? "Na LAN da biblioteca, saindo do roteador (também servidor DHCP), em broadcast"
+          : "Na LAN da biblioteca, saindo do roteador (também servidor DHCP) direto para a Lia",
       names: { sport: "67 = servidor DHCP", dport: "68 = cliente DHCP" },
     });
 
@@ -289,7 +297,12 @@ export function build(p: Params) {
             targetIp: LIA.ip,
           }),
         ],
-        { id: "f-probe", title: "Sonda ARP", summary: "Quem tem o meu novo endereço?" },
+        {
+          id: "f-probe",
+          title: "Sonda ARP",
+          summary: "Quem tem o meu novo endereço?",
+          where: "Na LAN da biblioteca, em broadcast, saindo do notebook da Lia",
+        },
         ETHERTYPE.arp,
       );
       c.send("lia", "sw", "ARP sonda", { frame: probe, detail: `quem tem ${LIA.ip}?`, role: "s3" });

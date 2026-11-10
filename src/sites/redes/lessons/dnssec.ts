@@ -76,13 +76,24 @@ export function build(p: Params) {
     id = (id + 1) & 0xffff;
     const q = { name: qname, type: qtype };
     fn++;
+    const peer = {
+      root: "um servidor raiz",
+      tld: "o servidor do .example",
+      auth: "o servidor de campus.example",
+    }[to];
+    const where = `Na internet, entre o resolvedor validador e ${peer}`;
     c.send("res", to, `${qtype}?`, {
       dt: 10,
       role: "b",
       frame: udpFrame(
         { src: RESOLVER.ip, dst: ip, sport: port, dport: 53 },
         dns({ id, response: false, question: q, edns: { size: 1232, dnssecOk: true } }),
-        { id: `f-q${fn}`, title: `Pergunta ${qname} ${qtype}`, summary: "Com DO=1: quero as assinaturas." },
+        {
+          id: `f-q${fn}`,
+          title: `Pergunta ${qname} ${qtype}`,
+          summary: "Com DO=1: quero as assinaturas.",
+          where,
+        },
       ),
     });
     c.send(to, "res", label, {
@@ -98,7 +109,7 @@ export function build(p: Params) {
           ...(ans ? { answers: ans } : {}),
           edns: { size: 1232, dnssecOk: true },
         }),
-        { id: `f-r${fn}`, title: `Resposta ${qname} ${qtype}`, summary: detail },
+        { id: `f-r${fn}`, title: `Resposta ${qname} ${qtype}`, summary: detail, where },
       ),
       detail,
     });
@@ -283,7 +294,12 @@ export function build(p: Params) {
             question: { name: NAME, type: "A" },
             answers: [{ name: NAME, type: "A", ttl: 300, data: DAVI.ip }],
           }),
-          { id: "f-ad", title: "Resposta validada", summary: "AD=1." },
+          {
+            id: "f-ad",
+            title: "Resposta validada",
+            summary: "AD=1.",
+            where: "Na rede do campus, do resolvedor de volta ao notebook da Lia",
+          },
         ),
         detail: "AD=1",
       });
@@ -339,6 +355,7 @@ export function build(p: Params) {
               id: "f-forged",
               title: "Resposta forjada",
               summary: "Origem falsificada, assinatura inválida.",
+              where: "Chegando ao resolvedor: enviado pela Malu, com o IP do servidor de campus.example",
             },
           ),
           detail: "origem forjada",

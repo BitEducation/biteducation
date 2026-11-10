@@ -75,14 +75,24 @@ function record(
       value: `${typeName}, ${bodyLen} bytes`,
       bytes: [],
       children: [
-        { label: "Tipo de conteúdo", value: `${type} (${typeName})`, bytes: u8(type) },
+        {
+          label: "Tipo de conteúdo",
+          value: `${type} (${typeName})`,
+          bytes: u8(type),
+          note: "22 é handshake, 23 dados da aplicação, 21 alerta",
+        },
         {
           label: "Versão legada",
           value: hexN(legacy, 4),
           bytes: u16(legacy),
           note: "Fixa por compatibilidade; a versão real vai numa extensão",
         },
-        { label: "Comprimento", value: String(bodyLen), bytes: u16(bodyLen) },
+        {
+          label: "Comprimento",
+          value: String(bodyLen),
+          bytes: u16(bodyLen),
+          note: "Bytes deste registro, depois dos 5 do cabeçalho",
+        },
       ],
     },
     body,
@@ -97,8 +107,18 @@ function handshake(type: number, name: string, body: Part[]): Part {
     value: `${size(body)} bytes`,
     bytes: [],
     children: [
-      { label: "Tipo de mensagem", value: `${type} (${name})`, bytes: u8(type) },
-      { label: "Comprimento", value: String(size(body)), bytes: u24(size(body)) },
+      {
+        label: "Tipo de mensagem",
+        value: `${type} (${name})`,
+        bytes: u8(type),
+        note: "Qual passo do handshake é este",
+      },
+      {
+        label: "Comprimento",
+        value: String(size(body)),
+        bytes: u24(size(body)),
+        note: "Tamanho da mensagem; pode ocupar vários registros",
+      },
       ...body,
     ],
   };
@@ -111,7 +131,12 @@ export function clientHello(sni: string, o: HelloOpts): Layer {
   const alpn = [ascii("h2"), ascii("http/1.1")];
   const alpnList = alpn.flatMap((p) => [p.length, ...p]);
   const body: Part[] = [
-    { label: "Versão legada", value: "0x0303 (TLS 1.2)", bytes: u16(0x0303) },
+    {
+      label: "Versão legada",
+      value: "0x0303 (TLS 1.2)",
+      bytes: u16(0x0303),
+      note: "Finge ser TLS 1.2 para não assustar equipamentos antigos; a versão real vai em supported_versions",
+    },
     { label: "Random", value: short(o.random), bytes: o.random, note: "32 bytes aleatórios do cliente" },
     {
       label: "ID de sessão legado",
@@ -123,9 +148,19 @@ export function clientHello(sni: string, o: HelloOpts): Layer {
       label: "Suítes de cifra",
       value: "3 opções",
       bytes: u16(6),
-      children: Object.entries(SUITES).map(([k, v]) => ({ label: "Suíte", value: v, bytes: u16(Number(k)) })),
+      children: Object.entries(SUITES).map(([k, v]) => ({
+        label: "Suíte",
+        value: v,
+        bytes: u16(Number(k)),
+        note: "Cifra autenticada e hash; o servidor escolhe uma da lista",
+      })),
     },
-    { label: "Compressão legada", value: "nenhuma", bytes: [1, 0] },
+    {
+      label: "Compressão legada",
+      value: "nenhuma",
+      bytes: [1, 0],
+      note: "Sempre vazia: comprimir antes de cifrar abriu ataques como o CRIME",
+    },
     {
       label: "Extensões",
       value: "",
@@ -181,10 +216,25 @@ export function clientHello(sni: string, o: HelloOpts): Layer {
 
 export function serverHello(o: HelloOpts, suite = 0x1301): Layer {
   const body: Part[] = [
-    { label: "Versão legada", value: "0x0303", bytes: u16(0x0303) },
-    { label: "Random", value: short(o.random), bytes: o.random },
-    { label: "ID de sessão legado", value: "eco do cliente", bytes: [32, ...o.sessionId] },
-    { label: "Suíte escolhida", value: SUITES[suite] ?? hexN(suite, 4), bytes: u16(suite) },
+    {
+      label: "Versão legada",
+      value: "0x0303",
+      bytes: u16(0x0303),
+      note: "Fixa; a versão real vai em supported_versions",
+    },
+    { label: "Random", value: short(o.random), bytes: o.random, note: "32 bytes aleatórios do servidor" },
+    {
+      label: "ID de sessão legado",
+      value: "eco do cliente",
+      bytes: [32, ...o.sessionId],
+      note: "Devolve o do cliente, só para parecer TLS 1.2 a quem está no caminho",
+    },
+    {
+      label: "Suíte escolhida",
+      value: SUITES[suite] ?? hexN(suite, 4),
+      bytes: u16(suite),
+      note: "Uma das que o cliente ofereceu; vale para o resto da conexão",
+    },
     { label: "Compressão legada", value: "0", bytes: [0] },
     {
       label: "Extensões",
@@ -217,7 +267,7 @@ export function encrypted(inner: number, what: string): Layer {
         bytes: u8(23),
         note: "Sempre 23 por fora; o tipo real está cifrado",
       },
-      { label: "Versão legada", value: "0x0303", bytes: u16(0x0303) },
+      { label: "Versão legada", value: "0x0303", bytes: u16(0x0303), note: "Fixa, para parecer TLS 1.2" },
       { label: "Comprimento", value: String(len), bytes: u16(len), note: "O tamanho continua visível" },
     ],
     0,

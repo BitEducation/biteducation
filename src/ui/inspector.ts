@@ -78,6 +78,7 @@ export function createInspector(
   host: HTMLElement,
   frames: Record<string, Frame>,
   order: string[],
+  routes: Record<string, string>,
   onClose: () => void,
   onNav: (frameId: string) => void,
 ): Inspector {
@@ -151,26 +152,26 @@ export function createInspector(
       render(
         host,
         html`<div class="ins-head">
-          <div class="ttl"><span class="micro">${t("ins.title")}</span><h2 id="ins-title">${frame.title}</h2><p>${frame.summary}</p></div>
+          <div class="ttl"><span class="micro">${t("ins.title")}${idx >= 0 ? html` · ${t("ins.pos", { n: idx + 1, total: order.length })}` : ""}</span><h2 id="ins-title">${frame.title}</h2><p>${frame.summary}</p></div>
           <button class="icon-btn ins-prev" type="button" aria-label="${t("ins.prev")}" ${idx <= 0 ? html`disabled` : ""}>${icons.prev()}</button>
           <button class="icon-btn ins-next" type="button" aria-label="${t("ins.next")}" ${idx < 0 || idx >= order.length - 1 ? html`disabled` : ""}>${icons.next()}</button>
           <button class="icon-btn ins-close" type="button" aria-label="${t("ins.close")}">${icons.close()}</button>
         </div>
         <div class="ins-scroll">
-          ${frame.where ? html`<p class="ins-where">${frame.where}</p>` : ""}
+          ${frame.where || routes[frameId] ? html`<p class="ins-where">${frame.where ?? routes[frameId]}</p>` : ""}
           <div class="ins-bar">${frame.layers.map(
             (l) =>
               html`<button type="button" class="ins-seg" data-seg="${l.id}" title="${l.label}" data-v="--w:${Math.max(1, l.to - l.from)};--c:var(--${roleVar(l.role)})"><b>${l.label}</b><i>${l.to - l.from}</i></button>`,
           )}</div>
-          <div class="ins-tree" role="tree" aria-labelledby="ins-title">${frame.layers.map(
+          <div class="ins-cols" data-unit="${frame.unit}"><div class="ins-tree" role="tree" aria-labelledby="ins-title">${frame.layers.map(
             (
               l,
             ) => html`<details class="ins-layer" open data-layer="${l.id}" data-v="--c:var(--${roleVar(l.role)})">
               <summary data-from="${l.from}" data-to="${l.to}">${l.label} <span class="micro">${frame.unit === "bit" ? `${l.to - l.from} bits` : `${l.to - l.from} ${frame.unit === "byte" ? "B" : "×32"}`}</span></summary>
               <div class="ins-fields" role="group">${fieldRows(l.fields, 0)}</div></details>`,
           )}</div>
-          <div class="ins-data">${dataView(frame)}</div>
-          <div class="side-actions"><button class="btn ins-copy" type="button">${icons.copy()} ${t("ins.copyHex")}</button></div>
+          <div class="ins-data">${dataView(frame)}
+          <div class="side-actions"><button class="btn ins-copy" type="button">${icons.copy()} ${t("ins.copyHex")}</button></div></div></div>
         </div>
         <div class="ins-foot"><span><i class="eg">${t("ins.eg")}</i> ${t("ins.egHelp")}</span><span><b class="mono">··</b> ${t("ins.unknown")}</span></div>`,
       );

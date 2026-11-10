@@ -60,9 +60,18 @@ export function build(_p: Params) {
       title,
       summary,
       names: { dport: "443 = HTTPS (QUIC)" },
+      where:
+        src.ip === LIA.ip
+          ? "Saindo do navegador da Lia, pelo Wi-Fi do campus"
+          : "Saindo do celular da Lia, já na rede 4G, com outro IP",
     });
   const down = (layer: Layer, id: string, title: string, summary: string) =>
-    udpFrame({ src: DAVI.ip, dst: LIA.ip, sport: 443, dport: LIA.port }, layer, { id, title, summary });
+    udpFrame({ src: DAVI.ip, dst: LIA.ip, sport: 443, dport: LIA.port }, layer, {
+      id,
+      title,
+      summary,
+      where: "Chegando ao navegador da Lia, vindo da biblioteca",
+    });
   const wifi = { ip: LIA.ip, port: LIA.port };
   const hdr = 1 + 4 + 1 + 8 + 1 + 8 + 1 + 2 + 2;
   const initialPayload = MIN_INITIAL - hdr;

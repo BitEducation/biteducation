@@ -6,9 +6,11 @@ import { ip6, NEXT, pseudoHeader6 } from "./ipv6.ts";
 
 export function icmpEcho(o: { reply: boolean; id: number; seq: number; data: readonly number[] }): Layer {
   const b = layerBuilder("icmp", "ICMP", "b");
-  b.field("Tipo", o.reply ? "0 (echo reply)" : "8 (echo request)", u8(o.reply ? 0 : 8));
-  b.field("Código", "0", u8(0));
-  const at = b.field("Checksum", "", u16(0));
+  b.field("Tipo", o.reply ? "0 (echo reply)" : "8 (echo request)", u8(o.reply ? 0 : 8), {
+    note: o.reply ? "A resposta do ping" : "O pedido do ping: responda se estiver aí",
+  });
+  b.field("Código", "0", u8(0), { note: "Detalha o tipo; o eco só tem o código zero" });
+  const at = b.field("Checksum", "", u16(0), { note: "Cobre a mensagem ICMP inteira" });
   b.field("Identificador", String(o.id), u16(o.id), { note: "Separa os pings de programas diferentes" });
   b.field("Sequência", String(o.seq), u16(o.seq), { note: "Sobe 1 a cada pedido" });
   b.field("Dados", `${o.data.length} bytes`, [...o.data], { note: "A resposta devolve os mesmos bytes" });
@@ -21,7 +23,10 @@ export function icmpEcho(o: { reply: boolean; id: number; seq: number; data: rea
 export function icmpError(o: { type: 3 | 11; code: number; quoted: readonly number[] }): Layer {
   const b = layerBuilder("icmp", "ICMP", "warn");
   const name = o.type === 11 ? "11 (tempo excedido)" : "3 (destino inalcançável)";
-  b.field("Tipo", name, u8(o.type));
+  b.field("Tipo", name, u8(o.type), {
+    note:
+      o.type === 11 ? "Um roteador avisa que descartou o pacote" : "Avisa que o pacote não tem como chegar",
+  });
   const codeName =
     o.type === 11
       ? "0 (TTL chegou a zero em trânsito)"
@@ -29,8 +34,8 @@ export function icmpError(o: { type: 3 | 11; code: number; quoted: readonly numb
         ? "3 (porta inalcançável)"
         : String(o.code);
   b.field("Código", codeName, u8(o.code));
-  const at = b.field("Checksum", "", u16(0));
-  b.field("Não usado", "0", u32(0));
+  const at = b.field("Checksum", "", u16(0), { note: "Cobre a mensagem ICMP inteira" });
+  b.field("Não usado", "0", u32(0), { note: "Reservado; vai zerado" });
   b.field("Início do pacote original", `${o.quoted.length} bytes`, [...o.quoted], {
     note: "Cabeçalho IP + 8 bytes: é assim que quem enviou descobre a qual pacote o erro se refere",
   });

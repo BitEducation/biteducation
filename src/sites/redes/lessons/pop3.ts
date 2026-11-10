@@ -44,6 +44,11 @@ export function build(p: Params) {
     { ip: DEST_MX.ip, port: 110 },
     randInt(rand, 1, 2 ** 31),
     randInt(rand, 1, 2 ** 31),
+    64,
+    {
+      up: "Saindo do cliente de e-mail da Ana, rumo ao servidor POP3",
+      down: "Chegando ao cliente de e-mail da Ana, vindo do servidor POP3",
+    },
   );
   let n = 0;
   const say = (fromCli: boolean, text: string, label: string, notes: Record<number, string> = {}) => {

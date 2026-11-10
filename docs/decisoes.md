@@ -78,3 +78,29 @@ dizer que só o mantenedor pode fechar.
 - **D33. Trecho real no hub.** O hub mostra os três primeiros passos da lição de TCP na vista
   Sequência, carregados sob demanda, com os números da própria simulação e botão de pausa; com
   movimento reduzido, aparece parado e completo.
+- **D34. Cena ajustada ao conteúdo.** As cenas são autoradas numa tela fixa (muitas com 960 de
+  largura) e usam só parte dela. Ao abrir a lição, o renderizador mede o fim de cada passo
+  (linhas, notas e rótulos que só aparecem depois) e recorta o `viewBox` a essa área, sem
+  passar da tela autorada. Junto com textos de cena um pouco maiores, o desenho fica cerca de
+  um quarto maior na tela; células de tabela mantêm o tamanho para o qual as colunas foram
+  medidas.
+- **D35. Paleta azul monocromática.** Fundo, painéis, tinta e linhas seguem a paleta da
+  referência visual (tinta azulada, bordas externas em azul forte e divisórias suaves); os
+  papéis de dados usam o mesmo azul, verde, âmbar, violeta e ciano. As cores de tópico (D29)
+  continuam valendo para cada site.
+- **D36. Todo campo de cabeçalho explicado.** Os geradores de `src/sim/net/` escrevem uma nota
+  para cada campo comum (Ethernet, IPv4, IPv6, UDP, TCP, ARP, ICMP, DNS, DHCP, QUIC, TLS, SSH,
+  STUN), que muda conforme o valor (flags, DF, TTL de sistemas conhecidos, porta conhecida ou
+  efêmera). Portas efêmeras e a identificação do IP saem marcadas como exemplo. Linhas de
+  protocolos de texto (HTTP, SMTP, POP3, IMAP, FTP) ganham nota pelo nome do cabeçalho ou
+  comando quando a lição não escreveu uma. A nota da lição sempre vence a genérica.
+- **D37. Inspetor sobre a cena.** O inspetor abre na área da cena, não na coluna lateral: a
+  explicação do passo e os controles continuam à vista. Com largura, campos e notas ficam à
+  esquerda e os bytes à direita, fixos ao rolar. O cabeçalho mostra a posição ("3 de 10") e,
+  quando o quadro não tem `where`, a rota tirada do primeiro evento que o carrega. Abaixo de
+  1600 px o índice se dobra enquanto o inspetor está aberto e volta ao fechar, sem mudar a
+  preferência salva; as duas colunas só aparecem a partir de 1100 px de inspetor.
+- **D38. Todo quadro diz onde foi capturado.** Os 251 quadros dos três sites têm `where`, no
+  estilo "Saindo do…", "Dentro do campus, antes do roteador…", "Na internet, entre…". Quando o
+  lugar muda o que se vê (endereço privado antes do NAT, TTL já descontado, limite de saltos
+  255 no Neighbor Discovery), o texto diz. `tcpSession` aceita um `where` por sentido.

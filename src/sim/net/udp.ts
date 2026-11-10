@@ -2,6 +2,7 @@ import { hexN, known, type Layer, layerBuilder, u16 } from "./bytes.ts";
 import { inetChecksum } from "./checksum.ts";
 import { PROTO, pseudoHeader } from "./ipv4.ts";
 import { pseudoHeader6 } from "./ipv6.ts";
+import { portNote } from "./ports.ts";
 
 /** UDP header (RFC 768): 8 bytes, checksum over the IPv4 or IPv6 pseudo-header. */
 export interface UdpOpts {
@@ -29,10 +30,24 @@ export const PORT = {
 export function udp(o: UdpOpts): Layer {
   const len = 8 + o.payload.length;
   const b = layerBuilder("udp", "UDP", "a");
-  b.field("Porta de origem", String(o.sport), u16(o.sport), o.names?.sport ? { note: o.names.sport } : {});
-  b.field("Porta de destino", String(o.dport), u16(o.dport), o.names?.dport ? { note: o.names.dport } : {});
-  b.field("Comprimento", `${len} bytes (cabeçalho + dados)`, u16(len));
-  const at = b.field("Checksum", "", u16(0));
+  b.field(
+    "Porta de origem",
+    String(o.sport),
+    u16(o.sport),
+    o.names?.sport ? { note: o.names.sport } : portNote(o.sport),
+  );
+  b.field(
+    "Porta de destino",
+    String(o.dport),
+    u16(o.dport),
+    o.names?.dport ? { note: o.names.dport } : portNote(o.dport),
+  );
+  b.field("Comprimento", `${len} bytes (cabeçalho + dados)`, u16(len), {
+    note: "Cabeçalho de 8 bytes e os dados. É todo o UDP: sem numeração e sem confirmação",
+  });
+  const at = b.field("Checksum", "", u16(0), {
+    note: "Cobre cabeçalho, dados e os endereços IP (o pseudo-cabeçalho)",
+  });
   const v6 = o.src.includes(":");
   const pseudo = v6
     ? pseudoHeader6(o.src, o.dst, PROTO.udp, len)

@@ -98,7 +98,12 @@ export function build(_p: Params) {
         frame: udpFrame(
           { src: LIA.ip, dst: RESOLVER.ip, sport, dport: 53 },
           dns({ id: qid, response: false, rd: true, question: q }),
-          { id: "f-plain", title: "DNS em claro", summary: "O nome aparece inteiro." },
+          {
+            id: "f-plain",
+            title: "DNS em claro",
+            summary: "O nome aparece inteiro.",
+            where: "Passando pelo roteador do campus, que registra o tráfego",
+          },
         ),
         detail: NAME,
       });
@@ -129,7 +134,12 @@ export function build(_p: Params) {
         frame: tcpFrame(
           { ...tls, seq: isn, ack: 1, flags: ["PSH", "ACK"] },
           clientHello(DOH.host, { random: bytes32(), sessionId: bytes32(), keyShare: bytes32() }),
-          { id: "f-hello", title: "ClientHello", summary: "O SNI aponta o resolvedor." },
+          {
+            id: "f-hello",
+            title: "ClientHello",
+            summary: "O SNI aponta o resolvedor.",
+            where: "Passando pelo roteador do campus: o handshake ainda não está cifrado",
+          },
         ),
         role: "crypto",
       });
@@ -153,10 +163,13 @@ export function build(_p: Params) {
     () => {
       const inner = textLayer("http", "HTTP/2 (simplificado)", post, { 2: "O corpo é uma mensagem DNS" });
       b.frame(
-        frameOf("f-inside", "Como o resolvedor vê", "Depois de decifrar: HTTP e a mensagem DNS.", [
-          inner,
-          query,
-        ]),
+        frameOf(
+          "f-inside",
+          "Como o resolvedor vê",
+          "Depois de decifrar: HTTP e a mensagem DNS.",
+          [inner, query],
+          "Dentro do resolvedor DoH, depois de tirar o TLS: só ele vê isto",
+        ),
       );
       c.send("lia", "doh", "POST /dns-query", {
         dt: 10,
@@ -165,7 +178,12 @@ export function build(_p: Params) {
         frame: tcpFrame(
           { ...tls, seq: isn + 300, ack: 4000, flags: ["PSH", "ACK"] },
           encrypted(inner.bytes.length + query.bytes.length, "POST /dns-query com a pergunta"),
-          { id: "f-wire", title: "Como sai na rede", summary: "Um registro TLS: só o tamanho aparece." },
+          {
+            id: "f-wire",
+            title: "Como sai na rede",
+            summary: "Um registro TLS: só o tamanho aparece.",
+            where: "Passando pelo roteador do campus, que agora só vê destino e tamanho",
+          },
         ),
       });
       c.send("doh", "lia", "200 + resposta", {
@@ -183,7 +201,12 @@ export function build(_p: Params) {
             flags: ["PSH", "ACK"],
           },
           encrypted(answer.bytes.length + 60, "200 com a resposta DNS"),
-          { id: "f-wire-r", title: "Resposta cifrada", summary: "O endereço vai dentro." },
+          {
+            id: "f-wire-r",
+            title: "Resposta cifrada",
+            summary: "O endereço vai dentro.",
+            where: "Passando pelo roteador do campus, de volta à Lia",
+          },
         ),
         detail: "203.0.113.60",
       });

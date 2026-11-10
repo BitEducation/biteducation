@@ -5,7 +5,7 @@
 .app {
   --index-w: 280px;
   --side-w: 360px;
-  --events-h: 30vh;
+  --events-h: 26vh;
   display: grid;
   grid-template-columns: var(--index-w) minmax(0, 1fr) var(--side-w);
   grid-template-rows: 56px minmax(0, 1fr) auto;
@@ -728,7 +728,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 16px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--radius);
   background: var(--surface);
   color: var(--ink);
@@ -763,6 +763,17 @@
 }
 /* Hub: the three sites as a stack of layers, each in its own topic color. The colored
    bands line up into one spine, like the layer diagrams in the textbooks. */
+/* Same isometric grid as the lesson canvas, mixed halfway into the page color so it stays
+   behind the text; fixed so it reads as a backdrop, not part of the scrolling content. */
+.hub-page {
+  --hub-grid: color-mix(in oklab, var(--scene-grid) 45%, var(--bg));
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse at 50% 35%, transparent 35%, var(--bg) 95%),
+    repeating-linear-gradient(30deg, var(--hub-grid) 0 1px, transparent 1px 26px),
+    repeating-linear-gradient(150deg, var(--hub-grid) 0 1px, transparent 1px 26px);
+  background-attachment: fixed;
+}
 .hub-hero {
   padding-top: 16px;
 }
@@ -794,7 +805,7 @@
 }
 .hub-demo {
   margin: 0;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: 10px;
   background: var(--surface);
   overflow: hidden;
@@ -834,7 +845,7 @@
   margin: 40px 0 0;
   padding: 0;
   list-style: none;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: 10px;
   background: var(--surface);
   overflow: hidden;
@@ -1294,11 +1305,12 @@
   .app .topbar {
     margin-inline: -10px;
   }
+  /* Outer frames in the strong blue line, dividers inside stay soft (as in the reference). */
   .index,
   .stage,
   .side,
   .events {
-    border: 1px solid var(--line);
+    border: 1px solid var(--line-strong);
     border-radius: 10px;
     overflow: hidden;
   }

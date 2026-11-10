@@ -167,7 +167,15 @@ function addrFrame(cfg: CacheConfig, addr: number, id: string): Frame {
         role: "s3",
         from: 16 - s.offsetBits,
         to: 16,
-        fields: [{ label: "byte no bloco", value: String(s.offset), from: 16 - s.offsetBits, to: 16 }],
+        fields: [
+          {
+            label: "byte no bloco",
+            value: String(s.offset),
+            from: 16 - s.offsetBits,
+            to: 16,
+            note: "Qual byte do bloco se quer; não entra na escolha da linha",
+          },
+        ],
       },
     ],
   };

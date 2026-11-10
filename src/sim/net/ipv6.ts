@@ -73,14 +73,21 @@ export function ipv6(o: Ipv6Opts): Layer {
     "Versão, classe e fluxo",
     `6, 0, ${hexN5(o.flow ?? 0)}`,
     u32((6 << 28) | ((o.flow ?? 0) & 0xfffff)),
+    {
+      note: "Versão 6, prioridade (como o DSCP do IPv4) e um rótulo que marca pacotes da mesma conversa",
+    },
   );
   b.field("Tamanho da carga", `${o.payloadLen} bytes`, u16(o.payloadLen), {
     note: "Sem contar estes 40 bytes de cabeçalho",
   });
-  b.field("Próximo cabeçalho", `${o.next} (${NEXT_NAME[o.next] ?? "?"})`, u8(o.next));
+  b.field("Próximo cabeçalho", `${o.next} (${NEXT_NAME[o.next] ?? "?"})`, u8(o.next), {
+    note: "Como o campo Protocolo do IPv4: diz o que vem a seguir",
+  });
   b.field("Limite de saltos", String(hop), u8(hop), { note: "O TTL do IPv6; não há checksum no cabeçalho" });
-  b.field("Origem", o.src, ip6(o.src));
-  b.field("Destino", o.dst, ip6(o.dst));
+  b.field("Origem", o.src, ip6(o.src), { note: "Quem criou o pacote: 128 bits" });
+  b.field("Destino", o.dst, ip6(o.dst), {
+    note: "O destino final; o cabeçalho tem tamanho fixo, por isso os roteadores o leem rápido",
+  });
   return b.done();
 }
 

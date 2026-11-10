@@ -20,8 +20,15 @@ export function stun(o: {
     "Tipo",
     o.response ? "0x0101 (resposta de sucesso)" : "0x0001 (pedido de vínculo)",
     u16(o.response ? 0x0101 : 0x0001),
+    {
+      note: o.response
+        ? "O servidor responde dizendo de que endereço o pedido chegou"
+        : "Pergunta ao servidor: de que endereço público você me vê?",
+    },
   );
-  b.field("Tamanho dos atributos", `${attrs.length} bytes`, u16(attrs.length));
+  b.field("Tamanho dos atributos", `${attrs.length} bytes`, u16(attrs.length), {
+    note: "Quanto vem depois destes 20 bytes de cabeçalho",
+  });
   b.field("Cookie mágico", hexN(MAGIC, 8), u32(MAGIC), {
     note: "Valor fixo: separa STUN de outros dados na mesma porta",
   });

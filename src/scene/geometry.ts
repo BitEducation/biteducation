@@ -11,9 +11,9 @@ const SIZES: Partial<Record<NodeKind, readonly [number, number]>> = {
   memory: [130, 56],
 };
 
-/** Approximate glyph widths of .node .label (13px semibold) and .node .sub (11px mono). */
-const LABEL_EM = 7.4;
-const SUB_EM = 6.7;
+/** Approximate glyph widths of .node .label (14.5px bold) and .node .sub (12px mono). */
+const LABEL_EM = 8.3;
+const SUB_EM = 7.3;
 
 /**
  * Width grows to fit the text, so a long address never spills out of its box. `pict` is the

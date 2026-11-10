@@ -16,11 +16,15 @@ export function ethernet(
     "MAC de destino",
     `${dst}${names.dst ? ` (${names.dst})` : ""}`,
     mac(dst),
-    dst === "ff:ff:ff:ff:ff:ff" ? { note: "Broadcast: todos da LAN recebem" } : {},
+    dst === "ff:ff:ff:ff:ff:ff"
+      ? { note: "Broadcast: todos da LAN recebem" }
+      : { note: "Quem recebe neste enlace: o próximo salto, que pode ser o roteador e não o destino final" },
   );
-  b.field("MAC de origem", `${src}${names.src ? ` (${names.src})` : ""}`, mac(src));
+  b.field("MAC de origem", `${src}${names.src ? ` (${names.src})` : ""}`, mac(src), {
+    note: "A placa de rede que transmitiu o quadro; os dois MACs mudam a cada salto, os IPs não",
+  });
   b.field("EtherType", `${hexN(type, 4)} (${TYPE_NAME[type] ?? "?"})`, u16(type), {
-    note: "Diz qual protocolo vem dentro do quadro",
+    note: "Diz qual protocolo vem dentro do quadro, para o sistema entregar a ele",
   });
   return b.done();
 }

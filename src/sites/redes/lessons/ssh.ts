@@ -35,6 +35,11 @@ export function build(p: Params) {
     { ip: LAB.ip, port: 22 },
     randInt(rand, 1, 2 ** 31),
     randInt(rand, 1, 2 ** 31),
+    64,
+    {
+      up: "Saindo do terminal da Lia, rumo ao servidor do laboratório",
+      down: "Chegando ao terminal da Lia, vindo do servidor do laboratório",
+    },
   );
   let n = 0;
   const go = (

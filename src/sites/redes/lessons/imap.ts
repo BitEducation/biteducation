@@ -48,12 +48,22 @@ export function build(_p: Params) {
     { ip: MAIL_DEST.ip, port: 143 },
     randInt(rand, 1, 2 ** 31),
     randInt(rand, 1, 2 ** 31),
+    64,
+    {
+      up: "Saindo do notebook da Ana, rumo ao servidor IMAP",
+      down: "Chegando ao notebook da Ana, vindo do servidor IMAP",
+    },
   );
   const sp = tcpSession(
     { ip: PHONE.ip, port: PHONE.port },
     { ip: MAIL_DEST.ip, port: 143 },
     randInt(rand, 1, 2 ** 31),
     randInt(rand, 1, 2 ** 31),
+    64,
+    {
+      up: "Saindo do celular da Ana, rumo ao servidor IMAP",
+      down: "Chegando ao celular da Ana, vindo do servidor IMAP",
+    },
   );
   let n = 0;
   const say = (

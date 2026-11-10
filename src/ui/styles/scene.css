@@ -15,7 +15,7 @@
 }
 .zone text {
   fill: var(--ink-2);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -125,12 +125,12 @@
   stroke-linecap: round;
 }
 .node .label {
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 700;
 }
 .node .sub {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   fill: var(--ink-2);
 }
 /* Equipment: no box, the drawing is the node. The box stays as the hit and focus area. */
@@ -139,7 +139,7 @@
   stroke: transparent;
 }
 .node.device .label {
-  font-size: 14px;
+  font-size: 16px;
 }
 .node.device .label,
 .node.device .sub {
@@ -172,7 +172,7 @@
 }
 .node .state {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 600;
 }
 .node[data-tone="bad"] .box {
@@ -228,7 +228,7 @@
 .token text {
   fill: #ffffff;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 :root[data-theme="dark"] .token text {
@@ -262,26 +262,30 @@
   fill: color-mix(in srgb, var(--role-crypto) 9%, var(--surface));
 }
 .note text {
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 600;
 }
 
 /* widgets */
 .widget .w-title {
   fill: var(--ink-3);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
 }
 .widget .slot {
   fill: var(--surface);
   stroke: var(--line);
 }
+/* Cell text stays at the size the authored column widths were measured for. */
 .widget .cell-text,
 .widget .head-text {
   font-family: var(--font-mono);
   font-size: 11px;
+}
+.widget .head-text {
+  font-size: 11.5px;
 }
 .widget .head-text {
   fill: var(--ink-3);
@@ -291,7 +295,7 @@
 .widget .idx {
   fill: var(--ink-3);
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 10px;
 }
 .widget .item rect {
   fill: var(--c, var(--role-muted));
@@ -299,7 +303,7 @@
 .widget .item text {
   fill: #ffffff;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 600;
 }
 :root[data-theme="dark"] .widget .item text {
@@ -356,7 +360,7 @@
 .widget .bar-text {
   fill: #ffffff;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 600;
 }
 :root[data-theme="dark"] .widget .bar-text {
@@ -370,7 +374,7 @@
 .widget .tick {
   fill: var(--ink-3);
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 10.5px;
 }
 .widget .counter-text {
   font-family: var(--font-mono);

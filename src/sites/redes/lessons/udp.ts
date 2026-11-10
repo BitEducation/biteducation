@@ -89,6 +89,7 @@ export function build(p: Params) {
         id: `f-p${k}`,
         title: `Pacote de voz ${k}`,
         summary: `20 ms de áudio, sequência ${seq0 + k - 1}.`,
+        where: "Saindo do notebook da Lia, rumo à Ana",
       },
     );
   let bad = 0;
@@ -281,7 +282,13 @@ export function build(p: Params) {
         dt: ONE_WAY,
         via: ["net"],
         role: "warn",
-        frame: frameOf("f-unreach", "ICMP porta inalcançável", "O único aviso que o UDP recebe.", [ip, ic]),
+        frame: frameOf(
+          "f-unreach",
+          "ICMP porta inalcançável",
+          "O único aviso que o UDP recebe.",
+          [ip, ic],
+          "Saindo do computador da Ana, de volta para a Lia",
+        ),
       });
     },
   );

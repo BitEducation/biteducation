@@ -80,7 +80,7 @@ const regsFrame: Frame = {
           example: true,
           note: "Endereço virtual do editor",
         },
-        { label: "a2 (x12) = n", value: String(COUNT), from: 2, to: 3 },
+        { label: "a2 (x12) = n", value: String(COUNT), from: 2, to: 3, note: "Quantos bytes ler, no máximo" },
       ],
     },
     {
@@ -105,7 +105,16 @@ const regsFrame: Frame = {
       role: "muted",
       from: 4,
       to: 5,
-      fields: [{ label: "PC do ecall", value: `0x${ECALL_PC.toString(16)}`, from: 4, to: 5, example: true }],
+      fields: [
+        {
+          label: "PC do ecall",
+          value: `0x${ECALL_PC.toString(16)}`,
+          from: 4,
+          to: 5,
+          example: true,
+          note: "O kernel guarda este endereço para voltar à instrução seguinte",
+        },
+      ],
     },
   ],
 };

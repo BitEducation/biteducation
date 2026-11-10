@@ -60,7 +60,7 @@ function draw(root: HTMLElement): () => void {
   const total = ORDER.reduce((n, id) => n + visibleLessons(CATALOGS[id]).length, 0);
   render(
     root,
-    html`<div class="page">${topbarHtml("hub", {})}
+    html`<div class="page hub-page">${topbarHtml("hub", {})}
       <main class="page-main" id="main" tabindex="-1">
         <section class="hub-hero hub-hero-split"><div class="hub-hero-text"><h1>${t("hub.title")}</h1><p>${t("hub.lead", { n: total })}</p></div><div class="hub-demo-host"></div></section>
         <ol class="layers">${ORDER.map(layerHtml)}</ol>
