@@ -1,12 +1,12 @@
-# Segurança
+# Security
 
-Os sites são estáticos: não há servidor, login, formulário enviado nem cookie. Ainda assim,
-podem existir falhas como injeção de HTML por parâmetros da URL (`?lab=`, `?passo=`), arquivos
-de progresso importados maliciosos ou problemas na cadeia de build.
+The sites are static: there is no server, login, submitted form, or cookie. Even so, flaws can
+exist, such as HTML injection through URL parameters (`?lab=`, `?passo=`), malicious imported
+progress files, or problems in the build chain.
 
-Para relatar uma vulnerabilidade, use a aba **Security → Report a vulnerability** do
-repositório (aviso privado do GitHub). Não abra issue pública. Responderemos assim que
-possível e combinaremos a divulgação depois da correção.
+To report a vulnerability, use the repository's **Security → Report a vulnerability** tab
+(GitHub private advisory). Please don't open a public issue. We will reply as soon as possible
+and agree on disclosure once the fix is out.
 
-Fora do escopo: o conteúdo das lições de ataque, que descreve técnicas conhecidas e
-documentadas (ARP spoofing, SYN flood) apenas em simulação, junto com detecção e defesa.
+Out of scope: the content of the attack lessons, which describe known, documented techniques
+(ARP spoofing, SYN flood) only as simulations, together with detection and defense.

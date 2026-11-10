@@ -1,37 +1,41 @@
-# Contribuindo
+# Contributing
 
-Obrigado pelo interesse. Correções de conteúdo (um número errado, uma frase confusa, uma
-referência imprecisa) são as contribuições mais valiosas: abra uma issue citando a lição, o
-passo (o link copiado pelo botão "Copiar link deste passo" serve) e, se possível, o livro ou a
-RFC que mostra o certo.
+Thanks for your interest. Content fixes (a wrong number, a confusing sentence, an inaccurate
+reference) are the most valuable contributions: open an issue naming the lesson, the step (the
+link from the "Copiar link deste passo" button works), and, if possible, the book or RFC that
+shows the correct version.
 
-## Antes de abrir um PR
+Lessons are written in Brazilian Portuguese, so content changes should be too. Issues and pull
+requests can be in English or Portuguese.
 
-1. `npm ci` e `npm run check` precisam passar.
-2. Mudou interface? Rode também `npm run check:all` (inclui os testes de ponta a ponta).
-3. Um assunto por PR, com commits pequenos no estilo Conventional Commits
-   (`fix(redes): corrige o TTL na chegada`, `feat(so): lição de substituição de páginas`).
+## Before opening a pull request
 
-## Lição nova
+1. `npm ci` and `npm run check` must pass.
+2. Changed the interface? Also run `npm run check:all` (it includes the end-to-end tests).
+3. One topic per pull request, with small commits in the Conventional Commits style
+   (`fix(redes): correct the TTL on arrival`, `feat(so): page replacement lesson`).
 
-1. `npm run new -- <redes|so|arq> <slug> "Título"` cria o esqueleto em `draft`.
-2. Siga [docs/autoria.md](docs/autoria.md): estrutura, estilo e personagens.
-3. Escreva o teste dourado com as contas feitas à mão e registre as contas em
+## New lesson
+
+1. `npm run new -- <redes|so|arq> <slug> "Título"` creates the skeleton as a `draft`.
+2. Follow [docs/autoria.md](docs/autoria.md) (in Portuguese): structure, style, and characters.
+3. Write the golden test with the math worked out by hand, and record that math in
    `docs/revisao/<site>-<slug>.md`.
-4. Lições de ataque (site de redes) são simulações para entender, detectar e defender: nada de
-   comandos, ferramentas ou receitas utilizáveis fora da lição.
+4. Attack lessons (networks site) are simulations for understanding, detecting, and defending:
+   no commands, tools, or recipes usable outside the lesson.
 
-Lições só passam a `published` depois da revisão técnica do mantenedor.
+Lessons only become `published` after the maintainer's technical review.
 
-## Dependências
+## Dependencies
 
-O código que vai para o navegador não tem dependências. Ferramentas de desenvolvimento novas
-precisam de justificativa no PR (o que fazem que as atuais não fazem, tamanho, manutenção).
+The code shipped to the browser has no dependencies. New development tools need a
+justification in the pull request: what they do that the current ones don't, their size, and
+how well maintained they are.
 
-## Licença das contribuições
+## License of contributions
 
-Ao contribuir você concorda que o código entra sob a licença MIT e o conteúdo didático sob a
-CC BY-SA 4.0 (veja `LICENSE` e `LICENSE-CONTENT`). Não copie trechos de livros nem de outros
-sites: escreva com as suas palavras e cite a fonte em `refs`.
+By contributing, you agree that code is licensed under MIT and teaching content under
+CC BY-SA 4.0 (see `LICENSE` and `LICENSE-CONTENT`). Don't copy passages from books or other
+sites: write in your own words and cite the source in `refs`.
 
-Veja também o [código de conduta](CODE_OF_CONDUCT.md) e a [política de segurança](SECURITY.md).
+See also the [code of conduct](CODE_OF_CONDUCT.md) and the [security policy](SECURITY.md).

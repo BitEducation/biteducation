@@ -2,90 +2,93 @@
 
 # BitEducation
 
-Três sites interativos para ver o computador funcionando por dentro, passo a passo, com
-simulações de verdade e referência aos livros clássicos:
+Three interactive sites that show how a computer works on the inside, step by step, driven by
+real simulations and tied to the classic textbooks:
 
-| Site | Caminho | Lições | Assunto |
+| Site | Path | Lessons | Topics |
 |---|---|---|---|
-| BitEdu Redes | `/redes/` | 51 | do encapsulamento ao Wi-Fi e ao celular: TCP/IP, roteamento, DNS, TLS, criptografia e ataques simulados com detecção e defesa |
-| BitEdu SO | `/so/` | 35 | processos e threads, escalonamento, concorrência, memória virtual, arquivos, SSD e segurança |
-| BitEdu Arquitetura | `/arq/` | 26 | bits e texto, lógica digital, RISC-V, pipeline, caches, interrupções e paralelismo |
+| BitEdu Redes (networks) | `/redes/` | 51 | from encapsulation to Wi-Fi and cellular: TCP/IP, routing, DNS, TLS, cryptography, and simulated attacks with detection and defense |
+| BitEdu SO (operating systems) | `/so/` | 35 | processes and threads, scheduling, concurrency, virtual memory, file systems, SSDs, and security |
+| BitEdu Arquitetura (architecture) | `/arq/` | 26 | bits and text, digital logic, RISC-V, pipelining, caches, interrupts, and parallelism |
 
-O conteúdo segue os livros de Tanenbaum e de Maziero e as disciplinas ST568 (Redes de
-Comunicação I) e TT304 (Sistemas Operacionais) da FT-Unicamp.
+The content follows the Tanenbaum and Maziero textbooks and the courses ST568 (Communication
+Networks I) and TT304 (Operating Systems) at FT-Unicamp. Lessons are written in Brazilian
+Portuguese; the interface is also available in English.
 
-Cada lição é uma cena animada dividida em passos, com explicação, fatos, inspetor de bytes e
-bits, quiz e um Laboratório para mudar os parâmetros e rodar a simulação de novo. Tudo roda
-no navegador, sem servidor, sem cookies e sem rastreamento. O progresso fica no
-`localStorage` e pode ser exportado.
+Each lesson is an animated scene split into steps, with an explanation, key facts, a byte and
+bit inspector, a quiz, and a Lab where you change the parameters and run the simulation again.
+Everything runs in the browser: no server, no cookies, no tracking. Progress is kept in
+`localStorage` and can be exported.
 
-Inspirado pelo Protocol Explorer.
+Inspired by Protocol Explorer.
 
-## Rodando localmente
+## Running locally
 
-Requer Node 24 (veja `.nvmrc`).
+Requires Node 24 (see `.nvmrc`).
 
 ```bash
-npm ci                          # dependências (scripts de instalação ficam bloqueados pelo .npmrc)
-npx playwright install chromium # uma vez, para os testes de ponta a ponta
-npm run dev                     # desenvolvimento, mostra também rascunhos e lições em revisão
+npm ci                          # dependencies (install scripts are blocked by .npmrc)
+npx playwright install chromium # once, for the end-to-end tests
+npm run dev                     # development server; also shows drafts and lessons in review
 ```
 
-| Comando | O que faz |
+| Command | What it does |
 |---|---|
-| `npm run check` | Biome, TypeScript, regras de camada, conteúdo, traduções e testes unitários |
-| `npm run build` | build de produção em `dist/` (só lições `published`) + pré-render + verificação |
-| `npm run build:review` | o mesmo build incluindo as lições em revisão |
-| `npm run serve` | serve `dist/` como o GitHub Pages (com `404.html`) em http://127.0.0.1:4173 |
+| `npm run check` | Biome, TypeScript, layer rules, content rules, translations, and unit tests |
+| `npm run build` | production build in `dist/` (`published` lessons only) + prerender + checks |
+| `npm run build:review` | the same build, including lessons in review |
+| `npm run serve` | serves `dist/` the way GitHub Pages does (with `404.html`) at http://127.0.0.1:4173 |
 | `npm run preview` | `build` + `serve` |
-| `npm run e2e` | testes de ponta a ponta no Chromium (usa o `dist/` atual) |
-| `npm run check:all` | tudo acima + `npm audit`: é o que o CI roda |
-| `npm run fix` | formata e corrige o que o Biome souber corrigir |
-| `npm run new -- so slug "Título"` | cria uma lição nova em rascunho a partir do modelo |
-| `npm run strings` | sincroniza `src/locales/en/ui.json` com as chaves de `src/ui/strings.ts` |
+| `npm run e2e` | end-to-end tests in Chromium (uses the current `dist/`) |
+| `npm run check:all` | everything above + `npm audit`; this is what CI runs |
+| `npm run fix` | formats and applies every fix Biome knows how to make |
+| `npm run new -- so slug "Título"` | creates a new draft lesson from the template |
+| `npm run strings` | syncs `src/locales/en/ui.json` with the keys in `src/ui/strings.ts` |
 
-Para abrir a pré-visualização de um PR, baixe o artefato `preview-dist` do CI, extraia em
-`dist/` e rode `npm run serve`.
+To open a pull request preview, download the `preview-dist` artifact from CI, extract it into
+`dist/`, and run `npm run serve`.
 
-Variáveis do build: `BASE_URL` (padrão `/`), `SITE_ORIGIN` (padrão `http://localhost:4173`,
-usada em canonical, Open Graph e sitemap) e `VITE_SHOW_REVIEW=1`.
+Build variables: `BASE_URL` (default `/`), `SITE_ORIGIN` (default `http://localhost:4173`, used
+for canonical URLs, Open Graph, and the sitemap), and `VITE_SHOW_REVIEW=1`.
 
-## Estrutura
+## Layout
 
 ```text
-src/contracts/   tipos compartilhados (lição, cena, trace, frames)
-src/sim/         simuladores puros e testados: net/, os/, arch/, shared/
-src/core/        estado, player, progresso, busca, i18n, visibilidade (sem DOM pesado)
-src/scene/       renderização SVG da cena
-src/ui/          páginas, painéis, controles, estilos
-src/sites/       um diretório por site: catalog.ts, glossary.ts, lessons/
-scripts/         pré-render, verificações de conteúdo, camadas e dist/, gerador de lições
+src/contracts/   shared types (lesson, scene, trace, frames)
+src/sim/         pure, tested simulators: net/, os/, arch/, shared/
+src/core/        state, player, progress, search, i18n, visibility (no heavy DOM)
+src/scene/       SVG scene rendering
+src/ui/          pages, panels, controls, styles
+src/sites/       one folder per site: catalog.ts, glossary.ts, lessons/
+scripts/         prerender, content/layer/dist checks, lesson generator
 tests/e2e/       Playwright + axe
-docs/            decisões, guia de autoria e revisão das lições
+docs/            decisions, authoring guide, and lesson reviews (in Portuguese)
 ```
 
-As dependências entre camadas são verificadas por `scripts/check-imports.ts`. O código de
-produção não tem dependências de runtime.
+Dependencies between layers are enforced by `scripts/check-imports.ts`. Production code has no
+runtime dependencies.
 
-## Publicação
+## Deployment
 
-O deploy é feito pelo workflow `Deploy` no GitHub Pages de um repositório `biteducation.github.io`.
-Passos únicos para o dono:
+The `Deploy` workflow publishes to GitHub Pages from the `biteducation.github.io` repository.
+One-time steps for the owner:
 
-1. Criar a organização e o repositório `biteducation.github.io`.
-2. Em **Settings → Pages**, escolher a fonte **GitHub Actions**.
-3. Opcional: em **Settings → Variables**, criar `SHOW_REVIEW = 1` para publicar também as
-   lições em revisão enquanto elas não forem promovidas a `published`.
-4. Opcional, só se entrarem outros contribuidores: preencher `.github/CODEOWNERS` e proteger a branch `main` (D10 em `docs/decisoes.md`).
+1. Create the organization and the `biteducation.github.io` repository.
+2. Under **Settings → Pages**, choose **GitHub Actions** as the source.
+3. Optional: under **Settings → Variables**, create `SHOW_REVIEW = 1` to also publish lessons
+   in review until they are promoted to `published`.
+4. Optional, only if other contributors join: fill in `.github/CODEOWNERS` and protect the
+   `main` branch (D10 in `docs/decisoes.md`).
 
-## Contribuindo
+## Contributing
 
-Veja [CONTRIBUTING.md](CONTRIBUTING.md), [docs/autoria.md](docs/autoria.md) e
+See [CONTRIBUTING.md](CONTRIBUTING.md), [docs/autoria.md](docs/autoria.md), and
 [docs/revisao/](docs/revisao/).
 
-## Licenças
+## Licenses
 
-- Código: [MIT](LICENSE).
-- Conteúdo das lições (textos, glossários, cenários): [CC BY-SA 4.0](LICENSE-CONTENT).
-- Fontes IBM Plex: SIL Open Font License (`public/fonts/OFL.txt`).
-- Logo e símbolo do BitEducation (`public/brand/`): marca do projeto, fora das licenças acima; o uso fora do projeto depende de autorização do dono.
+- Code: [MIT](LICENSE).
+- Lesson content (text, glossaries, scenarios): [CC BY-SA 4.0](LICENSE-CONTENT).
+- IBM Plex fonts: SIL Open Font License (`public/fonts/OFL.txt`).
+- BitEducation logo and symbol (`public/brand/`): the project's trademark, not covered by the
+  licenses above; use outside the project requires the owner's permission.
