@@ -1,0 +1,252 @@
+@import "./tokens.css";
+@import "./base.css";
+@import "./components.css";
+@import "./shell.css";
+@import "./scene.css";
+@import "./inspector.css";
+
+/* Scene host: the renderer owns this element, badges live beside it. */
+.scene-host {
+  position: absolute;
+  inset: 0;
+}
+.scene-host > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Prerendered article moved out of #app: only for print. */
+.print-only {
+  display: none;
+}
+@media print {
+  #app {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
+
+/* Quiz */
+.quiz {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-inline-start: 4px solid var(--role-warn);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.quiz-prompt {
+  font-weight: 600;
+}
+.quiz-options {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.quiz-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+.quiz-opt:has(input:checked) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.quiz-opt input {
+  margin-top: 3px;
+  accent-color: var(--accent);
+}
+.quiz-num {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-small);
+}
+.quiz-num input,
+.lab-field input,
+.lab-field select,
+.lab-field textarea {
+  min-height: 34px;
+  padding: 4px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: var(--fs-small);
+}
+.quiz-num input {
+  width: 9em;
+}
+.quiz-feedback {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: var(--fs-small);
+}
+.quiz-feedback.ok b,
+.quiz-list .ok {
+  color: var(--accent);
+}
+.quiz-feedback.bad b,
+.quiz-list .bad {
+  color: var(--role-bad);
+}
+.quiz-list {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.quiz-list .btn {
+  padding-inline: 0;
+  white-space: normal;
+  text-align: start;
+}
+
+/* Lab form */
+.lab-form {
+  display: grid;
+  gap: 12px;
+}
+.lab-field {
+  display: grid;
+  gap: 4px;
+  font-size: var(--fs-small);
+  font-weight: 500;
+}
+.lab-field.check {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+.lab-field small {
+  grid-column: 1 / -1;
+  color: var(--ink-3);
+  font-weight: 400;
+}
+.lab-field textarea {
+  font-family: var(--font-mono);
+  resize: vertical;
+}
+
+/* Glossary page */
+.glossary dt {
+  margin-top: 18px;
+  font-weight: 700;
+  scroll-margin-top: 72px;
+}
+.glossary dt:target {
+  color: var(--accent);
+}
+.glossary dd {
+  margin: 4px 0 0;
+  color: var(--ink-2);
+}
+.glossary dd .micro a {
+  color: inherit;
+}
+
+/* Review list (site home) */
+.review-list {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+.review-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  align-items: baseline;
+}
+.review-list .bad {
+  color: var(--role-bad);
+}
+
+/* Trails (hub and site homes) */
+.trails {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.trail {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.trail .btn {
+  justify-self: start;
+}
+.trail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.trail-head h3 {
+  margin: 0;
+  font-size: var(--fs-body);
+}
+.trail-steps {
+  margin: 0;
+  padding-inline-start: 20px;
+  font-size: var(--fs-small);
+  display: grid;
+  gap: 2px;
+}
+.trail-steps li[data-done="true"]::marker {
+  content: "✓  ";
+  color: var(--accent);
+}
+.site-tag {
+  color: var(--ink-3, var(--ink-2));
+}
+.site-card .actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Generated exercises (quiz tab) */
+.practice-kinds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.practice-kinds .btn {
+  min-height: 32px;
+  padding: 4px 10px;
+  white-space: normal;
+}
+.practice-kinds .btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+.practice-form {
+  margin-top: 8px;
+}
+
+.home-refs {
+  display: grid;
+  gap: 4px;
+  padding-inline-start: 20px;
+  font-size: var(--fs-small);
+}

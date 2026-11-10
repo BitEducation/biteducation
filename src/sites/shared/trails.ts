@@ -1,0 +1,190 @@
+import type { Trail } from "../../contracts/types.ts";
+
+/**
+ * Curated paths through the three sites. Each item is "site/slug"; check-content
+ * refuses unknown lessons. Hidden lessons (drafts) are skipped at runtime.
+ */
+export const TRAILS: Trail[] = [
+  {
+    id: "do-clique-ao-pixel",
+    title: "Do clique ao pixel",
+    summary:
+      "Uma instrução vira chamada de sistema, que vira pacote: as três camadas da máquina numa ação só.",
+    items: ["arq/instrucao-riscv", "so/chamada-de-sistema", "redes/encapsulamento"],
+  },
+  {
+    id: "por-que-o-programa-espera",
+    title: "Por que o programa espera",
+    summary: "Cache, tradução de endereços e a fila da CPU: os três lugares onde um programa perde tempo.",
+    items: ["arq/cache-direta", "so/paginacao-tlb", "so/round-robin"],
+  },
+  {
+    id: "do-clique-a-pagina",
+    title: "Do clique à página",
+    summary:
+      "O que acontece entre digitar um endereço e ver a página: endereço, nome, conexão, cifra e pedido.",
+    items: [
+      "redes/encapsulamento",
+      "redes/sub-redes",
+      "redes/dhcp",
+      "redes/dns",
+      "redes/tcp-conexao",
+      "redes/tls13",
+      "redes/http",
+    ],
+  },
+  {
+    id: "do-transistor-ao-programa",
+    title: "Do transistor ao programa",
+    summary: "Portas, bits guardados, números, instruções e o pipeline que as executa.",
+    items: [
+      "arq/portas-logicas",
+      "arq/flip-flops",
+      "arq/inteiros",
+      "arq/texto-unicode",
+      "arq/instrucao-riscv",
+      "arq/desempenho",
+      "arq/pipeline",
+      "arq/pilha-chamadas",
+      "arq/ligacao",
+    ],
+  },
+  {
+    id: "caminho-de-um-arquivo",
+    title: "O caminho de um arquivo",
+    summary:
+      "Um read() atravessa o kernel, o barramento e o disco, e o sistema de arquivos sobrevive a quedas.",
+    items: [
+      "so/chamada-de-sistema",
+      "so/entrada-saida",
+      "arq/barramentos",
+      "arq/interrupcoes",
+      "so/inodes",
+      "so/alocacao-arquivos",
+      "so/escalonamento-disco",
+      "so/ssd",
+      "so/journaling",
+    ],
+  },
+  {
+    id: "do-endereco-ao-dado",
+    title: "Do endereço ao dado",
+    summary:
+      "Como um endereço virtual vira físico, passa pela cache e chega à DRAM, e quem sai quando falta espaço.",
+    items: [
+      "so/segmentacao",
+      "so/paginacao-tlb",
+      "so/paginacao-multinivel",
+      "arq/cache-direta",
+      "arq/cache-associativa",
+      "arq/politicas-escrita",
+      "arq/dram",
+      "so/substituicao-paginas",
+      "so/mmap",
+    ],
+  },
+  {
+    id: "concorrencia",
+    title: "Concorrência sem susto",
+    summary: "Threads, corridas, semáforos, impasses e o que o hardware faz para as caches concordarem.",
+    items: [
+      "so/threads",
+      "so/condicao-de-corrida",
+      "so/produtor-consumidor",
+      "so/monitores",
+      "so/ipc",
+      "so/leitores-escritores",
+      "so/filosofos",
+      "so/impasses",
+      "so/inversao-prioridade",
+      "arq/coerencia-mesi",
+    ],
+  },
+  {
+    id: "criptografia",
+    title: "Criptografia na prática",
+    summary: "Chaves combinadas em público, assinaturas e os protocolos que as usam.",
+    items: [
+      "redes/diffie-hellman",
+      "redes/cifra-simetrica",
+      "redes/rsa",
+      "redes/tls13",
+      "redes/ssh",
+      "redes/kerberos",
+      "redes/wireguard",
+      "redes/dnssec",
+    ],
+  },
+  {
+    id: "ataques-e-defesas",
+    title: "Ataques e defesas",
+    summary:
+      "Simulações de ataques à rede e ao sistema, cada uma com os sinais que denunciam e a defesa que funciona.",
+    items: [
+      "redes/arp-spoofing",
+      "redes/ssl-stripping",
+      "redes/syn-flood",
+      "redes/amplificacao",
+      "redes/dns-poisoning",
+      "redes/bgp-hijack",
+      "redes/firewall-varredura",
+      "redes/email-autenticacao",
+      "so/senhas",
+      "so/estouro-de-buffer",
+    ],
+  },
+  {
+    id: "paralelismo",
+    title: "Fazer mais ao mesmo tempo",
+    summary: "Do pipeline aos vários núcleos: onde o paralelismo rende e onde ele para.",
+    items: [
+      "arq/pipeline",
+      "arq/previsao-desvio",
+      "arq/fora-de-ordem",
+      "arq/simd-gpu",
+      "arq/coerencia-mesi",
+      "so/escalonamento-multiprocessador",
+      "arq/numa",
+      "arq/amdahl",
+    ],
+  },
+  {
+    id: "dividindo-a-cpu",
+    title: "Dividindo a CPU",
+    summary: "Como processos nascem, revezam a CPU e dividem até a máquina inteira.",
+    items: [
+      "so/fork-exec",
+      "so/escalonamento",
+      "so/round-robin",
+      "so/threads",
+      "so/escalonamento-multiprocessador",
+      "so/tempo-real",
+      "so/virtualizacao",
+      "so/conteineres",
+    ],
+  },
+  {
+    id: "protegendo-o-sistema",
+    title: "Protegendo o sistema",
+    summary: "Quem pode fazer o quê, como provar quem você é e o que impede um programa de ir além.",
+    items: [
+      "so/controle-de-acesso",
+      "so/politicas-obrigatorias",
+      "so/senhas",
+      "so/estouro-de-buffer",
+      "so/conteineres",
+    ],
+  },
+  {
+    id: "sem-fio",
+    title: "Sem fio",
+    summary: "Do sinal no ar ao Wi-Fi e ao celular: dividir o espectro, evitar colisões e trocar de antena.",
+    items: ["redes/camada-fisica", "redes/wifi-csma-ca", "redes/wpa", "redes/celular"],
+  },
+  {
+    id: "dentro-do-provedor",
+    title: "Dentro do provedor",
+    summary: "Como os provedores encaminham, dividem e distribuem o tráfego entre si e para muitos clientes.",
+    items: ["redes/roteamento", "redes/mpls", "redes/multicast", "redes/bgp-hijack", "redes/streaming-cdn"],
+  },
+];

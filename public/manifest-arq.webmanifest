@@ -1,0 +1,19 @@
+{
+  "name": "BitEdu Arquitetura",
+  "short_name": "Arquitetura",
+  "description": "Arquitetura de computadores, bit a bit.",
+  "lang": "pt-BR",
+  "start_url": "arq/",
+  "scope": "arq/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#6D28D9",
+  "icons": [
+    {
+      "src": "favicon-arq.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

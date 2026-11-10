@@ -1,0 +1,16 @@
+O conteúdo didático deste repositório (textos das lições, glossários, cenários, roteiros e
+os arquivos em docs/) está licenciado sob a Creative Commons Atribuição-CompartilhaIgual 4.0
+Internacional (CC BY-SA 4.0).
+
+Você pode copiar, redistribuir, adaptar e usar inclusive comercialmente, desde que:
+
+- dê o crédito apropriado ("BitEducation"), indique um link para a licença e diga se fez
+  alterações;
+- distribua o que você criou a partir dele sob a mesma licença.
+
+Texto completo da licença: https://creativecommons.org/licenses/by-sa/4.0/legalcode.pt
+
+O código-fonte (arquivos .ts, .css, .html, scripts e configurações) segue a licença MIT do
+arquivo LICENSE. As fontes IBM Plex em public/fonts/ seguem a SIL Open Font License
+(public/fonts/OFL.txt). Trechos e figuras de livros citados como referência pertencem aos
+seus autores e não estão incluídos aqui.

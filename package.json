@@ -1,0 +1,38 @@
+{
+  "name": "biteducation",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Três sites interativos para ver o computador por dentro: redes, sistemas operacionais e arquitetura.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && tsx scripts/prerender.ts && tsx scripts/build-sw.ts && tsx scripts/check-dist.ts",
+    "preview": "npm run build && tsx scripts/serve-dist.ts",
+    "check": "biome check . && tsc --noEmit && tsx scripts/check-imports.ts && tsx scripts/check-content.ts && tsx scripts/extract-strings.ts --check && vitest run",
+    "check:all": "npm run check && npm run build:review && playwright test && npm audit --omit=dev --audit-level=high",
+    "fix": "biome check --write .",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "new": "tsx scripts/new-lesson.ts",
+    "strings": "tsx scripts/extract-strings.ts",
+    "build:review": "VITE_SHOW_REVIEW=1 npm run build",
+    "serve": "tsx scripts/serve-dist.ts"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@biomejs/biome": "2.6.3",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.19.2",
+    "@vitest/coverage-v8": "5.0.5",
+    "fast-check": "4.10.2",
+    "happy-dom": "21.0.4",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

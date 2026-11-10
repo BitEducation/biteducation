@@ -1,0 +1,41 @@
+# dependências e saídas
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+tests/e2e/**/*-snapshots/*.actual.png
+*.tsbuildinfo
+.vite/
+.cache/
+ref/
+
+# logs e estado local
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+*.local.*
+.vscode/
+.idea/
+
+# segredos (o projeto não usa nenhum)
+.env
+.env.*
+*.pem
+*.key
+
+# configuração local de agentes e notas pessoais
+CLAUDE.md
+.claude/
+.cursor/
+.aider*
+notes/
+analyse.md
+name.md
+
+# planejamento e material de referência ficam só na máquina local
+# (ref/ guarda livros com direitos autorais; nunca versionar)
+spec.md
+ref/
+.github/CODEOWNERS

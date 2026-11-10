@@ -1,0 +1,9 @@
+# One phrase per line, case-insensitive. Lines starting with # are comments.
+# Words that make the reader feel slow, or that promise more than the lesson shows.
+simplesmente
+obviamente
+é óbvio
+é fácil
+trivialmente
+basta notar
+como todos sabem

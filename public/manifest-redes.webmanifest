@@ -1,0 +1,19 @@
+{
+  "name": "BitEdu Redes",
+  "short_name": "Redes",
+  "description": "Redes e segurança, pacote por pacote.",
+  "lang": "pt-BR",
+  "start_url": "redes/",
+  "scope": "redes/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#0F766E",
+  "icons": [
+    {
+      "src": "favicon-redes.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

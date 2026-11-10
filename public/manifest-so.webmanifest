@@ -1,0 +1,19 @@
+{
+  "name": "BitEdu SO",
+  "short_name": "SO",
+  "description": "Sistemas operacionais, tick a tick.",
+  "lang": "pt-BR",
+  "start_url": "so/",
+  "scope": "so/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#B4441B",
+  "icons": [
+    {
+      "src": "favicon-so.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

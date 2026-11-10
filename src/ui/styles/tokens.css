@@ -1,0 +1,186 @@
+/*
+ * Design tokens. Semantic names only (never the hex in the name).
+ * Each site sets data-site on <html>; the theme script sets data-theme.
+ * Contrast of every declared text/background pair is checked by tokens.test.ts.
+ */
+
+@font-face {
+  font-family: "Plex Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/plex-sans-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plex Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/plex-sans-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plex Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/plex-sans-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plex Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/plex-sans-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/plex-mono-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/plex-mono-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Plex Mono";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/plex-mono-600.woff2") format("woff2");
+}
+
+:root {
+  color-scheme: light;
+  /* neutral base */
+  --bg: #faf7f2;
+  --surface: #ffffff;
+  --surface-2: #f2ede4;
+  --ink: #1f1b16;
+  --ink-2: #4a443c;
+  --ink-3: #6e665b;
+  --warn-ink: #854d0e;
+  --line: #d9d1c3;
+  --line-strong: #8a8070;
+  --focus: #1f6feb;
+  --scrim: rgb(31 27 22 / 0.42);
+  --shadow: 0 1px 2px rgb(31 27 22 / 0.06), 0 8px 24px rgb(31 27 22 / 0.1);
+
+  /* data roles (shared by the three sites) */
+  --role-a: #2563eb;
+  --role-b: #c2410c;
+  --role-ctrl: #7c3aed;
+  --role-crypto: #047857;
+  --role-bad: #be123c;
+  --role-muted: #78716c;
+  --role-warn: #a16207;
+  --series-3: #0e7490;
+  --series-4: #9d174d;
+  --series-5: #4d7c0f;
+  --series-6: #57534e;
+
+  /* brand tile behind the BitEducation symbol (same in both themes) */
+  --brand-tile: #0e1422;
+
+  /* site accent (hub default) */
+  --accent: #1f1b16;
+  --accent-soft: #ece6db;
+  --on-accent: #ffffff;
+
+  /* type */
+  --font-sans: "Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --fs-display: 2.25rem;
+  --fs-h1: 1.5rem;
+  --fs-h2: 1.125rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-micro: 0.75rem;
+  --fs-data: 0.8125rem;
+
+  /* shape and motion */
+  --radius: 6px;
+  --radius-sm: 4px;
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-move: cubic-bezier(0.3, 0.7, 0.2, 1);
+  --t-fast: 120ms;
+  --t-mid: 220ms;
+}
+
+:root[data-site="redes"] {
+  --accent: #0f766e;
+  --accent-soft: #d5f0ec;
+  --on-accent: #ffffff;
+}
+:root[data-site="so"] {
+  --accent: #b4441b;
+  --accent-soft: #f8e1d6;
+  --on-accent: #ffffff;
+}
+:root[data-site="arq"] {
+  --accent: #6d28d9;
+  --accent-soft: #e9e0fb;
+  --on-accent: #ffffff;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #13110f;
+  --surface: #1b1815;
+  --surface-2: #24201c;
+  --ink: #ede7dd;
+  --ink-2: #bfb6a8;
+  --ink-3: #9a9183;
+  --warn-ink: #fbbf24;
+  --line: #3a342d;
+  --line-strong: #7d7365;
+  --focus: #79b8ff;
+  --scrim: rgb(0 0 0 / 0.55);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px rgb(0 0 0 / 0.45);
+
+  --role-a: #7aa7ff;
+  --role-b: #ff9b6a;
+  --role-ctrl: #b99bff;
+  --role-crypto: #4ade9b;
+  --role-bad: #ff7a93;
+  --role-muted: #a8a29e;
+  --role-warn: #f5c451;
+  --series-3: #5cc8e0;
+  --series-4: #f38bb8;
+  --series-5: #a3d65c;
+  --series-6: #c9c3bd;
+
+  --accent: #ede7dd;
+  --accent-soft: #2a2520;
+  --on-accent: #13110f;
+}
+:root[data-theme="dark"][data-site="redes"] {
+  --accent: #2dd4bf;
+  --accent-soft: #0f2e2b;
+  --on-accent: #04201d;
+}
+:root[data-theme="dark"][data-site="so"] {
+  --accent: #fb8a5b;
+  --accent-soft: #3a1c10;
+  --on-accent: #2a1006;
+}
+:root[data-theme="dark"][data-site="arq"] {
+  --accent: #b79cfa;
+  --accent-soft: #2a1a4a;
+  --on-accent: #1a0e33;
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --line: #8f8678;
+    --ink-3: #4a443c;
+  }
+  :root[data-theme="dark"] {
+    --line: #8f8678;
+    --ink-3: #cfc7ba;
+  }
+}
