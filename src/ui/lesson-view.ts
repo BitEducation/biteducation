@@ -1,7 +1,7 @@
 import type { CatalogEntry, LessonModule, LessonRun, Params, PracticeItem } from "../contracts/types.ts";
 import { html, render } from "../core/dom.ts";
 import { focusOf } from "../core/focus.ts";
-import { locale, t } from "../core/i18n.ts";
+import { t } from "../core/i18n.ts";
 import { buildPcap } from "../core/pcap.ts";
 import { createPlayer, type PlayerState } from "../core/player.ts";
 import {
@@ -57,7 +57,6 @@ export interface LessonDeps {
   tab?: Tab;
   navigate(url: string, opts?: { replace?: boolean; tab?: Tab }): void;
   openSearch(): void;
-  onLang(code: string): void;
 }
 
 export function sitePercent(config: SiteConfig, progress: Progress): number {
@@ -134,7 +133,7 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
   render(
     root,
     html`<div class="app" data-index="${indexOpen ? "open" : "closed"}" data-events="${eventsOpen ? "open" : "closed"}" data-present="false" data-drawer="closed">
-      ${topbarHtml(site, { back: true, indexToggle: true, progress: sitePercent(config, progress) })}
+      ${topbarHtml(site, { back: "site", indexToggle: true, progress: sitePercent(config, progress) })}
       <aside class="index" id="lesson-index" aria-label="${t("index.title")}"></aside>
       <div class="scrim"></div>
       <main class="stage" id="main" tabindex="-1">
@@ -388,7 +387,6 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
           siteName: r.siteName,
           url: lessonUrl(r.site, r.slug),
         })),
-        untranslated: locale() !== "pt-BR",
         practice: practiceCtx(),
       }),
     );
@@ -826,7 +824,7 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
   );
 
   cleanups.push(
-    bindTopbar(app, { onHelp: openHelp, onLang: deps.onLang }),
+    bindTopbar(app, { onHelp: openHelp }),
     bindGlossary(app, glossary),
     () => player.dispose(),
     () => controls.dispose(),

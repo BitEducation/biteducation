@@ -35,7 +35,6 @@ export interface NarrativeCtx {
   prevLessons: { title: string; url: string }[];
   /** Same idea seen from another site (full page load: no data-nav). */
   related: { title: string; url: string; siteName: string }[];
-  untranslated: boolean;
   /** Current generated exercise, when the lesson has any. */
   practice: {
     index: number;
@@ -151,7 +150,6 @@ function explainTab(ctx: NarrativeCtx): SafeHtml {
     return html`<p class="micro narr-label">${t("narr.overview", { n: run.steps.length })}</p>
       <h1 class="lesson-title">${lesson.meta.title}</h1>
       <p class="narr-sub">${lesson.meta.area}</p>
-      ${ctx.untranslated ? html`<p class="pill note role-warn"><span class="dot"></span>${t("lang.untranslated")}</p>` : ""}
       <div class="narr-text">${richText(lesson.intro.text, tl)}</div>
       <section class="side-section">${factsHtml(lesson.intro.facts)}</section>
       ${

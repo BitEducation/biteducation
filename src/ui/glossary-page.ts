@@ -25,7 +25,7 @@ export function mountGlossaryPage(root: HTMLElement, config: SiteConfig, deps: P
         )}</dl>
       </main>${footerHtml()}</div>`,
   );
-  const offTop = bindTopbar(root, { onHelp: openHelp, onLang: deps.onLang });
+  const offTop = bindTopbar(root, { onHelp: openHelp });
   const offKeys = pageShortcuts(deps.openSearch);
   document.title = `${t("glossary.title")} · ${t(`brand.${catalog.site}`)}`;
   if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView();

@@ -4,7 +4,7 @@ import { t } from "../../core/i18n.ts";
 import { lastVisited, lessonPercent, loadProgress, type Progress } from "../../core/progress.ts";
 import { lessonUrl, siteUrl } from "../../core/router.ts";
 import { visibleLessons } from "../../core/visibility.ts";
-import { bootCommon, changeLang } from "../../ui/app.ts";
+import { bootCommon } from "../../ui/app.ts";
 import { openHelp } from "../../ui/help.ts";
 import { icons, siteMark } from "../../ui/icons.ts";
 import { pageShortcuts } from "../../ui/page-shortcuts.ts";
@@ -34,7 +34,6 @@ function layerHtml(id: SiteId) {
   const p = loadProgress(id);
   const pct = sitePct(c, p);
   const cont = lastVisited(lessons, p);
-  const target = cont ?? lessons[0];
   const topics = c.groups.filter((g) => lessons.some((l) => l.group === g.id));
   return html`<li class="layer tone-${id}" aria-labelledby="layer-${id}">
     <span class="layer-band" aria-hidden="true">${siteMark(id, 28)}</span>
@@ -47,9 +46,11 @@ function layerHtml(id: SiteId) {
       <div class="layer-count"><span>${t("home.lessons", { n: lessons.length })}</span><span class="tabular">${pct}%</span></div>
       <span class="layer-bar" data-v="--p:${pct}" aria-hidden="true"></span>
       ${
-        target
-          ? html`<a class="btn primary" href="${lessonUrl(id, target.slug, { step: cont ? (p.lessons[target.slug]?.lastStep ?? null) : null })}">${icons.play()} ${cont ? t("hub.continue") : t("hub.start")}</a>
-            ${cont ? html`<p class="layer-resume">${t("hub.resume", { title: cont.title })}</p>` : ""}`
+        lessons.length
+          ? cont
+            ? html`<a class="btn primary" href="${lessonUrl(id, cont.slug, { step: p.lessons[cont.slug]?.lastStep ?? null })}">${icons.play()} ${t("hub.continue")}</a>
+              <p class="layer-resume">${t("hub.resume", { title: cont.title })}</p>`
+            : html`<a class="btn primary" href="${siteUrl(id)}">${icons.play()} ${t("hub.start")}</a>`
           : html`<a class="btn" href="${siteUrl(id)}">${t("hub.soon")}</a>`
       }
     </div>
@@ -68,10 +69,7 @@ function draw(root: HTMLElement): () => void {
         <section class="group-section" aria-labelledby="teachers-h"><h2 class="micro" id="teachers-h">${t("hub.teachers")}</h2><p class="prose">${t("hub.teachersText")}</p></section>
       </main>${footerHtml()}</div>`,
   );
-  const offTop = bindTopbar(root, {
-    onHelp: openHelp,
-    onLang: (code) => void changeLang(code, () => mount()),
-  });
+  const offTop = bindTopbar(root, { onHelp: openHelp });
   const demoHost = root.querySelector<HTMLElement>(".hub-demo-host");
   const offDemo = demoHost ? mountDemo(demoHost) : () => {};
   return () => {

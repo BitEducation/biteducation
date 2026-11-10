@@ -57,7 +57,7 @@ export function mountSiteHome(root: HTMLElement, config: SiteConfig, deps: PageD
     const first = lessons[0];
     render(
       root,
-      html`<div class="page hub-page">${topbarHtml(site, { progress: sitePercent(config, progress) })}
+      html`<div class="page hub-page">${topbarHtml(site, { back: "hub", progress: sitePercent(config, progress) })}
         <main class="page-main" id="main" tabindex="-1">
           <section class="hub-hero site-hero"><h1>${t(`brand.${site}`)}</h1><p>${catalog.tagline}</p>
             ${
@@ -95,7 +95,7 @@ export function mountSiteHome(root: HTMLElement, config: SiteConfig, deps: PageD
               const b = BOOKS[id];
               return html`<li>${b.authors}. <i>${b.title}</i>, ${b.edition} ${b.publisher}.</li>`;
             })}${COURSES[site].map((c) => html`<li><b>${c.code}</b> · ${c.name}. ${c.teacher}, ${c.school}.</li>`)}</ul>
-            ${COURSES[site].length ? html`<p class="narr-sub">${t("home.courseNote")}</p>` : ""}</section>
+</section>
           <section class="group-section" aria-labelledby="your-data"><h2 class="micro" id="your-data">${t("home.yourData")}</h2>
             <div class="side-actions">
               <button class="btn p-export" type="button">${icons.download()} ${t("home.export")}</button>
@@ -105,7 +105,7 @@ export function mountSiteHome(root: HTMLElement, config: SiteConfig, deps: PageD
             </div></section>
         </main>${footerHtml()}</div>`,
     );
-    offTop = bindTopbar(root, { onHelp: openHelp, onLang: deps.onLang });
+    offTop = bindTopbar(root, { onHelp: openHelp });
   };
   draw();
 

@@ -1,4 +1,4 @@
-/** UI strings, pt-BR source. Keys are stable; `npm run strings` mirrors them into src/locales/en/ui.json. */
+/** UI strings (pt-BR only). Keys are stable so components can refer to them by name. */
 export const UI = {
   "brand.redes": "BitEdu Redes",
   "brand.so": "BitEdu SO",
@@ -22,15 +22,14 @@ export const UI = {
   "theme.light": "Claro",
   "theme.dark": "Escuro",
   "theme.system": "Do sistema",
-  "lang.label": "Idioma",
-  "lang.untranslated": "Esta lição ainda não foi traduzida; o texto aparece em português.",
   "help.open": "Atalhos e ajuda",
   "help.title": "Atalhos de teclado",
   close: "Fechar",
   "progress.site": "Progresso neste site: {pct}%",
   "index.title": "Lições",
   "index.toggle": "Mostrar ou esconder o índice",
-  "back.lessons": "Voltar para a lista de lições",
+  "back.site": "Voltar para a lista de lições",
+  "back.hub": "Voltar para a página inicial",
   "index.filter": "Filtrar lições…",
   "index.draft": "rascunho",
   "index.review": "em revisão",
@@ -151,8 +150,8 @@ export const UI = {
   "home.offlineFail": "Não foi possível baixar tudo agora.",
   "update.ready": "Nova versão disponível.",
   "update.reload": "Recarregar",
-  "footer.about": "Sobre e privacidade",
-  "footer.source": "Código-fonte",
+  "footer.about": "sobre a privacidade",
+  "footer.source": "código-fonte",
   "notfound.title": "Página não encontrada",
   "notfound.text": "O endereço pode ter mudado. Tente a busca ou volte ao início.",
   "lesson.loadError": "Não foi possível carregar esta lição. Verifique a conexão e recarregue.",
@@ -208,8 +207,6 @@ export const UI = {
     "Use o modo apresentação (P) em aula, copie o link de um passo para montar a sequência e reutilize o conteúdo: ele é CC BY-SA 4.0.",
   "hub.trails": "Trilhas que interligam temas",
   "home.refs": "Bibliografia e disciplinas",
-  "home.courseNote":
-    "A ordem dos temas acompanha a ementa da disciplina. Material de estudo independente, sem vínculo oficial com a disciplina ou com a universidade.",
   "review.title": "Para revisar",
   "review.intro": "Previsões que vale responder de novo. O link abre o passo com a pergunta.",
   "review.wrong": "errou",

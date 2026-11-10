@@ -4,7 +4,7 @@ import { t } from "../../core/i18n.ts";
 import { lessonUrl, siteUrl } from "../../core/router.ts";
 import type { SearchItem } from "../../core/search.ts";
 import { visibleLessons } from "../../core/visibility.ts";
-import { bootCommon, changeLang } from "../../ui/app.ts";
+import { bootCommon } from "../../ui/app.ts";
 import { openHelp } from "../../ui/help.ts";
 import { icons } from "../../ui/icons.ts";
 import { pageShortcuts } from "../../ui/page-shortcuts.ts";
@@ -70,10 +70,7 @@ function mount() {
             html`<a class="btn${s === "hub" ? " primary" : ""}" href="${siteUrl(s)}">${t(`brand.${s}`)}</a>`,
         )}</div></section></main>${footerHtml()}</div>`,
   );
-  off = bindTopbar(root, {
-    onHelp: openHelp,
-    onLang: (code) => void changeLang(code, mount),
-  });
+  off = bindTopbar(root, { onHelp: openHelp });
   root.querySelector(".nf-search")?.addEventListener("click", openSearch);
   document.title = `${t("notfound.title")} · ${t("brand.hub")}`;
 }

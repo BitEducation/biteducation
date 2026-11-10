@@ -1,6 +1,6 @@
 import type { SiteId } from "../contracts/types.ts";
 import { html, render } from "../core/dom.ts";
-import { detectLocale, type Locale, setLocale, setSourceStrings, t } from "../core/i18n.ts";
+import { setSourceStrings, t } from "../core/i18n.ts";
 import { applyTheme } from "../core/prefs.ts";
 import { parseRoute, siteUrl } from "../core/router.ts";
 import type { SearchItem } from "../core/search.ts";
@@ -19,22 +19,12 @@ import { UI } from "./strings.ts";
 import "./styles/app.css";
 import { type AnySite, bindTopbar, footerHtml, topbarHtml } from "./topbar.ts";
 
-async function loadLocale(code: Locale): Promise<Record<string, string>> {
-  if (code === "en") return (await import("../locales/en/ui.json")).default as Record<string, string>;
-  return {};
-}
-
-/** Theme, strings and language: shared by every page (sites, hub, about, 404). */
+/** Theme and strings: shared by every page (sites, hub, about, 404). */
 export async function bootCommon(site: AnySite): Promise<void> {
   setSourceStrings(UI);
   applyTheme();
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => applyTheme());
   document.documentElement.dataset.site = site;
-  try {
-    await setLocale(detectLocale(), loadLocale, false);
-  } catch {
-    await setLocale("pt-BR", loadLocale, false);
-  }
   registerServiceWorker();
   // GitHub Pages cannot send frame-ancestors; embedding stays allowed (teachers use LMSs),
   // but the page points to the original site.
@@ -51,12 +41,6 @@ export async function bootCommon(site: AnySite): Promise<void> {
     ssr.classList.add("print-only");
     document.querySelector("#app")?.after(ssr);
   }
-}
-
-export async function changeLang(code: string, rerender: () => void): Promise<void> {
-  if (code !== "pt-BR" && code !== "en") return;
-  await setLocale(code, loadLocale).catch(() => undefined);
-  rerender();
 }
 
 const isModified = (e: MouseEvent) => e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0;
@@ -98,10 +82,7 @@ export async function bootSite(config: SiteConfig): Promise<void> {
       location.reload();
       return;
     }
-    const common: PageDeps = {
-      openSearch,
-      onLang: (code: string) => void changeLang(code, () => void show()),
-    };
+    const common: PageDeps = { openSearch };
     if (!route.slug) {
       dispose = mountSiteHome(root as HTMLElement, config, common);
       return;
@@ -175,7 +156,7 @@ function messagePage(root: HTMLElement, site: SiteId, message: string, common: P
       <main class="page-main" id="main" tabindex="-1"><div class="hero"><div class="accent-bar"></div><h1>${message}</h1>
       <p><a href="${siteUrl(site)}">${t(`brand.${site}`)}</a></p></div></main>${footerHtml()}</div>`,
   );
-  const offTop = bindTopbar(root, { onHelp: openHelp, onLang: common.onLang });
+  const offTop = bindTopbar(root, { onHelp: openHelp });
   const offKeys = pageShortcuts(common.openSearch);
   return () => {
     offTop();

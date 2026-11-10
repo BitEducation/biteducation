@@ -4,7 +4,6 @@ import { openHelp } from "./help.ts";
 
 export interface PageDeps {
   openSearch(): void;
-  onLang(code: string): void;
 }
 
 /** Shortcuts available on pages without a lesson (site home, glossary, hub, about). */

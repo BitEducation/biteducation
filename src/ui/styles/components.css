@@ -25,14 +25,15 @@
   opacity: 0.5;
   cursor: default;
 }
+/* Soft pastel fill with dark ink; the mid-tone border keeps the button's edge at 3:1. */
 .btn.primary {
-  background: var(--accent);
+  background: var(--accent-fill);
   border-color: var(--accent);
   color: var(--on-accent);
   font-weight: 600;
 }
 .btn.primary:hover {
-  filter: brightness(1.08);
+  background: color-mix(in oklab, var(--accent-fill) 70%, var(--accent));
 }
 .btn.ghost {
   border-color: transparent;

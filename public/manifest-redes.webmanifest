@@ -6,7 +6,7 @@
   "start_url": "redes/",
   "scope": "redes/",
   "display": "standalone",
-  "background_color": "#F4F6FB",
+  "background_color": "#F7F9FC",
   "theme_color": "#0F766E",
   "icons": [
     {

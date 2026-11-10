@@ -56,19 +56,19 @@
 
 :root {
   color-scheme: light;
-  /* neutral base */
-  --bg: #f5f8fe;
+  /* neutral base: near-gray with a faint hue, so text stays calm and color lives in accents */
+  --bg: oklch(0.982 0.005 255);
   --surface: #ffffff;
-  --surface-2: #eaf0fc;
-  --ink: #00238a;
-  --ink-2: #1d3a8a;
-  --ink-3: #4d64a0;
+  --surface-2: oklch(0.96 0.01 255);
+  --ink: oklch(0.26 0.03 260);
+  --ink-2: oklch(0.38 0.03 260);
+  --ink-3: oklch(0.5 0.03 260);
   --warn-ink: #854d0e;
-  --line: #c8d6ec;
-  --line-strong: #6f94c9;
-  --focus: #1f5fe0;
-  --scrim: rgb(0 20 70 / 0.38);
-  --shadow: 0 1px 2px rgb(0 35 138 / 0.06), 0 8px 24px rgb(0 35 138 / 0.1);
+  --line: oklch(0.91 0.012 255);
+  --line-strong: oklch(0.64 0.035 255);
+  --focus: var(--accent-ink);
+  --scrim: rgb(20 26 40 / 0.36);
+  --shadow: 0 1px 2px rgb(20 26 40 / 0.05), 0 8px 24px rgb(20 26 40 / 0.08);
 
   /* data roles (shared by the three sites) */
   --role-a: #1f5fe0;
@@ -84,66 +84,41 @@
   --series-6: #475569;
 
   /* scene canvas: drafting grid, vignette, device shadows and component fill */
-  --scene-bg: #f8faff;
-  --scene-grid: #e3ebfc;
-  --scene-vignette: rgb(0 35 138 / 0.04);
-  --scene-shadow: rgb(0 35 138 / 0.12);
+  --scene-bg: oklch(0.99 0.003 255);
+  --scene-grid: oklch(0.94 0.012 255);
+  --scene-vignette: rgb(20 26 40 / 0.03);
+  --scene-shadow: rgb(20 26 40 / 0.1);
   --node-fill: #ffffff;
 
-  /* Topic scales in OKLCH, one hue per site: 300 is the dark-theme accent and 700 the
-     light-theme one; the other steps follow the same line, tapering chroma to the ends. */
-  --redes-50: oklch(0.975 0.012 181.9);
-  --redes-100: oklch(0.94 0.034 181.9);
-  --redes-200: oklch(0.875 0.075 181.9);
-  --redes-300: oklch(0.785 0.133 181.9);
-  --redes-400: oklch(0.716 0.121 183);
-  --redes-500: oklch(0.648 0.109 184.2);
-  --redes-600: oklch(0.579 0.098 185.3);
-  --redes-700: oklch(0.511 0.086 186.4);
-  --redes-800: oklch(0.426 0.068 186.4);
-  --redes-900: oklch(0.341 0.049 186.4);
-  --redes-950: oklch(0.271 0.034 186.4);
-  --so-50: oklch(0.975 0.012 42.7);
-  --so-100: oklch(0.94 0.031 42.7);
-  --so-200: oklch(0.875 0.069 42.7);
-  --so-300: oklch(0.748 0.151 42.7);
-  --so-400: oklch(0.695 0.152 41.7);
-  --so-500: oklch(0.641 0.153 40.7);
-  --so-600: oklch(0.588 0.154 39.7);
-  --so-700: oklch(0.535 0.155 38.7);
-  --so-800: oklch(0.45 0.122 38.7);
-  --so-900: oklch(0.365 0.089 38.7);
-  --so-950: oklch(0.295 0.062 38.7);
-  --arq-50: oklch(0.975 0.012 296.2);
-  --arq-100: oklch(0.94 0.031 296.2);
-  --arq-200: oklch(0.875 0.067 296.2);
-  --arq-300: oklch(0.753 0.135 296.2);
-  --arq-400: oklch(0.687 0.161 295.3);
-  --arq-500: oklch(0.622 0.188 294.4);
-  --arq-600: oklch(0.556 0.215 293.5);
-  --arq-700: oklch(0.491 0.241 292.6);
-  --arq-800: oklch(0.406 0.19 292.6);
-  --arq-900: oklch(0.321 0.139 292.6);
-  --arq-950: oklch(0.251 0.096 292.6);
-
-  /* topic colors: one per site, used by the site itself and wherever the hub names it */
-  --redes: var(--redes-700);
-  --redes-soft: var(--redes-100);
-  --on-redes: #ffffff;
-  --so: var(--so-700);
-  --so-soft: var(--so-100);
-  --on-so: #ffffff;
-  --arq: var(--arq-700);
-  --arq-soft: var(--arq-100);
-  --on-arq: #ffffff;
+  /* Topic colors in OKLCH, one hue per site, kept soft: a pastel mid-tone for marks, bands
+     and buttons (dark ink on top), a deeper step of the same hue for text and links, and a
+     wash for selected rows. Lightness is pinned so the three topics weigh the same. */
+  --redes: oklch(0.65 0.09 172);
+  --redes-ink: oklch(0.47 0.07 175);
+  --redes-fill: oklch(0.87 0.06 172);
+  --redes-soft: oklch(0.955 0.025 172);
+  --on-redes: oklch(0.24 0.04 175);
+  --so: oklch(0.67 0.115 60);
+  --so-ink: oklch(0.5 0.095 52);
+  --so-fill: oklch(0.885 0.07 70);
+  --so-soft: oklch(0.96 0.03 65);
+  --on-so: oklch(0.26 0.045 50);
+  --arq: oklch(0.665 0.12 300);
+  --arq-ink: oklch(0.5 0.13 298);
+  --arq-fill: oklch(0.87 0.06 300);
+  --arq-soft: oklch(0.955 0.025 300);
+  --on-arq: oklch(0.25 0.06 298);
 
   /* hub color, named so the site menu can show it from any site */
-  --hub: #1f5fe0;
+  --hub: oklch(0.655 0.1 255);
+  --hub-fill: oklch(0.87 0.055 255);
 
-  /* site accent (hub default: the active blue of the reference palette) */
-  --accent: #1f5fe0;
-  --accent-soft: #e2ebfc;
-  --on-accent: #ffffff;
+  /* site accent (hub default: soft periwinkle) */
+  --accent: var(--hub);
+  --accent-ink: oklch(0.49 0.12 258);
+  --accent-fill: var(--hub-fill);
+  --accent-soft: oklch(0.955 0.022 255);
+  --on-accent: oklch(0.24 0.05 258);
 
   /* type */
   --font-sans: "Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -167,17 +142,18 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0b1020;
-  --surface: #0f1628;
-  --surface-2: #131c33;
-  --ink: #d3e0ff;
-  --ink-2: #afc4f2;
-  --ink-3: #8ea3cf;
+  /* soft dark: a lifted slate, not black, so pastel accents do not glare */
+  --bg: oklch(0.215 0.014 260);
+  --surface: oklch(0.245 0.016 260);
+  --surface-2: oklch(0.28 0.018 260);
+  --ink: oklch(0.94 0.01 260);
+  --ink-2: oklch(0.84 0.018 260);
+  --ink-3: oklch(0.73 0.022 260);
   --warn-ink: #fbbf24;
-  --line: #1d304e;
-  --line-strong: #3c649f;
-  --focus: #6f97f5;
-  --scrim: rgb(5 8 18 / 0.62);
+  --line: oklch(0.34 0.018 260);
+  --line-strong: oklch(0.56 0.035 260);
+  --focus: var(--accent);
+  --scrim: rgb(8 10 16 / 0.6);
   --shadow: 0 1px 2px rgb(3 6 14 / 0.4), 0 10px 30px rgb(3 6 14 / 0.5);
 
   --role-a: #6f97f5;
@@ -192,26 +168,35 @@
   --series-5: #a3d65c;
   --series-6: #c3cad8;
 
-  --scene-bg: #0d1424;
-  --scene-grid: #17253f;
+  --scene-bg: oklch(0.23 0.015 260);
+  --scene-grid: oklch(0.29 0.018 260);
   --scene-vignette: rgb(3 5 12 / 0.5);
   --scene-shadow: rgb(0 0 0 / 0.45);
-  --node-fill: #131c33;
+  --node-fill: oklch(0.28 0.018 260);
 
-  --redes: var(--redes-300);
-  --redes-soft: var(--redes-950);
-  --on-redes: var(--redes-950);
-  --so: var(--so-300);
-  --so-soft: var(--so-950);
-  --on-so: var(--so-950);
-  --arq: var(--arq-300);
-  --arq-soft: var(--arq-950);
-  --on-arq: var(--arq-950);
+  --redes: oklch(0.8 0.075 172);
+  --redes-ink: var(--redes);
+  --redes-fill: var(--redes);
+  --redes-soft: oklch(0.32 0.035 175);
+  --on-redes: oklch(0.24 0.04 175);
+  --so: oklch(0.82 0.085 65);
+  --so-ink: var(--so);
+  --so-fill: var(--so);
+  --so-soft: oklch(0.33 0.04 55);
+  --on-so: oklch(0.26 0.045 50);
+  --arq: oklch(0.8 0.08 300);
+  --arq-ink: var(--arq);
+  --arq-fill: var(--arq);
+  --arq-soft: oklch(0.32 0.045 298);
+  --on-arq: oklch(0.25 0.06 298);
 
-  --hub: #5b8ef7;
-  --accent: #5b8ef7;
-  --accent-soft: #142a55;
-  --on-accent: #050b1a;
+  --hub: oklch(0.8 0.075 255);
+  --hub-fill: var(--hub);
+  --accent: var(--hub);
+  --accent-ink: var(--hub);
+  --accent-fill: var(--hub-fill);
+  --accent-soft: oklch(0.32 0.04 258);
+  --on-accent: oklch(0.24 0.05 258);
 }
 
 /* After the dark block so the site wins at equal specificity; the topic tokens already
@@ -219,111 +204,102 @@
 :root[data-site="redes"],
 .tone-redes {
   --accent: var(--redes);
+  --accent-ink: var(--redes-ink);
+  --accent-fill: var(--redes-fill);
   --accent-soft: var(--redes-soft);
   --on-accent: var(--on-redes);
 }
 :root[data-site="so"],
 .tone-so {
   --accent: var(--so);
+  --accent-ink: var(--so-ink);
+  --accent-fill: var(--so-fill);
   --accent-soft: var(--so-soft);
   --on-accent: var(--on-so);
 }
 :root[data-site="arq"],
 .tone-arq {
   --accent: var(--arq);
+  --accent-ink: var(--arq-ink);
+  --accent-fill: var(--arq-fill);
   --accent-soft: var(--arq-soft);
   --on-accent: var(--on-arq);
 }
 
-/* Each site is monochrome in its topic hue: the hub's neutrals (blue) are re-derived in
-   OKLCH at the same lightness and chroma, gamut-clamped, on the site's hue. Data roles keep
-   their own colors so the diagrams read the same on the three sites. */
+/* Each site keeps the hub's calm neutrals, re-tinted faintly toward its own hue; the
+   color itself lives in the accent. Data roles keep their own colors so the diagrams read
+   the same on the three sites. */
 :root[data-site="redes"] {
-  --bg: #f2faf8;
-  --surface: #ffffff;
-  --surface-2: #e4f4f1;
-  --ink: #033d37;
-  --ink-2: #034d45;
-  --ink-3: #08776c;
-  --line: #bdddd7;
-  --line-strong: #3f9a8e;
-  --focus: #047c70;
-  --scene-bg: #f5fcfa;
-  --scene-grid: #daf1ec;
-  --scene-shadow: rgb(3 61 55 / 0.12);
-  --shadow: 0 1px 2px rgb(3 61 55 / 0.06), 0 8px 24px rgb(3 61 55 / 0.1);
+  --bg: oklch(0.982 0.006 175);
+  --surface-2: oklch(0.96 0.012 175);
+  --ink: oklch(0.26 0.025 175);
+  --ink-2: oklch(0.38 0.025 175);
+  --ink-3: oklch(0.5 0.028 175);
+  --line: oklch(0.91 0.014 175);
+  --line-strong: oklch(0.64 0.035 175);
+  --scene-bg: oklch(0.99 0.004 175);
+  --scene-grid: oklch(0.94 0.014 175);
 }
 :root[data-site="redes"][data-theme="dark"] {
-  --bg: #001512;
-  --surface: #001c18;
-  --surface-2: #00231f;
-  --ink: #c0eae3;
-  --ink-2: #91d3c8;
-  --ink-3: #70b2a7;
-  --line: #023933;
-  --line-strong: #027469;
-  --focus: #07b3a2;
-  --scene-bg: #001916;
-  --scene-grid: #012d28;
-  --node-fill: #00231f;
+  --bg: oklch(0.215 0.012 175);
+  --surface: oklch(0.245 0.014 175);
+  --surface-2: oklch(0.28 0.016 175);
+  --ink: oklch(0.94 0.01 175);
+  --ink-2: oklch(0.84 0.018 175);
+  --ink-3: oklch(0.73 0.022 175);
+  --line: oklch(0.34 0.016 175);
+  --line-strong: oklch(0.56 0.032 175);
+  --scene-bg: oklch(0.23 0.013 175);
+  --scene-grid: oklch(0.29 0.016 175);
+  --node-fill: oklch(0.28 0.016 175);
 }
 :root[data-site="so"] {
-  --bg: #fdf6f3;
-  --surface: #ffffff;
-  --surface-2: #fbece7;
-  --ink: #5b1d00;
-  --ink-2: #712700;
-  --ink-3: #965237;
-  --line: #eacec4;
-  --line-strong: #c18066;
-  --focus: #b24200;
-  --scene-bg: #fff9f6;
-  --scene-grid: #fae6de;
-  --scene-shadow: rgb(91 29 0 / 0.12);
-  --shadow: 0 1px 2px rgb(91 29 0 / 0.06), 0 8px 24px rgb(91 29 0 / 0.1);
+  --bg: oklch(0.982 0.006 55);
+  --surface-2: oklch(0.96 0.012 55);
+  --ink: oklch(0.26 0.025 55);
+  --ink-2: oklch(0.38 0.025 55);
+  --ink-3: oklch(0.5 0.028 55);
+  --line: oklch(0.91 0.014 55);
+  --line-strong: oklch(0.64 0.035 55);
+  --scene-bg: oklch(0.99 0.004 55);
+  --scene-grid: oklch(0.94 0.014 55);
 }
 :root[data-site="so"][data-theme="dark"] {
-  --bg: #1d0b05;
-  --surface: #251108;
-  --surface-2: #2f150a;
-  --ink: #fbd7c9;
-  --ink-2: #ecb6a1;
-  --ink-3: #c99582;
-  --line: #492516;
-  --line-strong: #a05637;
-  --focus: #e4794d;
-  --scene-bg: #210f08;
-  --scene-grid: #3b1c10;
-  --node-fill: #2f150a;
+  --bg: oklch(0.215 0.012 55);
+  --surface: oklch(0.245 0.014 55);
+  --surface-2: oklch(0.28 0.016 55);
+  --ink: oklch(0.94 0.01 55);
+  --ink-2: oklch(0.84 0.018 55);
+  --ink-3: oklch(0.73 0.022 55);
+  --line: oklch(0.34 0.016 55);
+  --line-strong: oklch(0.56 0.032 55);
+  --scene-bg: oklch(0.23 0.013 55);
+  --scene-grid: oklch(0.29 0.016 55);
+  --node-fill: oklch(0.28 0.016 55);
 }
 :root[data-site="arq"] {
-  --bg: #f8f7fd;
-  --surface: #ffffff;
-  --surface-2: #f0eefb;
-  --ink: #3f0680;
-  --ink-2: #4a2c82;
-  --ink-3: #6b5a9a;
-  --line: #d6d1ea;
-  --line-strong: #9687c4;
-  --focus: #7844d3;
-  --scene-bg: #faf9fe;
-  --scene-grid: #ece8fa;
-  --scene-shadow: rgb(63 6 128 / 0.12);
-  --shadow: 0 1px 2px rgb(63 6 128 / 0.06), 0 8px 24px rgb(63 6 128 / 0.1);
+  --bg: oklch(0.982 0.006 298);
+  --surface-2: oklch(0.96 0.012 298);
+  --ink: oklch(0.26 0.025 298);
+  --ink-2: oklch(0.38 0.025 298);
+  --ink-3: oklch(0.5 0.028 298);
+  --line: oklch(0.91 0.014 298);
+  --line-strong: oklch(0.64 0.035 298);
+  --scene-bg: oklch(0.99 0.004 298);
+  --scene-grid: oklch(0.94 0.014 298);
 }
 :root[data-site="arq"][data-theme="dark"] {
-  --bg: #120e1e;
-  --surface: #181326;
-  --surface-2: #1f1831;
-  --ink: #e2dbfc;
-  --ink-2: #c7bced;
-  --ink-3: #a69bca;
-  --line: #32294b;
-  --line-strong: #7260a3;
-  --focus: #a287eb;
-  --scene-bg: #161122;
-  --scene-grid: #27203c;
-  --node-fill: #1f1831;
+  --bg: oklch(0.215 0.012 298);
+  --surface: oklch(0.245 0.014 298);
+  --surface-2: oklch(0.28 0.016 298);
+  --ink: oklch(0.94 0.01 298);
+  --ink-2: oklch(0.84 0.018 298);
+  --ink-3: oklch(0.73 0.022 298);
+  --line: oklch(0.34 0.016 298);
+  --line-strong: oklch(0.56 0.032 298);
+  --scene-bg: oklch(0.23 0.013 298);
+  --scene-grid: oklch(0.29 0.016 298);
+  --node-fill: oklch(0.28 0.016 298);
 }
 
 @media (prefers-contrast: more) {

@@ -443,7 +443,7 @@
   background: var(--surface-2);
 }
 .view-switch button[aria-pressed="true"] {
-  background: var(--accent);
+  background: var(--accent-fill);
   color: var(--on-accent);
 }
 .view-switch svg {

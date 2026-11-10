@@ -1,6 +1,6 @@
 import type { SiteId } from "../contracts/types.ts";
 import { html, render, type SafeHtml } from "../core/dom.ts";
-import { LOCALES, locale, t } from "../core/i18n.ts";
+import { t } from "../core/i18n.ts";
 import { getTheme, setTheme, type ThemeChoice } from "../core/prefs.ts";
 import { siteUrl } from "../core/router.ts";
 import { icons, siteMark } from "./icons.ts";
@@ -11,22 +11,27 @@ export type AnySite = SiteId | "hub";
 /** Site menu order: the hub first, then the topics. */
 const SITES: AnySite[] = ["hub", "arq", "so", "redes"];
 
-/** Repository link for the footer; set VITE_REPO_URL at build time (the deploy workflow does). */
+/** Repository link for the footer; VITE_REPO_URL overrides it at build time (forks). */
 const REPO_URL = ((): string => {
   const u: unknown = import.meta.env?.VITE_REPO_URL;
-  return typeof u === "string" && /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+$/.test(u) ? u : "";
+  return typeof u === "string" && /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+$/.test(u)
+    ? u
+    : "https://github.com/BitEducation/biteducation.github.io";
 })();
 
 export function topbarHtml(
   site: AnySite,
-  opts: { crumbs?: SafeHtml; progress?: number | null; indexToggle?: boolean; back?: boolean },
+  opts: { crumbs?: SafeHtml; progress?: number | null; indexToggle?: boolean; back?: "site" | "hub" },
 ): SafeHtml {
   const theme = getTheme();
   const themeIcon = theme === "dark" ? icons.moon() : theme === "light" ? icons.sun() : icons.auto();
-  const lang = LOCALES.find((l) => l.code === locale()) ?? LOCALES[0];
   return html`<header class="topbar">
     <a class="skip-link" href="#main">${t("skip")}</a>
-    ${opts.back ? html`<a class="icon-btn back-btn" href="${siteUrl(site)}" aria-label="${t("back.lessons")}" data-tip="${t("back.lessons")}">${icons.back()}</a>` : ""}
+    ${
+      opts.back
+        ? html`<a class="icon-btn back-btn" href="${siteUrl(opts.back === "hub" ? "hub" : site)}" aria-label="${t(`back.${opts.back}`)}" data-tip="${t(`back.${opts.back}`)}">${icons.back()}</a>`
+        : ""
+    }
     ${opts.indexToggle ? html`<button class="icon-btn index-toggle" type="button" aria-controls="lesson-index" aria-expanded="true" aria-label="${t("index.toggle")}" data-tip="${t("index.toggle")} (L)">${icons.sidebar()}</button>` : ""}
     <div class="site-switch">
       <button class="brand" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="${t("site.switch")}">
@@ -57,12 +62,6 @@ export function topbarHtml(
           )}
         </div>
       </div>
-      <div class="site-switch">
-        <button class="icon-btn lang-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="${t("lang.label")}"><b class="micro">${lang?.short ?? "PT"}</b></button>
-        <div class="menu lang-menu" role="menu" hidden>
-          ${LOCALES.map((l) => html`<button role="menuitemradio" type="button" data-lang="${l.code}" lang="${l.code}" aria-checked="${l.code === locale()}">${l.name}</button>`)}
-        </div>
-      </div>
       <button class="icon-btn help-btn" type="button" aria-haspopup="dialog" aria-label="${t("help.open")}" data-tip="${t("help.open")} (?)">${icons.help()}</button>
     </div>
   </header>`;
@@ -72,7 +71,6 @@ export function bindTopbar(
   root: HTMLElement,
   handlers: {
     onHelp: () => void;
-    onLang: (code: string) => void;
     onTheme?: () => void;
   },
 ): () => void {
@@ -90,7 +88,6 @@ export function bindTopbar(
         handlers.onTheme?.();
       },
     ],
-    [".lang-btn", ".lang-menu", (el) => el.dataset.lang && handlers.onLang(el.dataset.lang)],
   ];
   for (const [b, m, pick] of pairs) {
     const btn = root.querySelector<HTMLElement>(b);
@@ -112,9 +109,7 @@ const AUTHOR_URL = "https://www.linkedin.com/in/brennocm";
 
 export function footerHtml(): SafeHtml {
   const sep = html`<span class="sep" aria-hidden="true">|</span>`;
-  return html`<footer class="foot"><a href="${siteUrl("hub")}sobre/">${t("footer.about")}</a>${
-    REPO_URL ? html`${sep}<a href="${REPO_URL}" rel="noopener">${t("footer.source")}</a>` : ""
-  }${sep}<a href="${AUTHOR_URL}" target="_blank" rel="noopener noreferrer">brennocm</a>${sep}© 20∞</footer>`;
+  return html`<footer class="foot"><a href="${siteUrl("hub")}sobre/">${t("footer.about")}</a>${sep}<a href="${REPO_URL}" rel="noopener">${t("footer.source")}</a><span class="sep sep-wide" aria-hidden="true">|</span><span>by <a href="${AUTHOR_URL}" target="_blank" rel="noopener noreferrer">brennocm</a></span></footer>`;
 }
 
 /** Keeps the theme button icon and menu state in sync with the saved choice. */

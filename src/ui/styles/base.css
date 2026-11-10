@@ -89,7 +89,7 @@ summary,
 }
 
 a {
-  color: var(--accent);
+  color: var(--accent-ink);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
 }

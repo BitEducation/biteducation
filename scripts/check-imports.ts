@@ -1,7 +1,7 @@
 /**
  * Layer rules:
- *   sites/* → ui, scene, core, sim, contracts, locales, the same site
- *   ui → scene, core, contracts, locales     scene → core, contracts     core → contracts, locales
+ *   sites/* → ui, scene, core, sim, contracts, the same site
+ *   ui → scene, core, contracts     scene → core, contracts     core → contracts
  *   sim/* → contracts, sim/shared, the same sim folder      contracts → nothing
  * Exceptions: sites/hub and sites/shared may import the three catalogs (they list lessons of
  * every site), and every site may import sites/shared (cross-site links and trails).
@@ -27,12 +27,12 @@ function layerOf(rel: string): string {
 
 const ALLOWED: Record<string, (to: string, from: string) => boolean> = {
   contracts: () => false,
-  core: (to) => to === "contracts" || to === "locales",
+  core: (to) => to === "contracts",
   scene: (to) => to === "core" || to === "contracts",
-  ui: (to) => ["scene", "core", "contracts", "locales"].includes(to),
+  ui: (to) => ["scene", "core", "contracts"].includes(to),
   sim: (to, from) => to === "contracts" || to === "sim/shared" || to === from,
   sites: (to, from) =>
-    to === from || ["ui", "scene", "core", "contracts", "locales"].includes(to) || to.startsWith("sim/"),
+    to === from || ["ui", "scene", "core", "contracts"].includes(to) || to.startsWith("sim/"),
 };
 
 const HUB_EXCEPTION = /^sites\/(redes|so|arq)\/catalog\.ts$/;

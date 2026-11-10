@@ -58,18 +58,3 @@ test("offline: depois de baixar o site, as lições abrem sem rede", async ({ pa
   await expect(page.locator("#app h1")).toHaveText("Glossário");
   await context.setOffline(false);
 });
-
-test("navegador em inglês continua em português; inglês só por escolha", async ({ browser }) => {
-  const ctx = await browser.newContext({ locale: "en-US" });
-  const page = await ctx.newPage();
-  await page.addInitScript(() => {
-    (window as unknown as { __PD_FAST__: boolean }).__PD_FAST__ = true;
-  });
-  await page.goto("/redes/encapsulamento/");
-  await expect(page.locator(".step-count")).toHaveText("Visão geral");
-  await page.locator(".lang-btn").click();
-  await page.locator('[data-lang="en"]').click();
-  await expect(page.locator(".step-count")).toHaveText("Overview");
-  await expect(page.locator("html")).toHaveAttribute("lang", "pt-BR");
-  await ctx.close();
-});

@@ -6,7 +6,7 @@ As decisões de projeto e os desvios do plano original estão em `docs/decisoes.
 
 ## Comandos
 
-- `npm run check`: definição de pronto (Biome, tsc, camadas, conteúdo, traduções, Vitest).
+- `npm run check`: definição de pronto (Biome, tsc, camadas, conteúdo, Vitest).
 - `npm run check:all`: o que o CI roda (check + build com lições em revisão + Playwright + audit).
 - `npm run dev`, `npm run build`, `npm run serve`, `npm run new -- <site> <slug> "Título"`.
 

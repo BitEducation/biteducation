@@ -75,8 +75,10 @@ const TEXT_PAIRS: [fg: string, bg: string][] = [
   ["--ink-3", "--bg"],
   ["--ink-3", "--surface"],
   ["--on-accent", "--accent"],
-  ["--accent", "--surface"],
-  ["--accent", "--bg"],
+  ["--on-accent", "--accent-fill"],
+  ["--accent-ink", "--surface"],
+  ["--accent-ink", "--bg"],
+  ["--accent-ink", "--accent-soft"],
   ["--ink", "--accent-soft"],
 ];
 const GRAPHIC_ROLES = [
@@ -93,9 +95,7 @@ const GRAPHIC_ROLES = [
   "--series-6",
   "--line-strong",
   "--focus",
-  "--redes",
-  "--so",
-  "--arq",
+  "--accent",
 ];
 
 describe("design tokens", () => {

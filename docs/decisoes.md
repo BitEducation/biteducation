@@ -8,11 +8,11 @@ dizer que só o mantenedor pode fechar.
 |---|---|---|---|
 | D1 | Stack | Vite + TypeScript sem framework; templates `html` com escape por padrão | adotada |
 | D2 | Hospedagem | GitHub Pages da organização, repositório `biteducation.github.io`, um build multipágina | adotada |
-| D3 | Marca e nomes | "BitEducation" para o projeto e o hub; "BitEdu" como abreviação de marca nos sites: BitEdu Redes, BitEdu SO e BitEdu Arquitetura (em inglês, BitEdu Networks, OS e Architecture). O nome não se traduz. Logos em `public/brand/`; o símbolo do livro de pixels foi redesenhado em SVG para favicon e cabeçalho | adotada |
+| D3 | Marca e nomes | "BitEducation" para o projeto e o hub; "BitEdu" como abreviação de marca nos sites: BitEdu Redes, BitEdu SO e BitEdu Arquitetura. O nome não se traduz. Logos em `public/brand/`; o símbolo do livro de pixels foi redesenhado em SVG para favicon e cabeçalho | adotada |
 | D4 | Cores | verde-petróleo (redes), terracota (SO), violeta (arquitetura) | adotada |
 | D5 | Tipografia | IBM Plex Sans + Mono, servidas do próprio site (OFL) | adotada |
 | D6 | ISA | RISC-V RV32I + M | adotada |
-| D7 | URLs por idioma | só pt-BR pré-renderizado; o inglês troca a interface no navegador; `/en/` e `hreflang` ficam para quando houver lições traduzidas | adiada |
+| D7 | Idioma | só pt-BR, conteúdo e interface; a troca de idioma da interface foi removida (2026-11) | adotada |
 | D8 | Imagem Open Graph | `public/brand/og-image.jpg` (1024×572), feita da logo horizontal, em todas as páginas pré-renderizadas com `summary_large_image` | adotada |
 | D9 | Métricas de uso | nenhuma | adotada |
 | D10 | PR obrigatório em `main` | não: o dono é o único contribuidor; `main` sem proteção e CODEOWNERS comentado | adotada |
@@ -64,7 +64,7 @@ dizer que só o mantenedor pode fechar.
   do tema escuro e o 700 o do claro; os tons claros e escuros servem de fundo suave e de texto
   sobre o destaque. `.tone-<site>` aplica a cor de um site a qualquer elemento (hub, trilhas).
   `tokens.test.ts` lê `oklch()` e confere os contrastes.
-- **D30. Busca sem botão no topo.** O topo fica com marca, tema, idioma e ajuda; a busca abre com
+- **D30. Busca sem botão no topo.** O topo fica com marca, tema e ajuda; a busca abre com
   `/` ou Ctrl+K, e a página 404 mantém um botão de busca no corpo.
 - **D31. Vista Sequência.** Toda lição com mensagens entre dois ou mais nós ganha a alternância
   Rede (Diagrama, fora de redes) / Sequência, gerada do mesmo trace (`src/ui/sequence.ts`). A

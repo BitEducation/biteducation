@@ -98,7 +98,7 @@
 }
 .quiz-feedback.ok b,
 .quiz-list .ok {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .quiz-feedback.bad b,
 .quiz-list .bad {
@@ -148,7 +148,7 @@
   scroll-margin-top: 72px;
 }
 .glossary dt:target {
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .glossary dd {
   margin: 4px 0 0;
@@ -250,12 +250,12 @@
 }
 /* Each step marker carries its site's color (tone-* on the li). */
 .trail-steps li::marker {
-  color: var(--accent);
+  color: var(--accent-ink);
   font-weight: 600;
 }
 .trail-steps li[data-done="true"]::marker {
   content: "✓  ";
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .site-tag {
   color: var(--ink-3, var(--ink-2));

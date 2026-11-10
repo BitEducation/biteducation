@@ -12,8 +12,8 @@ real simulations and tied to the classic textbooks:
 | BitEdu Arquitetura (architecture) | `/arq/` | 35 | machine levels, bits and text, digital logic, RISC-V and macros, pipelining and VLIW, caches and memory chips, buses and address decoding, and parallelism (SMT, memory consistency, interconnects) |
 
 The content follows the Tanenbaum and Maziero textbooks and the courses ST568 (Communication
-Networks I) and TT304 (Operating Systems) at FT-Unicamp. Lessons are written in Brazilian
-Portuguese; the interface is also available in English.
+Networks I) and TT304 (Operating Systems) at FT-Unicamp. Lessons and interface are in
+Brazilian Portuguese only.
 
 Each lesson is an animated scene split into steps, with an explanation, key facts, a byte and
 bit inspector, a quiz, and a Lab where you change the parameters and run the simulation again.

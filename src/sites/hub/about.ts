@@ -1,6 +1,6 @@
 import { html, render } from "../../core/dom.ts";
 import { t } from "../../core/i18n.ts";
-import { bootCommon, changeLang } from "../../ui/app.ts";
+import { bootCommon } from "../../ui/app.ts";
 import { BOOKS, COURSES } from "../../ui/books.ts";
 import { openHelp } from "../../ui/help.ts";
 import { pageShortcuts } from "../../ui/page-shortcuts.ts";
@@ -24,7 +24,7 @@ function mount() {
         <h2>Privacidade</h2>
         <ul>
           <li>Não há contas, anúncios, cookies nem rastreadores.</li>
-          <li>Seu progresso, tema e idioma ficam só neste navegador (armazenamento local). Nada é enviado a servidor algum.</li>
+          <li>Seu progresso e o tema ficam só neste navegador (armazenamento local). Nada é enviado a servidor algum.</li>
           <li>Você pode exportar, importar ou apagar o progresso na página inicial de cada site.</li>
         </ul>
         <h2>Licenças</h2>
@@ -48,7 +48,7 @@ function mount() {
         <p>Inspirado pelo <a href="${REFERENCE_SITE}" target="_blank" rel="noopener noreferrer">Protocol Explorer</a>. O design, o código e o conteúdo daqui são próprios.</p>
       </main>${footerHtml()}</div>`,
   );
-  off = bindTopbar(root, { onHelp: openHelp, onLang: (code) => void changeLang(code, mount) });
+  off = bindTopbar(root, { onHelp: openHelp });
   document.title = `${t("about.title")} · ${t("brand.hub")}`;
 }
 
