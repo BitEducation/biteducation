@@ -84,7 +84,7 @@
   --series-6: #475569;
 
   /* brand tile behind the BitEducation symbol (same in both themes) */
-  --brand-tile: #0e1422;
+  --brand-tile: #0a1430;
 
   /* site accent (hub default: the logo blue; cyan in dark) */
   --accent: #1d4ed8;
@@ -129,15 +129,15 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0b1020;
-  --surface: #121a2e;
-  --surface-2: #19233b;
-  --ink: #e6ebf5;
-  --ink-2: #aab5cc;
-  --ink-3: #8591ab;
+  --bg: #040917;
+  --surface: #0a1430;
+  --surface-2: #101d42;
+  --ink: #f2f6ff;
+  --ink-2: #c4cee6;
+  --ink-3: #9dabca;
   --warn-ink: #fbbf24;
-  --line: #26314b;
-  --line-strong: #5d6a88;
+  --line: #1c2a52;
+  --line-strong: #5b6b98;
   --focus: #79b8ff;
   --scrim: rgb(3 6 14 / 0.6);
   --shadow: 0 1px 2px rgb(3 6 14 / 0.4), 0 10px 30px rgb(3 6 14 / 0.5);
@@ -155,8 +155,8 @@
   --series-6: #c3cad8;
 
   --accent: #22d3ee;
-  --accent-soft: #0c2a3a;
-  --on-accent: #04131c;
+  --accent-soft: #082640;
+  --on-accent: #021018;
 }
 :root[data-theme="dark"][data-site="redes"] {
   --accent: #2dd4bf;
@@ -181,6 +181,6 @@
   }
   :root[data-theme="dark"] {
     --line: #7f8aa3;
-    --ink-3: #c7cfdf;
+    --ink-3: #d3dbec;
   }
 }

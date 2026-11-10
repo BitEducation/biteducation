@@ -34,7 +34,7 @@ export function applyTheme(choice: ThemeChoice = getTheme()): void {
   const theme = resolvedTheme(choice);
   document.documentElement.dataset.theme = theme;
   for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
-    meta.content = theme === "dark" ? "#0B1020" : "#F4F6FB";
+    meta.content = theme === "dark" ? "#040917" : "#F4F6FB";
     if (choice !== "system") meta.removeAttribute("media");
   }
 }

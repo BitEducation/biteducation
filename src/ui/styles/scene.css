@@ -149,7 +149,7 @@
   font-weight: 600;
 }
 :root[data-theme="dark"] .token text {
-  fill: #0b1020;
+  fill: #040917;
 }
 .token.lost rect {
   fill: none;
@@ -220,7 +220,7 @@
   font-weight: 600;
 }
 :root[data-theme="dark"] .widget .item text {
-  fill: #0b1020;
+  fill: #040917;
 }
 .widget .cell.filled .slot {
   fill: color-mix(in srgb, var(--c) 14%, var(--surface));
@@ -277,7 +277,7 @@
   font-weight: 600;
 }
 :root[data-theme="dark"] .widget .bar-text {
-  fill: #0b1020;
+  fill: #040917;
 }
 .widget .axis {
   fill: none;
