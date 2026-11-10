@@ -180,3 +180,8 @@ samp,
     scroll-behavior: auto !important;
   }
 }
+
+/* Identifiers (ISBN, addresses) that must not break at their hyphens. */
+.nowrap {
+  white-space: nowrap;
+}

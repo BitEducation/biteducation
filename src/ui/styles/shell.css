@@ -662,6 +662,8 @@
   min-height: 100dvh;
   display: grid;
   grid-template-rows: 56px 1fr auto;
+  /* minmax(0) keeps one long unbreakable child from widening the whole page on phones. */
+  grid-template-columns: minmax(0, 1fr);
 }
 .page .topbar {
   grid-area: auto;
@@ -806,6 +808,7 @@
 }
 .hub-hero h1 {
   max-width: 14ch;
+  overflow-wrap: break-word;
   font-size: clamp(2.25rem, 1.4rem + 3vw, 3.75rem);
   font-weight: 600;
   line-height: 1.04;
@@ -1007,15 +1010,23 @@
   list-style: disc;
   padding-inline-start: 22px;
 }
-/* Quiet one-line credit: mono, wide tracking, links underlined by a hairline. */
+/* Quiet one-line credit: mono, wide tracking, links underlined by a hairline. Items wrap
+   as whole units with the same gap on every side of each separator. */
 .foot {
-  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 6px 14px;
+  padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
   color: var(--ink-3);
   font-family: var(--font-mono);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
-  text-align: center;
+}
+.foot > span:not(.sep) {
+  white-space: nowrap;
 }
 .foot a {
   color: var(--ink-2);
@@ -1030,12 +1041,18 @@
   border-bottom-color: var(--accent-ink);
 }
 .foot .sep {
-  margin: 0 8px;
   color: var(--line-strong);
 }
-/* The author credit stands apart from the two site links. */
-.foot .sep-wide {
-  margin: 0 28px;
+/* Too narrow for one line: stack the items instead of leaving a separator at a line end. */
+@media (max-width: 480px) {
+  .foot {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .foot .sep {
+    display: none;
+  }
 }
 .update-bar {
   position: fixed;
@@ -1266,8 +1283,31 @@
     flex-wrap: wrap;
     padding: 8px;
   }
+  /* Two fixed rows under the rail: transport (restart, prev, play, next, event) and
+     then step count with view options, at any phone width. */
   .controls .btn.primary {
+    flex: 1 0 calc(100% - 4 * 44px - 4 * 6px);
+    min-width: 0;
+  }
+  .step-count {
     flex: 1;
+    min-width: 0;
+    text-align: start;
+    padding-inline-start: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .controls .c-present {
+    display: none;
+  }
+  .side .tabs {
+    padding: 0 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .side .tabs [role="tab"] {
+    flex: 1 0 auto;
+    padding-inline: 6px;
   }
   .controls .icon-btn,
   .controls .btn {

@@ -35,7 +35,7 @@ function mount() {
         </ul>
         <h2>Bibliografia</h2>
         <p>As lições seguem a bibliografia clássica de cada área. As citações indicam capítulo e seção; o texto é escrito do zero, sem reproduzir os livros.</p>
-        <ul>${Object.values(BOOKS).map((b) => html`<li>${b.authors}. <i>${b.title}</i>, ${b.edition} ${b.publisher}. ISBN ${b.isbn}.</li>`)}</ul>
+        <ul>${Object.values(BOOKS).map((b) => html`<li>${b.authors}. <i>${b.title}</i>, ${b.edition} ${b.publisher}. <span class="nowrap">ISBN ${b.isbn}</span>.</li>`)}</ul>
         <h2>Disciplinas</h2>
         <p>A ordem e o recorte dos temas acompanham a ementa destas disciplinas. É material de estudo independente, sem vínculo oficial com as disciplinas ou com a universidade.</p>
         <ul>${Object.values(COURSES)

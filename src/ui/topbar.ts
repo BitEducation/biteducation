@@ -109,7 +109,8 @@ const AUTHOR_URL = "https://www.linkedin.com/in/brennocm";
 
 export function footerHtml(): SafeHtml {
   const sep = html`<span class="sep" aria-hidden="true">|</span>`;
-  return html`<footer class="foot"><a href="${siteUrl("hub")}sobre/">${t("footer.about")}</a>${sep}<a href="${REPO_URL}" rel="noopener">${t("footer.source")}</a><span class="sep sep-wide" aria-hidden="true">|</span><span>by <a href="${AUTHOR_URL}" target="_blank" rel="noopener noreferrer">brennocm</a></span></footer>`;
+  // Each item is a nowrap unit, so on narrow screens the line breaks only between items.
+  return html`<footer class="foot"><span>${t("footer.about")} <a href="${siteUrl("hub")}sobre/">${t("footer.privacy")}</a></span>${sep}<span><a href="${REPO_URL}" rel="noopener">${t("footer.source")}</a></span>${sep}<span>by <a href="${AUTHOR_URL}" target="_blank" rel="noopener noreferrer">brennocm</a></span></footer>`;
 }
 
 /** Keeps the theme button icon and menu state in sync with the saved choice. */
