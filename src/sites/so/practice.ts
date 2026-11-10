@@ -1,11 +1,13 @@
 import type { Practice } from "../../contracts/types.ts";
 import { modeString } from "../../sim/os/access.ts";
 import { roundUp } from "../../sim/os/buddy.ts";
+import { deltaList } from "../../sim/os/clock.ts";
 import { diskSchedule } from "../../sim/os/disk.ts";
 import { DIRECT, mapFile, perBlock } from "../../sim/os/inode.ts";
 import { copies, pipeRun } from "../../sim/os/ipc.ts";
 import { capacity } from "../../sim/os/raid.ts";
 import { replace } from "../../sim/os/replace.ts";
+import { remoteCost } from "../../sim/os/rpc.ts";
 import { type Proc, schedule } from "../../sim/os/sched.ts";
 import { PAGE, perSlab } from "../../sim/os/slab.ts";
 import { serve } from "../../sim/os/threads.ts";
@@ -442,6 +444,86 @@ export const mmap: Practice[] = [
         prompt: `Um arquivo de ${fileKiB} KiB é mapeado com mmap e o processo lê os primeiros ${readKiB} KiB, com páginas de ${page} KiB. Sem leitura antecipada, quantas faltas de página maiores acontecem?`,
         answer: faults,
         explain: `Uma falta por página tocada pela primeira vez: ${readKiB} ÷ ${page} = ${faults}. O resto do arquivo não é lido.`,
+      };
+    },
+  },
+];
+
+export const alocacaoParticoes: Practice[] = [
+  {
+    title: "Melhor e pior que serve",
+    make(seed) {
+      const d = dice(seed);
+      const holes = d.distinct(4, 2, 20);
+      const ask = d.int(2, Math.max(...holes));
+      const fits = holes.filter((h) => h >= ask);
+      const worst = d.int(0, 1) === 1;
+      const pick = worst ? Math.max(...fits) : Math.min(...fits);
+      const rule = worst ? "pior que serve" : "melhor que serve";
+      return {
+        prompt: `A lista de buracos, em blocos, é ${holes.join(", ")}. Pelo ${rule}, em qual buraco entra um pedido de ${ask} blocos? Responda o tamanho do buraco.`,
+        answer: pick,
+        unit: "blocos",
+        explain: `Servem os buracos com pelo menos ${ask} blocos: ${fits.join(", ")}. O ${rule} pega o ${worst ? "maior" : "menor"} deles, ${pick}, e sobram ${pick - ask} blocos.`,
+      };
+    },
+  },
+];
+
+export const relogios: Practice[] = [
+  {
+    title: "Atraso de um alarme",
+    make(seed) {
+      const d = dice(seed);
+      const hz = d.pick([100, 250, 1000]);
+      const ms = d.int(3, 97);
+      const tick = 1000 / hz;
+      const a = deltaList([{ who: "p", ms }], tick)[0] as { ticks: number; lateMs: number };
+      return {
+        prompt: `Com ${hz} tiques por segundo, um processo pede um alarme para daqui a ${ms} ms. O alarme dispara no primeiro tique igual ou depois desse tempo. Com quantos ms de atraso ele dispara?`,
+        answer: Number(a.lateMs.toFixed(2)),
+        tolerance: 0.01,
+        unit: "ms",
+        explain: `Um tique dura ${num(tick)} ms; ${ms} ms viram ${a.ticks} tiques, arredondando para cima, ou ${num(a.ticks * tick)} ms. O atraso é ${num(a.ticks * tick)} − ${ms} = ${num(a.lateMs)} ms.`,
+      };
+    },
+  },
+];
+
+export const barreiras: Practice[] = [
+  {
+    title: "Fases com barreira",
+    make(seed) {
+      const d = dice(seed);
+      const threads = d.int(2, 4);
+      const work = Array.from({ length: threads }, () => [d.int(1, 9), d.int(1, 9)]);
+      const peaks = [0, 1].map((k) => Math.max(...work.map((r) => r[k] as number)));
+      const total = (peaks[0] as number) + (peaks[1] as number);
+      return {
+        prompt: `${threads} threads fazem duas fases, com uma barreira entre elas. Na fase 1 levam ${work.map((r) => r[0]).join(", ")} tiques; na fase 2, ${work.map((r) => r[1]).join(", ")}. Quantos tiques até a última terminar a fase 2?`,
+        answer: total,
+        unit: "tiques",
+        explain: `Ninguém começa a fase 2 antes da mais lenta da fase 1 (${peaks[0]} tiques). A fase 2 leva o tempo da mais lenta dela (${peaks[1]}): ${total} tiques.`,
+      };
+    },
+  },
+];
+
+export const rpc: Practice[] = [
+  {
+    title: "Agrupar chamadas remotas",
+    make(seed) {
+      const d = dice(seed);
+      const n = d.pick([10, 20, 50, 100]);
+      const rtt = d.pick([50, 200, 400, 1000]);
+      const k = { local: 0, marshal: 2, rtt, server: 3 };
+      const each = n * remoteCost(k);
+      const batch = 2 * k.marshal + rtt + n * k.server;
+      return {
+        prompt: `Cada chamada remota custa 2 × 2 µs de empacotamento, ${rtt} µs de ida e volta e 3 µs no servidor. Quantos µs se economizam trocando ${n} chamadas separadas por uma só que faz os ${n} trabalhos no servidor? Ignore o tamanho maior da mensagem.`,
+        answer: each - batch,
+        unit: "µs",
+        explain: `Separadas: ${n} × ${remoteCost(k)} = ${big(each)} µs. Juntas: 4 + ${rtt} + ${n} × 3 = ${big(batch)} µs. A diferença, ${big(each - batch)} µs, são ${n - 1} idas e voltas e empacotamentos a menos.`,
       };
     },
   },

@@ -7,9 +7,9 @@ real simulations and tied to the classic textbooks:
 
 | Site | Path | Lessons | Topics |
 |---|---|---|---|
-| BitEdu Redes (networks) | `/redes/` | 51 | from encapsulation to Wi-Fi and cellular: TCP/IP, routing, DNS, TLS, cryptography, and simulated attacks with detection and defense |
-| BitEdu SO (operating systems) | `/so/` | 35 | processes and threads, scheduling, concurrency, virtual memory, file systems, SSDs, and security |
-| BitEdu Arquitetura (architecture) | `/arq/` | 26 | bits and text, digital logic, RISC-V, pipelining, caches, interrupts, and parallelism |
+| BitEdu Redes (networks) | `/redes/` | 63 | from encapsulation to Wi-Fi and cellular: framing, TCP/IP, routing, QoS, SDN, sockets, DNS, TLS, IPsec, Tor, cryptography, and simulated attacks with detection and defense |
+| BitEdu SO (operating systems) | `/so/` | 44 | processes, signals and threads, scheduling (including CFS), concurrency, virtual memory and thrashing, file systems, I/O and clocks, SSDs, security, virtualization, and RPC |
+| BitEdu Arquitetura (architecture) | `/arq/` | 35 | machine levels, bits and text, digital logic, RISC-V and macros, pipelining and VLIW, caches and memory chips, buses and address decoding, and parallelism (SMT, memory consistency, interconnects) |
 
 The content follows the Tanenbaum and Maziero textbooks and the courses ST568 (Communication
 Networks I) and TT304 (Operating Systems) at FT-Unicamp. Lessons are written in Brazilian

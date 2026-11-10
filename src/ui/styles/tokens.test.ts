@@ -22,8 +22,9 @@ function block(selector: string): Record<string, string> {
 function theme(site: string, dark: boolean): Record<string, string> {
   const base = block(":root");
   const siteBlock = site === "hub" ? {} : block(`:root[data-site="${site}"]`);
+  const siteDark = site === "hub" ? {} : block(`:root[data-site="${site}"][data-theme="dark"]`);
   const merged = dark
-    ? { ...base, ...block(':root[data-theme="dark"]'), ...siteBlock }
+    ? { ...base, ...block(':root[data-theme="dark"]'), ...siteBlock, ...siteDark }
     : { ...base, ...siteBlock };
   // Resolve var(--x) against the merged theme, as the cascade does at computed time.
   const resolve = (v: string, depth = 0): string => {

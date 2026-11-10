@@ -316,7 +316,7 @@ const lesson: LessonModule = {
     title: "Sistema de arquivos: inodes, diretórios e blocos",
     summary:
       "O que um inode guarda, como um caminho vira número de inode, como ponteiros diretos e indiretos encontram cada byte, o maior arquivo possível e a diferença entre links físicos e simbólicos.",
-    area: "Arquivos",
+    area: "Arquivos e E/S",
     refs: [
       {
         book: "tanenbaum-mos",

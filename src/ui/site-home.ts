@@ -57,7 +57,7 @@ export function mountSiteHome(root: HTMLElement, config: SiteConfig, deps: PageD
     const first = lessons[0];
     render(
       root,
-      html`<div class="page">${topbarHtml(site, { progress: sitePercent(config, progress) })}
+      html`<div class="page hub-page">${topbarHtml(site, { progress: sitePercent(config, progress) })}
         <main class="page-main" id="main" tabindex="-1">
           <section class="hub-hero site-hero"><h1>${t(`brand.${site}`)}</h1><p>${catalog.tagline}</p>
             ${

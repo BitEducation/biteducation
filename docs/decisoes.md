@@ -104,3 +104,15 @@ dizer que só o mantenedor pode fechar.
   estilo "Saindo do…", "Dentro do campus, antes do roteador…", "Na internet, entre…". Quando o
   lugar muda o que se vê (endereço privado antes do NAT, TTL já descontado, limite de saltos
   255 no Neighbor Discovery), o texto diz. `tcpSession` aceita um `where` por sentido.
+- **D39. Cobertura completa dos livros.** A varredura dos sumários de `ref/` apontou 30 temas sem
+  lição. Todos viraram lições no mesmo padrão das demais: pelo menos dois quizzes, Laboratório
+  quando o tema tem um número que vale variar, prática por semente quando há conta, teste
+  dourado e contas em `docs/revisao/`. São 142 lições: redes 63, SO 44, arquitetura 35.
+- **D40. Ordem pedagógica no catálogo.** A ordem do `lessons` em cada `catalog.ts` é a ordem
+  da lista lateral e da página do site. Dentro de cada grupo, a lição vem depois dos seus
+  pré-requisitos e o simples vem antes do detalhado. Exemplos: UDP antes de TCP, criptografia
+  antes dos protocolos que a usam e dos ataques, contíguo antes de paginado. Mudanças de grupo:
+  - Arquitetura ganhou o grupo "Visão geral", com níveis de máquina e desempenho.
+  - SO separou "Segurança" de "Virtualização e distribuição".
+  - Relógios foi para "Arquivos e E/S", junto com o resto do capítulo de E/S.
+  - O campo `area` de cada lição repete o título do grupo.

@@ -266,7 +266,7 @@ const lesson: LessonModule = {
     title: "Como funciona um SSD",
     summary:
       "A flash grava páginas mas só apaga blocos. O controlador escreve fora do lugar e faz coleta de lixo; sem TRIM, copia dados já apagados, e cada cópia vira amplificação de escrita e desgaste.",
-    area: "Arquivos",
+    area: "Arquivos e E/S",
     refs: [
       {
         book: "maziero-so",

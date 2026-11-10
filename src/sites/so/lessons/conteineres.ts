@@ -274,7 +274,7 @@ const lesson: LessonModule = {
     title: "Arquiteturas de núcleo e contêineres",
     summary:
       "O mesmo read() num núcleo monolítico e num micronúcleo, o que acontece quando um driver falha em cada um, e como contêineres dividem um único núcleo com namespaces e cgroups.",
-    area: "Arquitetura do SO",
+    area: "Virtualização e distribuição",
     refs: [
       { book: "maziero-so", chapter: 3, section: "3.2", note: "Sistemas micronúcleo", verified: true },
       {

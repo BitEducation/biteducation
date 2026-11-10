@@ -306,7 +306,7 @@ const lesson: LessonModule = {
     title: "Impasses: quando todos esperam por todos",
     summary:
       "Dois processos travados por dois aparelhos, as quatro condições, a ordem que previne, o banqueiro que evita e a detecção que recupera.",
-    area: "Concorrência",
+    area: "Impasses",
     refs: [
       {
         book: "tanenbaum-mos",

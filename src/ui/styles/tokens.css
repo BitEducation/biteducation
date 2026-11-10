@@ -90,9 +90,6 @@
   --scene-shadow: rgb(0 35 138 / 0.12);
   --node-fill: #ffffff;
 
-  /* brand tile behind the BitEducation symbol (same in both themes) */
-  --brand-tile: #0a1430;
-
   /* Topic scales in OKLCH, one hue per site: 300 is the dark-theme accent and 700 the
      light-theme one; the other steps follow the same line, tapering chroma to the ends. */
   --redes-50: oklch(0.975 0.012 181.9);
@@ -139,6 +136,9 @@
   --arq: var(--arq-700);
   --arq-soft: var(--arq-100);
   --on-arq: #ffffff;
+
+  /* hub color, named so the site menu can show it from any site */
+  --hub: #1f5fe0;
 
   /* site accent (hub default: the active blue of the reference palette) */
   --accent: #1f5fe0;
@@ -208,6 +208,7 @@
   --arq-soft: var(--arq-950);
   --on-arq: var(--arq-950);
 
+  --hub: #5b8ef7;
   --accent: #5b8ef7;
   --accent-soft: #142a55;
   --on-accent: #050b1a;
@@ -234,12 +235,105 @@
   --on-accent: var(--on-arq);
 }
 
+/* Each site is monochrome in its topic hue: the hub's neutrals (blue) are re-derived in
+   OKLCH at the same lightness and chroma, gamut-clamped, on the site's hue. Data roles keep
+   their own colors so the diagrams read the same on the three sites. */
+:root[data-site="redes"] {
+  --bg: #f2faf8;
+  --surface: #ffffff;
+  --surface-2: #e4f4f1;
+  --ink: #033d37;
+  --ink-2: #034d45;
+  --ink-3: #08776c;
+  --line: #bdddd7;
+  --line-strong: #3f9a8e;
+  --focus: #047c70;
+  --scene-bg: #f5fcfa;
+  --scene-grid: #daf1ec;
+  --scene-shadow: rgb(3 61 55 / 0.12);
+  --shadow: 0 1px 2px rgb(3 61 55 / 0.06), 0 8px 24px rgb(3 61 55 / 0.1);
+}
+:root[data-site="redes"][data-theme="dark"] {
+  --bg: #001512;
+  --surface: #001c18;
+  --surface-2: #00231f;
+  --ink: #c0eae3;
+  --ink-2: #91d3c8;
+  --ink-3: #70b2a7;
+  --line: #023933;
+  --line-strong: #027469;
+  --focus: #07b3a2;
+  --scene-bg: #001916;
+  --scene-grid: #012d28;
+  --node-fill: #00231f;
+}
+:root[data-site="so"] {
+  --bg: #fdf6f3;
+  --surface: #ffffff;
+  --surface-2: #fbece7;
+  --ink: #5b1d00;
+  --ink-2: #712700;
+  --ink-3: #965237;
+  --line: #eacec4;
+  --line-strong: #c18066;
+  --focus: #b24200;
+  --scene-bg: #fff9f6;
+  --scene-grid: #fae6de;
+  --scene-shadow: rgb(91 29 0 / 0.12);
+  --shadow: 0 1px 2px rgb(91 29 0 / 0.06), 0 8px 24px rgb(91 29 0 / 0.1);
+}
+:root[data-site="so"][data-theme="dark"] {
+  --bg: #1d0b05;
+  --surface: #251108;
+  --surface-2: #2f150a;
+  --ink: #fbd7c9;
+  --ink-2: #ecb6a1;
+  --ink-3: #c99582;
+  --line: #492516;
+  --line-strong: #a05637;
+  --focus: #e4794d;
+  --scene-bg: #210f08;
+  --scene-grid: #3b1c10;
+  --node-fill: #2f150a;
+}
+:root[data-site="arq"] {
+  --bg: #f8f7fd;
+  --surface: #ffffff;
+  --surface-2: #f0eefb;
+  --ink: #3f0680;
+  --ink-2: #4a2c82;
+  --ink-3: #6b5a9a;
+  --line: #d6d1ea;
+  --line-strong: #9687c4;
+  --focus: #7844d3;
+  --scene-bg: #faf9fe;
+  --scene-grid: #ece8fa;
+  --scene-shadow: rgb(63 6 128 / 0.12);
+  --shadow: 0 1px 2px rgb(63 6 128 / 0.06), 0 8px 24px rgb(63 6 128 / 0.1);
+}
+:root[data-site="arq"][data-theme="dark"] {
+  --bg: #120e1e;
+  --surface: #181326;
+  --surface-2: #1f1831;
+  --ink: #e2dbfc;
+  --ink-2: #c7bced;
+  --ink-3: #a69bca;
+  --line: #32294b;
+  --line-strong: #7260a3;
+  --focus: #a287eb;
+  --scene-bg: #161122;
+  --scene-grid: #27203c;
+  --node-fill: #1f1831;
+}
+
 @media (prefers-contrast: more) {
-  :root {
+  :root,
+  :root[data-site] {
     --line: #7f8aa3;
     --ink-3: #3a4560;
   }
-  :root[data-theme="dark"] {
+  :root[data-theme="dark"],
+  :root[data-theme="dark"][data-site] {
     --line: #7f8aa3;
     --ink-3: #d3dbec;
   }

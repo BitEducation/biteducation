@@ -8,7 +8,8 @@ import { bindMenu } from "./menu.ts";
 
 export type AnySite = SiteId | "hub";
 
-const SITES: AnySite[] = ["redes", "so", "arq", "hub"];
+/** Site menu order: the hub first, then the topics. */
+const SITES: AnySite[] = ["hub", "arq", "so", "redes"];
 
 /** Repository link for the footer; set VITE_REPO_URL at build time (the deploy workflow does). */
 const REPO_URL = ((): string => {
@@ -29,7 +30,7 @@ export function topbarHtml(
     ${opts.indexToggle ? html`<button class="icon-btn index-toggle" type="button" aria-controls="lesson-index" aria-expanded="true" aria-label="${t("index.toggle")}" data-tip="${t("index.toggle")} (L)">${icons.sidebar()}</button>` : ""}
     <div class="site-switch">
       <button class="brand" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="${t("site.switch")}">
-        <span class="brand-mark ${site}">${siteMark(site, site === "hub" ? 22 : 18)}</span>
+        <span class="brand-mark ${site}">${siteMark(site, 18)}</span>
         <span translate="no">${t(`brand.${site}`)}</span>
         ${icons.chevronDown()}
       </button>
@@ -106,10 +107,14 @@ export function bindTopbar(
   };
 }
 
+/** Author credit, same line as the author's other projects. */
+const AUTHOR_URL = "https://www.linkedin.com/in/brennocm";
+
 export function footerHtml(): SafeHtml {
-  return html`<footer class="foot">${t("footer.licenses")} · <a href="${siteUrl("hub")}sobre/">${t("footer.about")}</a>${
-    REPO_URL ? html` · <a href="${REPO_URL}" rel="noopener">${t("footer.source")}</a>` : ""
-  }</footer>`;
+  const sep = html`<span class="sep" aria-hidden="true">|</span>`;
+  return html`<footer class="foot"><a href="${siteUrl("hub")}sobre/">${t("footer.about")}</a>${
+    REPO_URL ? html`${sep}<a href="${REPO_URL}" rel="noopener">${t("footer.source")}</a>` : ""
+  }${sep}<a href="${AUTHOR_URL}" target="_blank" rel="noopener noreferrer">brennocm</a>${sep}© 20∞</footer>`;
 }
 
 /** Keeps the theme button icon and menu state in sync with the saved choice. */

@@ -605,7 +605,7 @@ const lesson: LessonModule = {
     title: "O caminho de um read()",
     summary:
       "O que acontece entre um programa pedir dados do disco e recebê-los: ecall, trap, kernel, driver, bloqueio, DMA, interrupção e sret.",
-    area: "Fundamentos: chamadas de sistema",
+    area: "Fundamentos",
     refs: [
       { book: "tanenbaum-mos", chapter: 1, section: "1.6", note: "Chamadas de sistema", verified: true },
       { book: "maziero-so", chapter: 2, section: "2.3", note: "Chamadas de sistema", verified: true },

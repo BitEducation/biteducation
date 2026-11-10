@@ -528,7 +528,7 @@ const lesson: LessonModule = {
     title: "Semáforos: produtor e consumidor",
     summary:
       "Três semáforos resolvem o buffer limitado: um conta as vagas, outro os itens e o terceiro protege a seção crítica. E uma troca de ordem causa deadlock.",
-    area: "Concorrência e sincronização",
+    area: "Concorrência",
     refs: [
       { book: "tanenbaum-mos", chapter: 2, section: "2.3.5", note: "Semáforos", verified: true },
       { book: "maziero-so", chapter: 12, section: "12.1", note: "Produtores / consumidores", verified: true },

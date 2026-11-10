@@ -271,7 +271,7 @@ const lesson: LessonModule = {
     title: "Virtualização: armadilhas e paginação aninhada",
     summary:
       "O kernel convidado sem privilégio, a armadilha e emulação, o custo de cada saída para o hipervisor, a instrução popf do x86 e as duas traduções de memória com a paginação aninhada.",
-    area: "Avançado",
+    area: "Virtualização e distribuição",
     refs: [
       {
         book: "tanenbaum-mos",

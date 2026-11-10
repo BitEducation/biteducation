@@ -584,7 +584,7 @@ const lesson: LessonModule = {
     title: "Cache de mapeamento direto",
     summary:
       "Como o endereço é cortado em tag, índice e deslocamento, por que blocos vizinhos acertam e dois blocos na mesma linha brigam.",
-    area: "Hierarquia de memória",
+    area: "Memória",
     refs: [
       { book: "tanenbaum-sco", chapter: 4, section: "4.5.1", note: "Memória cache", verified: true },
       {

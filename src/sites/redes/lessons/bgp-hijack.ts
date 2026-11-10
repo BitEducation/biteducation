@@ -341,7 +341,7 @@ const lesson: LessonModule = {
     title: "BGP e o sequestro de prefixos",
     summary:
       "Como sistemas autônomos trocam rotas com vetor de caminhos e política, por que um anúncio mais específico desvia tráfego e como o RPKI barra a origem falsa.",
-    area: "Rede",
+    area: "Segurança",
     refs: [
       {
         book: "tanenbaum-cn",

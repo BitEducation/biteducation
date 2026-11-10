@@ -151,7 +151,6 @@ export const UI = {
   "home.offlineFail": "Não foi possível baixar tudo agora.",
   "update.ready": "Nova versão disponível.",
   "update.reload": "Recarregar",
-  "footer.licenses": "Código MIT · Conteúdo CC BY-SA 4.0",
   "footer.about": "Sobre e privacidade",
   "footer.source": "Código-fonte",
   "notfound.title": "Página não encontrada",
@@ -196,9 +195,10 @@ export const UI = {
   "hub.demoOpen": "Abrir a lição",
   "hub.demoPause": "Pausar a animação",
   "hub.demoPlay": "Retomar a animação",
-  "hub.title": "Veja o computador funcionando por dentro",
+  "hub.title": "O computador por dentro, passo a passo",
   "hub.lead":
-    "{n} lições com simulações passo a passo, da porta lógica ao pacote na rede. Tudo roda no seu navegador, sem conta e sem anúncios.",
+    "{n} lições de arquitetura, sistemas operacionais e redes. Cada passo mostra o estado da simulação: os bits no registrador, a fila do escalonador, os campos do pacote.",
+  "hub.leadNote": "Roda no seu navegador, sem conta e sem anúncios.",
   "hub.topics": "Temas",
   "hub.resume": "Parou em: {title}",
   "hub.start": "Começar",
@@ -206,7 +206,7 @@ export const UI = {
   "hub.teachers": "Pronto para usar em aula",
   "hub.teachersText":
     "Use o modo apresentação (P) em aula, copie o link de um passo para montar a sequência e reutilize o conteúdo: ele é CC BY-SA 4.0.",
-  "hub.trails": "Trilhas que cruzam os sites",
+  "hub.trails": "Trilhas que interligam temas",
   "home.refs": "Bibliografia e disciplinas",
   "home.courseNote":
     "A ordem dos temas acompanha a ementa da disciplina. Material de estudo independente, sem vínculo oficial com a disciplina ou com a universidade.",

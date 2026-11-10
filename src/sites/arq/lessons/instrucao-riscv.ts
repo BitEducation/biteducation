@@ -514,7 +514,7 @@ const lesson: LessonModule = {
     title: "Uma instrução RISC-V, bit a bit",
     summary:
       "Como o texto add x5, x6, x7 vira 32 bits, o que cada campo significa e por que os imediatos aparecem partidos nos formatos S e B.",
-    area: "Conjunto de instruções (ISA)",
+    area: "ISA",
     refs: [
       { book: "tanenbaum-sco", chapter: 5, section: "5.3", note: "Formatos de instrução", verified: true },
       {

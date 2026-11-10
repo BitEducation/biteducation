@@ -760,7 +760,7 @@ const lesson: LessonModule = {
     title: "Round Robin e o tamanho do quantum",
     summary:
       "Como o SO reveza uma CPU entre vários processos, quanto custa cada troca e por que o quantum não pode ser nem pequeno nem grande demais.",
-    area: "Escalonamento de processos",
+    area: "Escalonamento",
     refs: [
       {
         book: "tanenbaum-mos",

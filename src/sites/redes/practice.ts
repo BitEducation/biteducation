@@ -3,9 +3,16 @@ import { pureAloha } from "../../sim/net/aloha.ts";
 import { block, toIp } from "../../sim/net/cidr.ts";
 import { encode, str, toBits } from "../../sim/net/crc.ts";
 import { modpow, share, shared } from "../../sim/net/dh.ts";
+import { fragment } from "../../sim/net/fragment.ts";
+import { bitStuff, byteStuff, hex as fhex } from "../../sim/net/framing.ts";
+import { espSize } from "../../sim/net/ipsec.ts";
+import { bitmapEfficiency, countdownEfficiency } from "../../sim/net/mac-free.ts";
 import { exchange } from "../../sim/net/ntp.ts";
+import { buildTime } from "../../sim/net/onion.ts";
+import { peerToPeer } from "../../sim/net/p2p.ts";
 import { nyquist, shannon } from "../../sim/net/physical.ts";
 import { raceChance, TXID_SPACE } from "../../sim/net/poison.ts";
+import { prob } from "../../sim/net/red.ts";
 import { gcd, keys } from "../../sim/net/rsa.ts";
 import { big, dice, num } from "../shared/practice-kit.ts";
 
@@ -379,6 +386,251 @@ export const celular: Practice[] = [
         prompt: `Uma operadora tem ${channels} canais e usa grupos de reúso de ${n} células. A cidade tem ${cells} células. Quantas conversas simultâneas a cidade suporta, com um canal por conversa?`,
         answer: per * cells,
         explain: `Cada célula recebe ${channels} ÷ ${n} = ${per} canais; ${per} × ${cells} células = ${big(per * cells)}.`,
+      };
+    },
+  },
+];
+
+export const enquadramento: Practice[] = [
+  {
+    title: "Enchimento de bytes",
+    make(seed) {
+      const d = dice(seed);
+      const data = Array.from({ length: 8 }, () => d.pick([0x41, 0x7e, 0x7d, 0x10, 0x55, 0x7e, 0x20]));
+      const out = byteStuff(data);
+      return {
+        prompt: `Os dados de um quadro PPP são ${fhex(data)}. Quantos bytes ficam entre as duas flags?`,
+        answer: out.length,
+        unit: "bytes",
+        explain: `Cada 7E vira 7D 5E e cada 7D vira 7D 5D: ${fhex(out)}, ${out.length} bytes.`,
+      };
+    },
+  },
+  {
+    title: "Enchimento de bits",
+    make(seed) {
+      const d = dice(seed);
+      const bits = Array.from({ length: 20 }, () => (d.int(0, 9) < 7 ? "1" : "0")).join("");
+      const r = bitStuff(bits);
+      return {
+        prompt: `O HDLC vai enviar os bits ${bits}. Quantos zeros o transmissor insere?`,
+        answer: r.inserted.length,
+        unit: "zeros",
+        explain: `Um 0 entra depois de cada sequência de cinco 1 seguidos: ${r.out}.`,
+      };
+    },
+  },
+];
+
+export const comutacao: Practice[] = [
+  {
+    title: "Pacotes em linha de montagem",
+    make(seed) {
+      const d = dice(seed);
+      const links = d.int(2, 5);
+      const n = d.int(2, 10);
+      const per = d.pick([2, 4, 5, 10]);
+      const total = (n + links - 1) * per;
+      return {
+        prompt: `Um arquivo vira ${n} pacotes; cada pacote leva ${per} ms para ser transmitido em cada um dos ${links} enlaces (armazena e encaminha, sem propagação). Em quantos ms chega o último bit?`,
+        answer: total,
+        unit: "ms",
+        explain: `O último pacote termina o primeiro enlace após ${n} × ${per} ms e atravessa mais ${links - 1}: (${n} + ${links} − 1) × ${per} = ${total} ms.`,
+      };
+    },
+  },
+];
+
+export const fragmentacao: Practice[] = [
+  {
+    title: "Deslocamento do fragmento",
+    make(seed) {
+      const d = dice(seed);
+      const mtu = d.pick([576, 1006, 1280, 1500]);
+      const total = d.int(3, 8) * 1000;
+      const fr = fragment(total, 20, mtu);
+      const k = d.int(1, fr.length - 1);
+      const f = fr[k] as { offset: number };
+      const chunk = Math.floor((mtu - 20) / 8) * 8;
+      return {
+        prompt: `Um datagrama IPv4 de ${total} bytes (cabeçalho de 20) passa por um enlace de MTU ${mtu}. Qual é o deslocamento, em blocos de 8 bytes, do fragmento ${k + 1}?`,
+        answer: f.offset,
+        explain: `Cada fragmento leva até ${chunk} bytes de dados (${mtu} − 20, arredondado para baixo a múltiplo de 8). O fragmento ${k + 1} começa no byte ${k * chunk}: ${k * chunk} / 8 = ${f.offset}.`,
+      };
+    },
+  },
+];
+
+export const p2p: Practice[] = [
+  {
+    title: "Distância XOR",
+    make(seed) {
+      const d = dice(seed);
+      const [a, k] = d.distinct(2, 0, 15) as [number, number];
+      const b4 = (x: number) => x.toString(2).padStart(4, "0");
+      return {
+        prompt: `No Kademlia com identificadores de 4 bits, qual é a distância entre o nó ${b4(a)} e a chave ${b4(k)}?`,
+        answer: a ^ k,
+        explain: `${b4(a)} XOR ${b4(k)} = ${b4(a ^ k)}, que lido como número vale ${a ^ k}.`,
+      };
+    },
+  },
+  {
+    title: "Distribuição par a par",
+    make(seed) {
+      const d = dice(seed);
+      const n = d.pick([10, 20, 40, 50, 100]);
+      const up = d.pick([2, 4, 5, 10]);
+      const server = d.pick([50, 100, 200]);
+      const t = peerToPeer({ file: 1000, server, up, down: 1000 }, n);
+      return {
+        prompt: `Um arquivo de 1000 Mbit vai para ${n} pares. O servidor envia a ${server} Mbit/s e cada par repassa a ${up} Mbit/s; o download não limita. Quantos segundos leva, pelo modelo de fluxo contínuo?`,
+        answer: Number(t.toFixed(1)),
+        tolerance: 0.5,
+        unit: "s",
+        explain: `O limite é a capacidade de envio somada: ${n} × 1000 / (${server} + ${n} × ${up}) = ${num(t, 1)} s, maior que 1000 / ${server} = ${num(1000 / server, 1)} s do servidor mandar uma cópia.`,
+      };
+    },
+  },
+];
+
+export const redEcn: Practice[] = [
+  {
+    title: "Chance de marcar no RED",
+    make(seed) {
+      const d = dice(seed);
+      const minTh = d.pick([5, 10, 20]);
+      const maxTh = minTh * d.pick([2, 3, 4]);
+      const maxP = d.pick([0.1, 0.2, 0.4, 0.5]);
+      const avg = d.int(minTh + 1, maxTh - 1);
+      const p = prob(avg, { w: 0.25, minTh, maxTh, maxP }) * 100;
+      return {
+        prompt: `O RED tem limiares ${minTh} e ${maxTh} e chance máxima de ${num(maxP * 100)}%. Com a fila média em ${avg}, qual é a chance, em %, de marcar o próximo pacote?`,
+        answer: Number(p.toFixed(1)),
+        tolerance: 0.1,
+        unit: "%",
+        explain: `${num(maxP * 100)}% × (${avg} − ${minTh}) / (${maxTh} − ${minTh}) = ${num(p, 1)}%.`,
+      };
+    },
+  },
+  {
+    title: "Nova média da fila",
+    make(seed) {
+      const d = dice(seed);
+      const w = d.pick([0.1, 0.2, 0.25, 0.5]);
+      const avg = d.int(0, 20);
+      const q = d.int(0, 30);
+      const next = (1 - w) * avg + w * q;
+      return {
+        prompt: `A média da fila no RED vale ${avg}, o peso é ${num(w)} e chega um pacote com ${q} na fila. Qual é a nova média?`,
+        answer: Number(next.toFixed(2)),
+        tolerance: 0.01,
+        explain: `${num(1 - w)} × ${avg} + ${num(w)} × ${q} = ${num(next)}.`,
+      };
+    },
+  },
+];
+
+export const ipsec: Practice[] = [
+  {
+    title: "Tamanho com ESP em túnel",
+    make(seed) {
+      const d = dice(seed);
+      const n = d.int(100, 1400);
+      const e = espSize(n, "tunnel");
+      return {
+        prompt: `Um pacote IP de ${n} bytes entra num túnel ESP com AES-GCM (vetor de 8 bytes, etiqueta de 16). A parte cifrada, carga mais 2 bytes de fim, precisa terminar num múltiplo de 4. Quantos bytes tem o pacote que sai?`,
+        answer: e.total,
+        unit: "bytes",
+        explain: `Enchimento: ${n} + 2 = ${n + 2}, faltam ${e.pad} para múltiplo de 4. Total: 20 (IP novo) + 8 (ESP) + 8 (vetor) + ${n} + ${e.pad} + 2 + 16 = ${e.total}.`,
+      };
+    },
+  },
+];
+
+export const macSemColisao: Practice[] = [
+  {
+    title: "Eficiência do mapa de bits",
+    make(seed) {
+      const d = dice(seed);
+      const n = d.pick([16, 32, 64, 128]);
+      const f = d.pick([50, 100, 200, 500]);
+      const k = d.int(1, 8);
+      const e = bitmapEfficiency(f, n, k) * 100;
+      return {
+        prompt: `Uma rede com mapa de bits tem ${n} estações e quadros de ${f} bits. Numa rodada, ${k} ${k === 1 ? "estação transmite" : "estações transmitem"}. Que fração do tempo, em %, leva dados?`,
+        answer: Number(e.toFixed(1)),
+        tolerance: 0.1,
+        unit: "%",
+        explain: `A rodada tem ${n} bits de disputa e ${k} × ${f} = ${k * f} de dados: ${k * f} / (${k * f} + ${n}) = ${num(e, 1)}%.`,
+      };
+    },
+  },
+  {
+    title: "Eficiência da contagem binária",
+    make(seed) {
+      const d = dice(seed);
+      const bits = d.int(3, 12);
+      const n = 2 ** bits;
+      const f = d.pick([50, 100, 200, 500]);
+      const e = countdownEfficiency(f, n) * 100;
+      return {
+        prompt: `Com contagem binária entre ${big(n)} estações e quadros de ${f} bits, que fração do tempo, em %, leva dados?`,
+        answer: Number(e.toFixed(1)),
+        tolerance: 0.1,
+        unit: "%",
+        explain: `O endereço tem log2(${big(n)}) = ${bits} bits, e cada quadro paga essa disputa: ${f} / (${f} + ${bits}) = ${num(e, 1)}%.`,
+      };
+    },
+  },
+];
+
+export const rtp: Practice[] = [
+  {
+    title: "Passo do timestamp",
+    make(seed) {
+      const d = dice(seed);
+      const hz = d.pick([8000, 16000, 48000, 90000]);
+      const ms = d.pick([10, 20, 30, 40]);
+      const step = (hz * ms) / 1000;
+      return {
+        prompt: `Um fluxo RTP usa relógio de ${big(hz)} Hz e manda um pacote a cada ${ms} ms. Quanto o timestamp sobe de um pacote para o seguinte?`,
+        answer: step,
+        explain: `${big(hz)} unidades por segundo × ${ms} / 1000 s = ${big(step)}.`,
+      };
+    },
+  },
+  {
+    title: "Atualizar o jitter",
+    make(seed) {
+      const d = dice(seed);
+      const j = d.int(0, 20);
+      const dd = d.int(0, 40);
+      const next = j + (dd - j) / 16;
+      return {
+        prompt: `O jitter estimado vale ${j} ms e chega um pacote cuja variação de trânsito, em módulo, é ${dd} ms. Qual é o novo jitter, pela fórmula do RTP?`,
+        answer: Number(next.toFixed(2)),
+        tolerance: 0.01,
+        unit: "ms",
+        explain: `J + (|D| − J) / 16 = ${j} + (${dd} − ${j}) / 16 = ${num(next)} ms.`,
+      };
+    },
+  },
+];
+
+export const tor: Practice[] = [
+  {
+    title: "Montar um circuito",
+    make(seed) {
+      const d = dice(seed);
+      const ms = [d.int(1, 8) * 5, d.int(1, 8) * 5, d.int(1, 8) * 5];
+      const bt = buildTime(ms.map((x, i) => ({ name: String(i), ms: x })));
+      const total = (bt[2] as { total: number }).total;
+      return {
+        prompt: `Um circuito Tor tem trechos de ida de ${ms.join(", ")} ms: cliente à guarda, guarda ao meio, meio à saída. Cada extensão é uma ida e volta do cliente ao relé mais novo. Quanto leva montar o circuito?`,
+        answer: total,
+        unit: "ms",
+        explain: `Idas e voltas: ${bt.map((x) => x.rtt).join(" + ")} = ${total} ms.`,
       };
     },
   },

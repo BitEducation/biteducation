@@ -6,7 +6,9 @@ import { amat, splitAddress } from "../../sim/arch/cache.ts";
 import { f32Bits, fields } from "../../sim/arch/float.ts";
 import { encode, syndrome } from "../../sim/arch/hamming.ts";
 import { addBits, bitsOf, signed, unsigned } from "../../sim/arch/ints.ts";
+import { levels } from "../../sim/arch/levels.ts";
 import { ripple } from "../../sim/arch/logic.ts";
+import { cost } from "../../sim/arch/macro.ts";
 import { encode as encodeInstr } from "../../sim/arch/riscv.ts";
 import { vectorOps } from "../../sim/arch/simd.ts";
 import { bufferStalls } from "../../sim/arch/writepolicy.ts";
@@ -327,6 +329,190 @@ export const desempenho: Practice[] = [
         tolerance: 0.001,
         unit: "s",
         explain: `${big(mi)} × 10⁶ × ${num(cpi)} ÷ (${num(ghz)} × 10⁹) = ${num(s, 3)} s.`,
+      };
+    },
+  },
+];
+
+export const consistencia: Practice[] = [
+  {
+    title: "Contar as intercalações",
+    make(seed) {
+      const d = dice(seed);
+      const a = d.int(1, 5);
+      const b = d.int(1, 5);
+      let n = 1;
+      for (let i = 1; i <= b; i++) n = (n * (a + i)) / i;
+      return {
+        prompt: `O núcleo 0 executa ${a} ${a === 1 ? "operação" : "operações"} e o núcleo 1, ${b}, cada um na ordem do seu programa. Com consistência sequencial, quantas ordens globais diferentes são possíveis?`,
+        answer: n,
+        explain: `Uma ordem global escolhe quais das ${a + b} posições ficam com o núcleo 0; o resto é do núcleo 1. São C(${a + b}, ${a}) = ${n} ordens.`,
+      };
+    },
+  },
+];
+
+export const interconexao: Practice[] = [
+  {
+    title: "Medir uma topologia",
+    make(seed) {
+      const d = dice(seed);
+      const k = d.int(3, 10);
+      const n = 2 ** k;
+      const kind = d.pick(["anel", "hipercubo", "completo"] as const);
+      const ask = d.pick(["diâmetro", "ligações"] as const);
+      const links = kind === "anel" ? n : kind === "hipercubo" ? (n * k) / 2 : (n * (n - 1)) / 2;
+      const diam = kind === "anel" ? n / 2 : kind === "hipercubo" ? k : 1;
+      const name =
+        kind === "anel" ? "um anel" : kind === "hipercubo" ? "um hipercubo" : "uma rede totalmente ligada";
+      const why =
+        kind === "anel"
+          ? `No anel, cada nó tem dois vizinhos: ${n} ligações, e o nó oposto fica a ${n} / 2 = ${n / 2} saltos.`
+          : kind === "hipercubo"
+            ? `No hipercubo, cada nó tem log₂ ${big(n)} = ${k} vizinhos: ${big(n)} × ${k} / 2 = ${big((n * k) / 2)} ligações, e o pior caminho troca os ${k} bits.`
+            : `Ligando todos com todos, são ${big(n)} × ${big(n - 1)} / 2 = ${big(links)} ligações, e qualquer nó está a 1 salto.`;
+      return {
+        prompt: `Em ${name} de ${big(n)} nós, quanto vale ${ask === "diâmetro" ? "o diâmetro, em saltos" : "o número de ligações"}?`,
+        answer: ask === "diâmetro" ? diam : links,
+        explain: why,
+      };
+    },
+  },
+];
+
+export const decodificacaoEnderecos: Practice[] = [
+  {
+    title: "Cópias de um chip",
+    make(seed) {
+      const d = dice(seed);
+      const bus = d.pick([16, 20, 24]);
+      const own = d.int(8, 14);
+      const cmp = d.int(1, Math.min(4, bus - own - 1));
+      const copies = 2 ** (bus - own - cmp);
+      return {
+        prompt: `Num barramento de ${bus} bits de endereço, um chip de ${big(2 ** own)} posições usa os ${own} bits baixos. A seleção do chip compara só ${cmp} ${cmp === 1 ? "bit alto" : "bits altos"}. Em quantos lugares do mapa ele aparece?`,
+        answer: copies,
+        unit: "cópias",
+        explain: `Sobram ${bus} − ${own} − ${cmp} = ${bus - own - cmp} bits que ninguém olha; cada combinação deles é uma cópia: 2^${bus - own - cmp} = ${big(copies)}.`,
+      };
+    },
+  },
+];
+
+export const smt: Practice[] = [
+  {
+    title: "Uso de um núcleo",
+    make(seed) {
+      const d = dice(seed);
+      const n = d.pick([10, 20, 40, 50]);
+      const m = d.int(1, 5);
+      const wait = d.pick([4, 5, 10, 20]);
+      const total = n + m * wait;
+      const use = (n / total) * 100;
+      return {
+        prompt: `Uma thread executa ${n} instruções, uma por ciclo, e ${m} delas faltam na cache, cada falta parando o núcleo por ${wait} ciclos. Sem multithreading, em que % dos ciclos o núcleo trabalha?`,
+        answer: Number(use.toFixed(1)),
+        tolerance: 0.1,
+        unit: "%",
+        explain: `São ${n} ciclos de trabalho e ${m} × ${wait} = ${m * wait} de espera: ${n} / ${total} = ${num(use, 1)}%. Outra thread poderia usar os ${m * wait} ciclos parados.`,
+      };
+    },
+  },
+];
+
+export const vliw: Practice[] = [
+  {
+    title: "Vias vazias num pacote",
+    make(seed) {
+      const d = dice(seed);
+      const vias = d.int(2, 6);
+      const pk = d.int(3, 10);
+      const ops = d.int(pk, pk * vias);
+      const nops = pk * vias - ops;
+      return {
+        prompt: `Um programa VLIW tem ${pk} pacotes de ${vias} vias e ${ops} operações úteis. Quantas vias levam NOP?`,
+        answer: nops,
+        explain: `${pk} × ${vias} = ${pk * vias} vias, menos ${ops} operações: ${nops} NOPs, ${num((nops / (pk * vias)) * 100, 1)}% do código.`,
+      };
+    },
+  },
+];
+
+export const macros: Practice[] = [
+  {
+    title: "Macro contra procedimento",
+    make(seed) {
+      const d = dice(seed);
+      const body = d.int(3, 12);
+      const k = d.int(2, 10);
+      const setup = d.int(1, 3);
+      const x = cost(k, body, setup);
+      return {
+        prompt: `Um trecho de ${body} instruções é usado ${k} vezes. Como procedimento, ele tem o corpo mais um ret, e cada uso gasta ${setup} ${setup === 1 ? "instrução" : "instruções"} de preparação mais um call. Quantas palavras de código o procedimento economiza em relação à macro? (Negativo se ocupar mais.)`,
+        answer: x.macroSize - x.procSize,
+        explain: `Macro: ${k} × ${body} = ${x.macroSize}. Procedimento: ${body} + 1 + ${k} × ${setup + 1} = ${x.procSize}. Diferença: ${x.macroSize - x.procSize}.`,
+      };
+    },
+  },
+];
+
+export const combinacionais: Practice[] = [
+  {
+    title: "Portas de um decodificador",
+    make(seed) {
+      const d = dice(seed);
+      const n = d.int(2, 6);
+      const outs = 2 ** n;
+      return {
+        prompt: `Um decodificador de ${n} entradas tem uma AND por saída e um inversor por entrada. Quantas portas ele usa?`,
+        answer: outs + n,
+        unit: "portas",
+        explain: `${n} entradas dão 2^${n} = ${outs} saídas, cada uma com uma AND de ${n} entradas, mais ${n} inversores: ${outs} + ${n} = ${outs + n}.`,
+      };
+    },
+  },
+];
+
+export const chipsMemoria: Practice[] = [
+  {
+    title: "Chips num pente",
+    make(seed) {
+      const d = dice(seed);
+      const mbit = d.pick([1, 4, 16, 64]);
+      const width = d.pick([1, 4, 8, 16]);
+      const bus = d.pick([32, 64]);
+      const mib = d.pick([16, 32, 64, 128]);
+      const chips = (mib * 8) / mbit;
+      const perRank = bus / width;
+      const ok = chips >= perRank && chips % perRank === 0;
+      const total = ok ? mib : (perRank * mbit) / 8;
+      const n = Math.max(chips, perRank);
+      return {
+        prompt: `Chips de ${mbit} Mbit, ${width} ${width === 1 ? "bit" : "bits"} de largura, num barramento de ${bus} bits. Quantos chips são precisos para ${big(total)} MiB?`,
+        answer: n,
+        unit: "chips",
+        explain: `${big(total)} MiB = ${big(total * 8)} Mbit, ou ${big(n)} chips de ${mbit} Mbit. Um banco tem ${bus} / ${width} = ${perRank} chips, então são ${n / perRank} ${n / perRank === 1 ? "banco" : "bancos"}.`,
+      };
+    },
+  },
+];
+
+export const niveis: Practice[] = [
+  {
+    title: "Ciclos num caminho multiciclo",
+    make(seed) {
+      const d = dice(seed);
+      const m = levels().micro;
+      const lw = m[0]?.steps.length ?? 0;
+      const add = m[2]?.steps.length ?? 0;
+      const sw = m[3]?.steps.length ?? 0;
+      const [a, b, s] = [d.int(1, 6), d.int(1, 6), d.int(1, 4)];
+      const total = a * lw + b * add + s * sw;
+      return {
+        prompt: `Num caminho de dados multiciclo, lw leva ${lw} ciclos, add ${add} e sw ${sw}. Quantos ciclos gasta um trecho com ${a} lw, ${b} add e ${s} sw?`,
+        answer: total,
+        unit: "ciclos",
+        explain: `${a} × ${lw} + ${b} × ${add} + ${s} × ${sw} = ${total} ciclos.`,
       };
     },
   },

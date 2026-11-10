@@ -401,7 +401,10 @@ kbd,
   background: var(--arq);
 }
 .menu .swatch.hub {
-  background: var(--ink);
+  background: var(--hub);
+}
+.site-menu [role="menuitem"] {
+  white-space: nowrap;
 }
 
 /* Inline glossary terms */

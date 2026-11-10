@@ -72,21 +72,12 @@ export const icons = {
 
 /** Site marks: one simple glyph per site, used in the brand chip and the hub cards. */
 export function siteMark(site: "redes" | "so" | "arq" | "hub", size = 18): SafeHtml {
-  if (site === "hub") return brandSymbol(size);
   const marks = {
+    // Hub: the three topics stacked as layers, drawn like the other site marks.
+    hub: `<path d="m10 2.8 7 3.6-7 3.6-7-3.6z" ${P}/><path d="m3 10.2 7 3.6 7-3.6M3 13.8l7 3.6 7-3.6" ${P}/>`,
     redes: `<circle cx="10" cy="4.5" r="2" ${P}/><circle cx="4.5" cy="15" r="2" ${P}/><circle cx="15.5" cy="15" r="2" ${P}/><path d="M9 6.3 5.5 13.2M11 6.3l3.5 6.9M6.5 15h7" ${P}/>`,
     so: `<rect x="3" y="3.5" width="14" height="13" rx="2" ${P}/><path d="M3 7.5h14M6.5 11l2 1.6-2 1.6M10.5 14.2h3" ${P}/>`,
     arq: `<rect x="5.5" y="5.5" width="9" height="9" rx="1.2" ${P}/><path d="M8 2.5v3M12 2.5v3M8 14.5v3M12 14.5v3M2.5 8h3M2.5 12h3M14.5 8h3M14.5 12h3" ${P}/>`,
   } as const;
   return svg(marks[site], size);
-}
-
-/** BitEducation symbol (pixel book), traced from public/brand/biteducation-simbolo.webp. */
-const BRAND_SYMBOL =
-  '<defs><linearGradient id="be-g" x1="100" y1="200" x2="900" y2="860" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#22E6F2"/><stop offset=".5" stop-color="#2BA4F5"/><stop offset="1" stop-color="#9038F0"/></linearGradient></defs><g fill="url(#be-g)" fill-rule="evenodd"><path d="M160 375H215V270H290V210H400Q475 210 475 290V775Q420 720 350 710V578H290V710H160ZM292 270V325H348V270ZM350 328V382H408V328ZM232 458V512H290V458ZM350 515V572H408V515Z"/><path d="M530 775V290Q530 210 610 210H700V430H850V710H640Q580 720 530 775ZM600 320V373H655V320ZM660 458V512H717V458ZM720 515V572H775V515ZM600 578V632H655V578Z"/><path d="M52 430H107V760H350Q460 760 478 895Q440 820 350 820H52Z"/><path d="M958 430H903V760H640Q550 760 530 895Q570 820 640 820H958Z"/><rect x="750" y="85" width="82" height="80"/><rect x="903" y="33" width="57" height="57"/><rect x="903" y="193" width="82" height="82"/><rect x="750" y="278" width="100" height="99"/></g><rect x="408" y="515" width="67" height="57" fill="#1E5BEA"/>';
-
-export function brandSymbol(size = 18): SafeHtml {
-  return raw(
-    `<svg width="${size}" height="${size}" viewBox="30 -20 976 976" aria-hidden="true" focusable="false">${BRAND_SYMBOL}</svg>`,
-  );
 }

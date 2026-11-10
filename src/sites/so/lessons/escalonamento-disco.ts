@@ -311,7 +311,7 @@ const lesson: LessonModule = {
     title: "Escalonamento de disco: FCFS, SSTF e o elevador",
     summary:
       "Uma fila de pedidos de cilindros atendida de seis jeitos, com o caminho do braço em gráfico e a distância total de cada um.",
-    area: "Entrada e saída",
+    area: "Arquivos e E/S",
     refs: [
       {
         book: "tanenbaum-mos",

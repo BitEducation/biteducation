@@ -297,7 +297,7 @@ const lesson: LessonModule = {
     title: "Alocação de arquivos no disco",
     summary:
       "O mesmo arquivo guardado de quatro formas: contígua, que falha com fragmentação externa; encadeada, que caminha bloco a bloco; FAT, com a cadeia na memória; e indexada, com duas leituras para qualquer bloco. Extensões fecham a conta.",
-    area: "Arquivos",
+    area: "Arquivos e E/S",
     refs: [
       { book: "maziero-so", chapter: 24, section: "24.5", note: "Alocação de arquivos", verified: true },
       { book: "tanenbaum-mos", chapter: 4, section: "4.3.2", note: "Implementando arquivos", verified: true },

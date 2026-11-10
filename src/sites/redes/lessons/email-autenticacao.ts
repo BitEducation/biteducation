@@ -266,7 +266,7 @@ const lesson: LessonModule = {
     title: "SPF, DKIM e DMARC",
     summary:
       "O SMTP aceita qualquer remetente. SPF autoriza IPs para o domínio do envelope, DKIM assina a mensagem e DMARC exige que um deles aprove o domínio do From, dizendo o que fazer quando falha.",
-    area: "Aplicação",
+    area: "Segurança",
     refs: [
       { book: "tanenbaum-cn", chapter: 7, section: "7.2", note: "Correio eletrônico", verified: true },
       { book: "tanenbaum-cn", chapter: 8, section: "8.11", note: "Segurança de e-mail", verified: true },

@@ -786,7 +786,7 @@ const lesson: LessonModule = {
     title: "Paginação e TLB",
     summary:
       "Como a MMU traduz cada endereço virtual em físico, por que a TLB faz isso ficar rápido e o que acontece numa falta de página.",
-    area: "Gerência de memória",
+    area: "Memória",
     refs: [
       {
         book: "tanenbaum-mos",

@@ -151,7 +151,9 @@ function widgetFrame(w: Widget): SafeHtml {
           <rect class="slot" x="${x + LANE_LABEL}" y="${y + i * (LANE_H + 6)}" width="${w.width - LANE_LABEL}" height="${LANE_H}" rx="3"/>`,
       );
       const baseY = y + w.lanes.length * (LANE_H + 6) + 2;
-      const step = w.span <= 20 ? 1 : w.span <= 40 ? 2 : 5;
+      // At most ~20 labels, so long spans (hundreds of ms) stay legible.
+      const step =
+        [1, 2, 5, 10, 20, 25, 50, 100, 250, 500].find((s) => w.span / s <= 20) ?? Math.ceil(w.span / 20);
       const ticks: SafeHtml[] = [];
       for (let t = 0; t <= w.span; t += step)
         ticks.push(

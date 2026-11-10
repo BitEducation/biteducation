@@ -57,11 +57,6 @@
   background: var(--accent);
   color: var(--on-accent);
 }
-/* The BitEducation symbol sits on its navy tile in both themes, as in the logo. */
-.brand-mark.hub,
-.hero-mark {
-  background: var(--brand-tile);
-}
 .brand small {
   font-weight: 500;
   color: var(--ink-3);
@@ -763,34 +758,73 @@
 }
 /* Hub: the three sites as a stack of layers, each in its own topic color. The colored
    bands line up into one spine, like the layer diagrams in the textbooks. */
-/* Same isometric grid as the lesson canvas, mixed halfway into the page color so it stays
-   behind the text; fixed so it reads as a backdrop, not part of the scrolling content. */
+/* Landing backdrop: a pattern drawn from each topic's own diagrams, not the lesson grid.
+   The tile is a mask (alpha only) so its color follows the theme tokens; a radial mask
+   fades it behind the text. Hub: isometric lattice (the layer stack); architecture: a
+   circuit-board grid with vias; OS: scheduler timeline lanes with ticks; networks: a
+   triangular topology of nodes and links. */
 .hub-page {
-  --hub-grid: color-mix(in oklab, var(--scene-grid) 45%, var(--bg));
+  --mesh-ink: color-mix(in oklab, var(--line-strong) 30%, var(--bg));
+  --mesh: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='45.03' height='26'%3E%3Cg stroke='%23000' stroke-width='1' opacity='.4'%3E%3Cpath d='M0 0L45.03 26M45.03 0L0 26'/%3E%3C/g%3E%3Cg fill='%23000'%3E%3Ccircle cx='0' cy='0' r='1.5'/%3E%3Ccircle cx='45.03' cy='0' r='1.5'/%3E%3Ccircle cx='0' cy='26' r='1.5'/%3E%3Ccircle cx='45.03' cy='26' r='1.5'/%3E%3Ccircle cx='22.52' cy='13.0' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+  --mesh-size: 45.03px 26px;
+  position: relative;
+  isolation: isolate;
   background-color: var(--bg);
-  background-image:
-    radial-gradient(ellipse at 50% 35%, transparent 35%, var(--bg) 95%),
-    repeating-linear-gradient(30deg, var(--hub-grid) 0 1px, transparent 1px 26px),
-    repeating-linear-gradient(150deg, var(--hub-grid) 0 1px, transparent 1px 26px);
-  background-attachment: fixed;
+}
+/* Dark lines sit closer to the page color, so the dark theme needs a stronger mix. */
+[data-theme="dark"] .hub-page {
+  --mesh-ink: color-mix(in oklab, var(--line-strong) 42%, var(--bg));
+}
+.hub-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--mesh-ink);
+  mask-image: radial-gradient(ellipse at 50% 30%, #000 30%, transparent 90%), var(--mesh);
+  mask-size:
+    100% 100%,
+    var(--mesh-size);
+  mask-repeat: no-repeat, repeat;
+  mask-composite: intersect;
+}
+[data-site="arq"] .hub-page {
+  --mesh: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='144' height='144'%3E%3Cpath d='M0.5 0V144M24.5 0V144M48.5 0V144M72.5 0V144M96.5 0V144M120.5 0V144M0 0.5H144M0 24.5H144M0 48.5H144M0 72.5H144M0 96.5H144M0 120.5H144' stroke='%23000' opacity='.35'/%3E%3Cpath d='M24.5 48.5H72.5V96.5' fill='none' stroke='%23000' stroke-width='1.5' opacity='.8'/%3E%3Cg fill='none' stroke='%23000' stroke-width='1.5'%3E%3Ccircle cx='24.5' cy='48.5' r='3'/%3E%3Ccircle cx='72.5' cy='96.5' r='3'/%3E%3Ccircle cx='120.5' cy='24.5' r='3'/%3E%3C/g%3E%3C/svg%3E");
+  --mesh-size: 144px 144px;
+}
+[data-site="so"] .hub-page {
+  --mesh: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='48'%3E%3Cpath d='M0 .5H120' stroke='%23000' opacity='.45'/%3E%3Cpath d='M.5 0V10M24.5 0V4M48.5 0V4M72.5 0V4M96.5 0V4' stroke='%23000' opacity='.8'/%3E%3C/svg%3E");
+  --mesh-size: 120px 48px;
+}
+[data-site="redes"] .hub-page {
+  --mesh: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='69.28'%3E%3Cpath d='M0 .5H40M0 34.64H40M0 0L40 69.28M40 0L0 69.28' stroke='%23000' stroke-width='1' opacity='.4'/%3E%3Cg fill='%23000'%3E%3Ccircle cx='0' cy='0' r='1.8'/%3E%3Ccircle cx='40' cy='0' r='1.8'/%3E%3Ccircle cx='20' cy='34.64' r='1.8'/%3E%3Ccircle cx='0' cy='69.28' r='1.8'/%3E%3Ccircle cx='40' cy='69.28' r='1.8'/%3E%3C/g%3E%3C/svg%3E");
+  --mesh-size: 40px 69.28px;
 }
 .hub-hero {
   padding-top: 16px;
 }
 .hub-hero h1 {
-  max-width: 20ch;
-  font-size: clamp(2rem, 1.35rem + 2.4vw, 3.25rem);
-  line-height: 1.08;
-  letter-spacing: -0.025em;
+  max-width: 14ch;
+  font-size: clamp(2.25rem, 1.4rem + 3vw, 3.75rem);
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
   text-wrap: balance;
 }
 .hub-hero p {
-  max-width: 60ch;
-  margin-top: 16px;
+  max-width: 52ch;
+  margin-top: 20px;
   color: var(--ink-2);
-  font-size: 1.125rem;
+  font-size: 1.1875rem;
   line-height: 1.55;
   text-wrap: pretty;
+}
+/* The conditions of use: a quieter second line, set apart from the claim. */
+.hub-hero .hub-note {
+  margin-top: 12px;
+  color: var(--ink-3);
+  font-size: var(--fs-small);
 }
 /* Hub hero: the claim beside a real lesson excerpt playing in its sequence view. */
 .hub-hero-split {
@@ -831,6 +865,12 @@
   color: var(--ink-2);
   font-size: var(--fs-small);
   text-wrap: pretty;
+}
+.site-hero h1 {
+  max-width: none;
+}
+.site-hero p {
+  max-width: 62ch;
 }
 .site-hero .site-count {
   margin-top: 8px;
@@ -967,15 +1007,31 @@
   list-style: disc;
   padding-inline-start: 22px;
 }
+/* Quiet one-line credit: mono, wide tracking, links underlined by a hairline. */
 .foot {
-  padding: 18px 20px;
+  padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--line);
   color: var(--ink-3);
-  font-size: var(--fs-micro);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
   text-align: center;
 }
 .foot a {
   color: var(--ink-2);
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  transition:
+    color var(--t-fast) linear,
+    border-color var(--t-fast) linear;
+}
+.foot a:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.foot .sep {
+  margin: 0 8px;
+  color: var(--line-strong);
 }
 .update-bar {
   position: fixed;

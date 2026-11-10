@@ -237,7 +237,7 @@ const lesson: LessonModule = {
     title: "Medindo desempenho",
     summary:
       "Tempo de CPU = instruções × CPI × duração do ciclo. Um relógio mais rápido pode perder para instruções mais baratas, e um compilador melhor deixa o programa mais rápido enquanto a nota em MIPS cai.",
-    area: "Desempenho",
+    area: "Visão geral",
     refs: [
       { book: "tanenbaum-sco", chapter: 4, section: "4.5", note: "Melhoria de desempenho", verified: true },
       { book: "tanenbaum-sco", chapter: 2, section: "2.1.3", note: "RISC contra CISC", verified: true },

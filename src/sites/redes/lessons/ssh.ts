@@ -327,7 +327,7 @@ const lesson: LessonModule = {
     title: "SSH: um terminal cifrado",
     summary:
       "Versão, negociação de algoritmos, troca de chaves Curve25519, a chave do servidor no known_hosts e o login por chave pública.",
-    area: "Aplicação",
+    area: "Segurança",
     refs: [
       {
         book: "tanenbaum-cn",
