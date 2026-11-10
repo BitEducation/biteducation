@@ -5,6 +5,7 @@ import {
   clearProgress,
   dueReviews,
   isProgress,
+  lastVisited,
   lessonPercent,
   lessonStatus,
   loadProgress,
@@ -40,19 +41,6 @@ function reviewHtml(site: SiteId, lessons: CatalogEntry[], p: Progress) {
       return html`<li><a href="${lessonUrl(site, d.slug, { step: d.stepId, ask: true })}">${l?.title}</a>
         <span class="micro ${d.ok ? "" : "bad"}">${d.ok ? t("review.old", { n: days(d.at) }) : t("review.wrong")}</span></li>`;
     })}</ul></section>`;
-}
-
-function lastVisited(lessons: CatalogEntry[], p: Progress): CatalogEntry | null {
-  let best: CatalogEntry | null = null;
-  let at = 0;
-  for (const l of lessons) {
-    const lp = p.lessons[l.slug];
-    if (lp && !lp.done && lp.updatedAt > at) {
-      at = lp.updatedAt;
-      best = l;
-    }
-  }
-  return best;
 }
 
 /** Home of one site: catalog by group, progress and "continue". */

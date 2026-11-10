@@ -248,17 +248,17 @@
   display: grid;
   gap: 2px;
 }
+/* Each step marker carries its site's color (tone-* on the li). */
+.trail-steps li::marker {
+  color: var(--accent);
+  font-weight: 600;
+}
 .trail-steps li[data-done="true"]::marker {
   content: "✓  ";
   color: var(--accent);
 }
 .site-tag {
   color: var(--ink-3, var(--ink-2));
-}
-.site-card .actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 /* Generated exercises (quiz tab) */

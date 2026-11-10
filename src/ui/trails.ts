@@ -29,7 +29,7 @@ export function trailsHtml(cross: CrossSite | undefined, site: SiteId | null): S
         <p class="narr-sub">${tr.summary}</p>
         <ol class="trail-steps">${items.map(
           (x) =>
-            html`<li data-done="${x.ok}"><a href="${lessonUrl(x.link?.site ?? "redes", x.link?.slug ?? "")}">${x.link?.title ?? x.ref}</a>${
+            html`<li class="tone-${x.link?.site ?? "redes"}" data-done="${x.ok}"><a href="${lessonUrl(x.link?.site ?? "redes", x.link?.slug ?? "")}">${x.link?.title ?? x.ref}</a>${
               site && x.link && x.link.site !== site
                 ? html` <span class="micro site-tag">${x.link.siteName}</span>`
                 : ""

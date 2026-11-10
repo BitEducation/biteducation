@@ -1,4 +1,4 @@
-import type { SiteId } from "../contracts/types.ts";
+import type { CatalogEntry, SiteId } from "../contracts/types.ts";
 import { readJson, remove, writeJson } from "./storage.ts";
 
 export interface LessonProgress {
@@ -136,4 +136,18 @@ export function dueReviews(p: Progress, now = Date.now(), max = 8): ReviewItem[]
       if (!q.ok || now - q.at >= REVIEW_AFTER) out.push({ slug, stepId, ok: q.ok, at: q.at });
   out.sort((a, b) => Number(a.ok) - Number(b.ok) || a.at - b.at);
   return out.slice(0, max);
+}
+
+/** Most recently touched lesson that is not finished yet, to offer "continue". */
+export function lastVisited(lessons: CatalogEntry[], p: Progress): CatalogEntry | null {
+  let best: CatalogEntry | null = null;
+  let at = 0;
+  for (const l of lessons) {
+    const lp = p.lessons[l.slug];
+    if (lp && !lp.done && lp.updatedAt > at) {
+      at = lp.updatedAt;
+      best = l;
+    }
+  }
+  return best;
 }

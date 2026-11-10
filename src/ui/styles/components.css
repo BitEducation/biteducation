@@ -392,13 +392,13 @@ kbd,
   flex: none;
 }
 .menu .swatch.redes {
-  background: #0f766e;
+  background: var(--redes);
 }
 .menu .swatch.so {
-  background: #b4441b;
+  background: var(--so);
 }
 .menu .swatch.arq {
-  background: #6d28d9;
+  background: var(--arq);
 }
 .menu .swatch.hub {
   background: var(--ink);

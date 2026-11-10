@@ -194,5 +194,9 @@
   "practice.go": "Practice with new numbers",
   "quiz.pickHint": "You can answer by clicking on the diagram.",
   "home.refs": "Books and courses",
-  "home.courseNote": "Topics follow the course syllabus. Independent study material, with no official link to the course or the university."
+  "home.courseNote": "Topics follow the course syllabus. Independent study material, with no official link to the course or the university.",
+  "hub.title": "See the computer working from the inside",
+  "hub.lead": "{n} lessons with step-by-step simulations, from the logic gate to the packet on the network. Everything runs in your browser, with no account and no ads.",
+  "hub.topics": "Topics",
+  "hub.resume": "You stopped at: {title}"
 }

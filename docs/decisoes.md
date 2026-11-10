@@ -13,7 +13,7 @@ dizer que só o mantenedor pode fechar.
 | D5 | Tipografia | IBM Plex Sans + Mono, servidas do próprio site (OFL) | adotada |
 | D6 | ISA | RISC-V RV32I + M | adotada |
 | D7 | URLs por idioma | só pt-BR pré-renderizado; o inglês troca a interface no navegador; `/en/` e `hreflang` ficam para quando houver lições traduzidas | adiada |
-| D8 | Imagem Open Graph | adiada: exigiria uma dependência de build para gerar PNG; as páginas têm título, descrição e JSON-LD | adiada |
+| D8 | Imagem Open Graph | `public/brand/og-image.jpg` (1024×572), feita da logo horizontal, em todas as páginas pré-renderizadas com `summary_large_image` | adotada |
 | D9 | Métricas de uso | nenhuma | adotada |
 | D10 | PR obrigatório em `main` | não: o dono é o único contribuidor; `main` sem proteção e CODEOWNERS comentado | adotada |
 | D11 | Pré-visualização de PR | artefato `preview-dist` do CI, aberto com `npm run serve` | adotada |

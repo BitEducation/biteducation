@@ -3,13 +3,16 @@ import { describe, expect, it } from "vitest";
 
 const css = readFileSync(new URL("./tokens.css", import.meta.url), "utf8");
 
-/** Collects custom properties for a given selector, in source order (later wins). */
+/** Collects custom properties for a selector (also inside selector lists), later wins. */
 function block(selector: string): Record<string, string> {
   const out: Record<string, string> = {};
   const re = /([^{}]+)\{([^{}]*)\}/g;
   for (const m of css.matchAll(re)) {
-    const sel = (m[1] ?? "").trim();
-    if (sel !== selector) continue;
+    const sels = (m[1] ?? "")
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .split(",")
+      .map((x) => x.trim());
+    if (!sels.includes(selector)) continue;
     for (const d of (m[2] ?? "").matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g))
       out[d[1] as string] = (d[2] as string).trim();
   }
@@ -18,11 +21,16 @@ function block(selector: string): Record<string, string> {
 
 function theme(site: string, dark: boolean): Record<string, string> {
   const base = block(":root");
-  const siteLight = site === "hub" ? {} : block(`:root[data-site="${site}"]`);
-  if (!dark) return { ...base, ...siteLight };
-  const darkBase = block(':root[data-theme="dark"]');
-  const siteDark = site === "hub" ? {} : block(`:root[data-theme="dark"][data-site="${site}"]`);
-  return { ...base, ...siteLight, ...darkBase, ...siteDark };
+  const siteBlock = site === "hub" ? {} : block(`:root[data-site="${site}"]`);
+  const merged = dark
+    ? { ...base, ...block(':root[data-theme="dark"]'), ...siteBlock }
+    : { ...base, ...siteBlock };
+  // Resolve var(--x) against the merged theme, as the cascade does at computed time.
+  const resolve = (v: string, depth = 0): string => {
+    const m = /^var\((--[\w-]+)\)$/.exec(v);
+    return m && depth < 8 ? resolve(merged[m[1] as string] ?? "", depth + 1) : v;
+  };
+  return Object.fromEntries(Object.entries(merged).map(([k, v]) => [k, resolve(v)]));
 }
 
 function luminance(hex: string): number {
@@ -64,6 +72,9 @@ const GRAPHIC_ROLES = [
   "--series-6",
   "--line-strong",
   "--focus",
+  "--redes",
+  "--so",
+  "--arq",
 ];
 
 describe("design tokens", () => {

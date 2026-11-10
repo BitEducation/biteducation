@@ -86,6 +86,17 @@
   /* brand tile behind the BitEducation symbol (same in both themes) */
   --brand-tile: #0a1430;
 
+  /* topic colors: one per site, used by the site itself and wherever the hub names it */
+  --redes: #0f766e;
+  --redes-soft: #d5f0ec;
+  --on-redes: #ffffff;
+  --so: #b4441b;
+  --so-soft: #f8e1d6;
+  --on-so: #ffffff;
+  --arq: #6d28d9;
+  --arq-soft: #e9e0fb;
+  --on-arq: #ffffff;
+
   /* site accent (hub default: the logo blue; cyan in dark) */
   --accent: #1d4ed8;
   --accent-soft: #dfe8fd;
@@ -109,22 +120,6 @@
   --ease-move: cubic-bezier(0.3, 0.7, 0.2, 1);
   --t-fast: 120ms;
   --t-mid: 220ms;
-}
-
-:root[data-site="redes"] {
-  --accent: #0f766e;
-  --accent-soft: #d5f0ec;
-  --on-accent: #ffffff;
-}
-:root[data-site="so"] {
-  --accent: #b4441b;
-  --accent-soft: #f8e1d6;
-  --on-accent: #ffffff;
-}
-:root[data-site="arq"] {
-  --accent: #6d28d9;
-  --accent-soft: #e9e0fb;
-  --on-accent: #ffffff;
 }
 
 :root[data-theme="dark"] {
@@ -154,24 +149,40 @@
   --series-5: #a3d65c;
   --series-6: #c3cad8;
 
+  --redes: #2dd4bf;
+  --redes-soft: #0f2e2b;
+  --on-redes: #04201d;
+  --so: #fb8a5b;
+  --so-soft: #3a1c10;
+  --on-so: #2a1006;
+  --arq: #b79cfa;
+  --arq-soft: #2a1a4a;
+  --on-arq: #1a0e33;
+
   --accent: #22d3ee;
   --accent-soft: #082640;
   --on-accent: #021018;
 }
-:root[data-theme="dark"][data-site="redes"] {
-  --accent: #2dd4bf;
-  --accent-soft: #0f2e2b;
-  --on-accent: #04201d;
+
+/* After the dark block so the site wins at equal specificity; the topic tokens already
+   switch with the theme. .tone-* scopes the same accent to one element (hub rows, trails). */
+:root[data-site="redes"],
+.tone-redes {
+  --accent: var(--redes);
+  --accent-soft: var(--redes-soft);
+  --on-accent: var(--on-redes);
 }
-:root[data-theme="dark"][data-site="so"] {
-  --accent: #fb8a5b;
-  --accent-soft: #3a1c10;
-  --on-accent: #2a1006;
+:root[data-site="so"],
+.tone-so {
+  --accent: var(--so);
+  --accent-soft: var(--so-soft);
+  --on-accent: var(--on-so);
 }
-:root[data-theme="dark"][data-site="arq"] {
-  --accent: #b79cfa;
-  --accent-soft: #2a1a4a;
-  --on-accent: #1a0e33;
+:root[data-site="arq"],
+.tone-arq {
+  --accent: var(--arq);
+  --accent-soft: var(--arq-soft);
+  --on-accent: var(--on-arq);
 }
 
 @media (prefers-contrast: more) {

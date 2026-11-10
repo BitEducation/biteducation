@@ -180,6 +180,11 @@ export const UI = {
   "glossary.title": "Glossário",
   "glossary.see": "Ver também:",
   "hub.tagline": "Veja o computador funcionando, por dentro: da porta lógica ao pacote na rede.",
+  "hub.title": "Veja o computador funcionando por dentro",
+  "hub.lead":
+    "{n} lições com simulações passo a passo, da porta lógica ao pacote na rede. Tudo roda no seu navegador, sem conta e sem anúncios.",
+  "hub.topics": "Temas",
+  "hub.resume": "Parou em: {title}",
   "hub.start": "Começar",
   "hub.continue": "Continuar",
   "hub.teachers": "Para professores",
