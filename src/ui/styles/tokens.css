@@ -57,18 +57,18 @@
 :root {
   color-scheme: light;
   /* neutral base */
-  --bg: #faf7f2;
+  --bg: #f4f6fb;
   --surface: #ffffff;
-  --surface-2: #f2ede4;
-  --ink: #1f1b16;
-  --ink-2: #4a443c;
-  --ink-3: #6e665b;
+  --surface-2: #e9edf6;
+  --ink: #0e1422;
+  --ink-2: #3a4560;
+  --ink-3: #5a6580;
   --warn-ink: #854d0e;
-  --line: #d9d1c3;
-  --line-strong: #8a8070;
+  --line: #d2d9e7;
+  --line-strong: #7b87a1;
   --focus: #1f6feb;
-  --scrim: rgb(31 27 22 / 0.42);
-  --shadow: 0 1px 2px rgb(31 27 22 / 0.06), 0 8px 24px rgb(31 27 22 / 0.1);
+  --scrim: rgb(14 20 34 / 0.42);
+  --shadow: 0 1px 2px rgb(14 20 34 / 0.06), 0 8px 24px rgb(14 20 34 / 0.1);
 
   /* data roles (shared by the three sites) */
   --role-a: #2563eb;
@@ -76,19 +76,19 @@
   --role-ctrl: #7c3aed;
   --role-crypto: #047857;
   --role-bad: #be123c;
-  --role-muted: #78716c;
+  --role-muted: #64748b;
   --role-warn: #a16207;
   --series-3: #0e7490;
   --series-4: #9d174d;
   --series-5: #4d7c0f;
-  --series-6: #57534e;
+  --series-6: #475569;
 
   /* brand tile behind the BitEducation symbol (same in both themes) */
   --brand-tile: #0e1422;
 
-  /* site accent (hub default) */
-  --accent: #1f1b16;
-  --accent-soft: #ece6db;
+  /* site accent (hub default: the logo blue; cyan in dark) */
+  --accent: #1d4ed8;
+  --accent-soft: #dfe8fd;
   --on-accent: #ffffff;
 
   /* type */
@@ -129,34 +129,34 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #13110f;
-  --surface: #1b1815;
-  --surface-2: #24201c;
-  --ink: #ede7dd;
-  --ink-2: #bfb6a8;
-  --ink-3: #9a9183;
+  --bg: #0b1020;
+  --surface: #121a2e;
+  --surface-2: #19233b;
+  --ink: #e6ebf5;
+  --ink-2: #aab5cc;
+  --ink-3: #8591ab;
   --warn-ink: #fbbf24;
-  --line: #3a342d;
-  --line-strong: #7d7365;
+  --line: #26314b;
+  --line-strong: #5d6a88;
   --focus: #79b8ff;
-  --scrim: rgb(0 0 0 / 0.55);
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px rgb(0 0 0 / 0.45);
+  --scrim: rgb(3 6 14 / 0.6);
+  --shadow: 0 1px 2px rgb(3 6 14 / 0.4), 0 10px 30px rgb(3 6 14 / 0.5);
 
   --role-a: #7aa7ff;
   --role-b: #ff9b6a;
   --role-ctrl: #b99bff;
   --role-crypto: #4ade9b;
   --role-bad: #ff7a93;
-  --role-muted: #a8a29e;
+  --role-muted: #9aa5ba;
   --role-warn: #f5c451;
   --series-3: #5cc8e0;
   --series-4: #f38bb8;
   --series-5: #a3d65c;
-  --series-6: #c9c3bd;
+  --series-6: #c3cad8;
 
-  --accent: #ede7dd;
-  --accent-soft: #2a2520;
-  --on-accent: #13110f;
+  --accent: #22d3ee;
+  --accent-soft: #0c2a3a;
+  --on-accent: #04131c;
 }
 :root[data-theme="dark"][data-site="redes"] {
   --accent: #2dd4bf;
@@ -176,11 +176,11 @@
 
 @media (prefers-contrast: more) {
   :root {
-    --line: #8f8678;
-    --ink-3: #4a443c;
+    --line: #7f8aa3;
+    --ink-3: #3a4560;
   }
   :root[data-theme="dark"] {
-    --line: #8f8678;
-    --ink-3: #cfc7ba;
+    --line: #7f8aa3;
+    --ink-3: #c7cfdf;
   }
 }

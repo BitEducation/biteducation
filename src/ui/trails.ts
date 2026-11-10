@@ -3,9 +3,13 @@ import { html, type SafeHtml } from "../core/dom.ts";
 import { t } from "../core/i18n.ts";
 import { lessonStatus, loadProgress } from "../core/progress.ts";
 import { lessonUrl } from "../core/router.ts";
+import { icons } from "./icons.ts";
 import type { CrossSite } from "./site-config.ts";
 
-/** Trail cards: ordered lessons, each marked done, with a link to the first one not done. */
+/**
+ * Trail cards: ordered lessons, each marked done, with a link to the first one not done.
+ * The section starts collapsed so the site cards and lesson list stay above the fold.
+ */
 export function trailsHtml(cross: CrossSite | undefined, site: SiteId | null): SafeHtml {
   const trails: Trail[] = cross?.trails(site) ?? [];
   if (!trails.length) return html``;
@@ -15,7 +19,7 @@ export function trailsHtml(cross: CrossSite | undefined, site: SiteId | null): S
     if (!progress.has(s)) progress.set(s, loadProgress(s));
     return lessonStatus(progress.get(s)?.lessons[slug]) === "done";
   };
-  return html`<section class="group-section" aria-labelledby="trails-h"><h2 class="micro" id="trails-h">${t("hub.trails")}</h2>
+  return html`<section class="group-section" aria-labelledby="trails-h"><details class="trails-fold"><summary><h2 class="micro" id="trails-h">${t("hub.trails")}</h2><span class="trails-n micro">${trails.length}</span>${icons.chevronDown()}</summary>
     <ul class="trails">${trails.map((tr) => {
       const items = tr.items.map((r) => ({ ref: r, link: cross?.title(r), ok: done(r) }));
       const n = items.filter((x) => x.ok).length;
@@ -33,5 +37,5 @@ export function trailsHtml(cross: CrossSite | undefined, site: SiteId | null): S
         )}</ol>
         ${nextItem?.link ? html`<a class="btn" href="${lessonUrl(nextItem.link.site, nextItem.link.slug)}">${n ? t("trail.continue") : t("trail.start")}</a>` : ""}
       </li>`;
-    })}</ul></section>`;
+    })}</ul></details></section>`;
 }

@@ -175,7 +175,43 @@
   color: var(--role-bad);
 }
 
-/* Trails (hub and site homes) */
+/* Trails (hub and site homes), folded by default */
+.trails-fold > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 0;
+  border-radius: var(--radius);
+  cursor: pointer;
+  list-style: none;
+}
+.trails-fold > summary::-webkit-details-marker {
+  display: none;
+}
+.trails-fold > summary h2 {
+  margin: 0;
+}
+.trails-fold > summary:hover h2 {
+  color: var(--ink);
+}
+.trails-fold > summary svg {
+  color: var(--ink-3);
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.trails-fold[open] > summary svg {
+  transform: rotate(180deg);
+}
+.trails-n {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  text-align: center;
+}
+.trails-fold[open] > .trails {
+  margin-top: 8px;
+}
 .trails {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));

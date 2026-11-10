@@ -93,6 +93,10 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+/* Menus on the right edge open leftward so they never leave the viewport. */
+.top-tools .menu {
+  right: 0;
+}
 .top-tools {
   display: flex;
   align-items: center;
