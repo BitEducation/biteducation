@@ -1,4 +1,5 @@
 import type { LessonModule, Params, Role, SceneSpec } from "../../../contracts/types.ts";
+import { spreadRow } from "../../../scene/geometry.ts";
 import { type Algo, type Proc, type SchedResult, schedule } from "../../../sim/os/sched.ts";
 import { lessonBuilder } from "../../../sim/shared/builder.ts";
 import { escalonamento as practice } from "../practice.ts";
@@ -38,27 +39,28 @@ function read(p: Params) {
 function scene(p: Params): SceneSpec {
   const { procs, runs } = read(p);
   const span = Math.max(10, Math.ceil(Math.max(...runs.map((r) => r.makespan)) / 5) * 5);
+  // Six processes do not fit one row at their label widths: a second row pushes the rest down.
+  const row = spreadRow(
+    procs.map((x, i) => ({
+      id: `p${i}`,
+      kind: "process" as const,
+      label: `${x.pid} · prio ${x.priority}`,
+      sub: `chega ${x.arrival} · CPU ${x.burst}`,
+      at: [0, 0] as const,
+    })),
+    { x0: 40, x1: 920, y: 70, rowGap: 70 },
+  );
+  const dy = (row.rows - 1) * 70;
   return {
-    viewBox: [960, 620],
-    nodes: NAMES.map((name, i) => {
-      const x = procs[i];
-      return {
-        id: `p${i}`,
-        kind: "process" as const,
-        label: x ? `${name} · prio ${x.priority}` : name,
-        sub: x ? `chega ${x.arrival} · CPU ${x.burst}` : "",
-        at: [95 + i * 154, 70] as const,
-        w: 146,
-        hidden: !x,
-      };
-    }),
+    viewBox: [960, 620 + dy],
+    nodes: row.nodes,
     links: [],
     widgets: [
       {
         kind: "gantt",
         id: "gantt",
         title: "Quem usa a CPU em cada tick, por algoritmo",
-        at: [40, 130],
+        at: [40, 130 + dy],
         lanes: [...LANES],
         span,
         width: 880,
@@ -67,7 +69,7 @@ function scene(p: Params): SceneSpec {
         kind: "table",
         id: "res",
         title: "Médias (ticks)",
-        at: [40, 420],
+        at: [40, 420 + dy],
         columns: ["Algoritmo", "Espera", "Resposta", "Retorno", "Trocas"],
         widths: [150, 110, 110, 110, 90],
         rows: 5,

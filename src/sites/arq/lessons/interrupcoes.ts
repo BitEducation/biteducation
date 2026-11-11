@@ -1,4 +1,5 @@
 import type { LessonModule, Params, Role, SceneSpec } from "../../../contracts/types.ts";
+import { spreadRow } from "../../../scene/geometry.ts";
 import {
   EVENTS,
   HANDLE,
@@ -40,10 +41,15 @@ function scene(): SceneSpec {
   return {
     viewBox: [960, 600],
     nodes: [
-      { id: "dev", kind: "device", label: "Teclado", sub: "fica pronto às vezes", at: [110, 70], w: 170 },
-      { id: "timer", kind: "timer", label: "Temporizador", sub: "a cada fatia", at: [300, 70], w: 170 },
-      { id: "ctrl", kind: "box", label: "Controlador", sub: "de interrupções", at: [530, 70], w: 190 },
-      { id: "cpu", kind: "cpu", label: "CPU", sub: "roda um programa", at: [810, 70], w: 170 },
+      ...spreadRow(
+        [
+          { id: "dev", kind: "device", label: "Teclado", sub: "fica pronto às vezes", at: [0, 0], w: 170 },
+          { id: "timer", kind: "timer", label: "Temporizador", sub: "a cada fatia", at: [0, 0], w: 170 },
+          { id: "ctrl", kind: "box", label: "Controlador", sub: "de interrupções", at: [0, 0], w: 190 },
+          { id: "cpu", kind: "cpu", label: "CPU", sub: "roda um programa", at: [0, 0], w: 170 },
+        ],
+        { x0: 20, x1: 940, y: 70, rowGap: 0 },
+      ).nodes,
     ],
     links: [
       { id: "l-d", from: "dev", to: "ctrl" },

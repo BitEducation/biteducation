@@ -164,8 +164,8 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
       <section class="events" aria-labelledby="events-title">
         <div class="events-head" title="${t("events.resize")}">
           <h2 class="micro" id="events-title">${t("events.title")}</h2>
-          <button class="btn ghost ev-copy" type="button">${icons.copy()} ${t("events.copy")}</button>
-          ${buildPcap(run) ? html`<button class="btn ghost ev-pcap" type="button">${icons.download()} ${t("events.pcap")}</button>` : ""}
+          <button class="btn ghost ev-copy" type="button" data-tip="${t("events.copy")}">${icons.copy()} <span class="ev-label">${t("events.copy")}</span></button>
+          ${buildPcap(run) ? html`<button class="btn ghost ev-pcap" type="button" data-tip="${t("events.pcap")}">${icons.download()} <span class="ev-label">${t("events.pcap")}</span></button>` : ""}
           <button class="icon-btn ev-toggle" type="button" aria-expanded="${eventsOpen}" aria-controls="events-scroll" aria-label="${t("events.toggle")}" data-tip="${t("events.toggle")} (E)">${icons.layers()}</button>
         </div>
         <div class="events-scroll" id="events-scroll"></div>
@@ -658,7 +658,8 @@ export function mountLesson(root: HTMLElement, deps: LessonDeps): () => void {
     toast(t("ins.none"));
   }
 
-  const isNarrow = () => root.clientWidth < 1200;
+  // Same breakpoint as the drawer in shell.css.
+  const isNarrow = () => root.clientWidth < 1440;
   const drawerTargets = () => [q(".topbar"), q(".stage"), q(".side"), q(".events")];
   function openDrawer() {
     app.dataset.drawer = "open";

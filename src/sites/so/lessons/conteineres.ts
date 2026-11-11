@@ -1,4 +1,5 @@
 import type { LessonModule, Params, SceneSpec } from "../../../contracts/types.ts";
+import { spreadRow } from "../../../scene/geometry.ts";
 import { CONTAINERS, cgroupRun, kernelsRun, MEM_LIMIT, MICRO_PATH } from "../../../sim/os/kernels.ts";
 import { lessonBuilder } from "../../../sim/shared/builder.ts";
 import { talk } from "../../../sim/shared/seq.ts";
@@ -20,8 +21,8 @@ function scene(): SceneSpec {
   return {
     viewBox: [960, 640],
     zones: [
-      { id: "zm", title: "Monolítico", rect: { x: 20, y: 20, w: 440, h: 250 }, tone: "kernel" },
-      { id: "zu", title: "Micronúcleo", rect: { x: 480, y: 20, w: 460, h: 250 }, tone: "user" },
+      { id: "zm", title: "Monolítico", rect: { x: 20, y: 20, w: 400, h: 250 }, tone: "kernel" },
+      { id: "zu", title: "Micronúcleo", rect: { x: 440, y: 20, w: 500, h: 250 }, tone: "user" },
     ],
     nodes: [
       { id: "app_m", kind: "process", label: "Aplicação", sub: "modo usuário", at: [130, 90], w: 160 },
@@ -33,15 +34,21 @@ function scene(): SceneSpec {
         at: [240, 210],
         w: 300,
       },
-      { id: "app_u", kind: "process", label: "Aplicação", sub: "modo usuário", at: [570, 90], w: 140 },
-      { id: "fs_u", kind: "process", label: "Arquivos", sub: "processo servidor", at: [720, 90], w: 140 },
-      { id: "drv_u", kind: "process", label: "Driver", sub: "processo servidor", at: [865, 90], w: 130 },
+      // Three boxes share the zone's width; "servidor" keeps them from touching.
+      ...spreadRow(
+        [
+          { id: "app_u", kind: "process", label: "Aplicação", sub: "modo usuário", at: [0, 0] },
+          { id: "fs_u", kind: "process", label: "Arquivos", sub: "servidor", at: [0, 0], w: 140 },
+          { id: "drv_u", kind: "process", label: "Driver", sub: "servidor", at: [0, 0], w: 140 },
+        ],
+        { x0: 450, x1: 930, y: 90, rowGap: 0 },
+      ).nodes,
       {
         id: "kern_u",
         kind: "kernel",
         label: "Micronúcleo",
         sub: "IPC, escalonador, memória",
-        at: [720, 210],
+        at: [690, 210],
         w: 300,
       },
     ],
@@ -53,7 +60,7 @@ function scene(): SceneSpec {
     ],
     widgets: [
       { kind: "counter", id: "trocas_m", title: "Trocas de modo (monolítico)", at: [40, 290] },
-      { kind: "counter", id: "trocas_u", title: "Trocas de modo (micronúcleo)", at: [500, 290] },
+      { kind: "counter", id: "trocas_u", title: "Trocas de modo (micronúcleo)", at: [460, 290] },
       {
         kind: "table",
         id: "pids",

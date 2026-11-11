@@ -1,5 +1,5 @@
 import type { NodeKind, SceneLink, SceneNode, SceneSpec } from "../contracts/types.ts";
-import { isDevice } from "./pictograms.ts";
+import { isDevice, pictogram } from "./pictograms.ts";
 
 export type Pt = readonly [number, number];
 
@@ -24,6 +24,39 @@ export function nodeSize(n: SceneNode, pict = false): readonly [number, number] 
   const text = Math.max(n.label.length * LABEL_EM, (n.sub ?? "").length * SUB_EM);
   const need = Math.ceil(text + (pict ? (isDevice(n.kind) ? 70 : 60) : 24));
   return [Math.max(n.w ?? base[0], need), n.h ?? base[1]];
+}
+
+/**
+ * Places nodes left to right between x0 and x1 at their drawn widths (labels make boxes grow),
+ * splitting them into as few balanced rows as keep `gap` between neighbours. Returns the nodes
+ * with `at` set and the row count, so the caller can push what sits below down.
+ */
+export function spreadRow<T extends SceneNode>(
+  nodes: readonly T[],
+  o: { x0: number; x1: number; y: number; rowGap: number; gap?: number },
+): { nodes: T[]; rows: number } {
+  const gap = o.gap ?? 16;
+  const room = o.x1 - o.x0;
+  const widths = nodes.map((n) => nodeSize(n, pictogram(n.kind) !== "")[0]);
+  for (let rows = 1; ; rows++) {
+    const per = Math.ceil(nodes.length / rows);
+    const chunks: number[][] = [];
+    for (let i = 0; i < nodes.length; i += per) chunks.push(widths.slice(i, i + per));
+    const fits = chunks.every((c) => c.reduce((a, b) => a + b, 0) + gap * (c.length - 1) <= room);
+    if (!fits && per > 1) continue;
+    // Leftover room is shared evenly, half a share at each end, so a row looks centered.
+    const out: T[] = [];
+    chunks.forEach((c, r) => {
+      const share = (room - c.reduce((a, b) => a + b, 0)) / c.length;
+      let x = o.x0 + share / 2;
+      for (const w of c) {
+        const n = nodes[out.length] as T;
+        out.push({ ...n, at: [Math.round(x + w / 2), o.y + r * o.rowGap] as const });
+        x += w + share;
+      }
+    });
+    return { nodes: out, rows: chunks.length };
+  }
 }
 
 export function linkPoints(spec: SceneSpec, link: SceneLink): Pt[] | null {

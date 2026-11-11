@@ -1,4 +1,5 @@
 import type { LessonModule, Params, Role, SceneSpec } from "../../../contracts/types.ts";
+import { spreadRow } from "../../../scene/geometry.ts";
 import {
   type Arbitration,
   arbitrate,
@@ -45,13 +46,19 @@ function scene(p: Params): SceneSpec {
     width: GANTT_W,
   });
   return {
-    viewBox: [960, 640],
+    viewBox: [1000, 640],
     nodes: [
-      { id: "arb", kind: "box", label: "Árbitro", sub: "concede o barramento", at: [100, 80], w: 150 },
-      { id: "disco", kind: "disk", label: "Disco", sub: "DMA, mais perto", at: [290, 80] },
-      { id: "rede", kind: "device", label: "Placa de rede", sub: "DMA", at: [460, 80] },
-      { id: "cpu", kind: "cpu", label: "CPU", sub: "no fim da cadeia", at: [630, 80] },
-      { id: "mem", kind: "memory", label: "Memória", sub: `responde em ${cycles(lat)}`, at: [840, 80] },
+      // Five boxes on one bus: packed at their drawn widths so the labels never touch.
+      ...spreadRow(
+        [
+          { id: "arb", kind: "box", label: "Árbitro", sub: "decide a vez", at: [0, 0], w: 150 },
+          { id: "disco", kind: "disk", label: "Disco", sub: "DMA, mais perto", at: [0, 0] },
+          { id: "rede", kind: "device", label: "Placa de rede", sub: "DMA", at: [0, 0] },
+          { id: "cpu", kind: "cpu", label: "CPU", sub: "no fim da cadeia", at: [0, 0] },
+          { id: "mem", kind: "memory", label: "Memória", sub: `responde em ${cycles(lat)}`, at: [0, 0] },
+        ],
+        { x0: 20, x1: 980, y: 80, rowGap: 0 },
+      ).nodes,
     ],
     links: [
       { id: "b1", from: "arb", to: "disco", style: "bus" },
@@ -78,7 +85,7 @@ function scene(p: Params): SceneSpec {
         widths: [140, 80, 100],
         rows: 3,
       },
-      gantt("daisy", "Cadeia (daisy chain): o mais perto do árbitro ganha", 390),
+      gantt("daisy", "Cadeia (daisy chain): o mais perto do árbitro ganha", 360),
       gantt("rodizio", "Rodízio: a vez passa para o próximo", 510),
     ],
   };

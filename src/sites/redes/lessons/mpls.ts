@@ -15,7 +15,7 @@ function clamp(p: Params) {
 }
 
 const scene: SceneSpec = {
-  viewBox: [960, 660],
+  viewBox: [1020, 660],
   zones: [{ id: "isp", title: "Rede do provedor", rect: { x: 140, y: 40, w: 720, h: 300 }, tone: "kernel" }],
   nodes: [
     { id: "A", kind: "laptop", label: "Filial A", sub: "10.1.0.0/16", at: [60, 190], w: 110 },
@@ -24,7 +24,7 @@ const scene: SceneSpec = {
     { id: "P2", kind: "router", label: "P2", sub: "núcleo", at: [600, 100], w: 110 },
     { id: "P3", kind: "router", label: "P3", sub: "núcleo", at: [500, 290], w: 110 },
     { id: "PE2", kind: "router", label: "PE2", sub: "borda de saída", at: [770, 190], w: 130 },
-    { id: "B", kind: "server", label: "Matriz B", sub: "10.2.0.0/16", at: [910, 190], w: 100 },
+    { id: "B", kind: "server", label: "Matriz B", sub: "10.2.0.0/16", at: [940, 190], w: 100 },
   ],
   links: [
     { id: "l-a", from: "A", to: "PE1" },

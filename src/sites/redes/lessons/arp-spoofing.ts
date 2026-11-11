@@ -17,14 +17,14 @@ const defenseOf = (p: Params): Defense =>
 const scene: SceneSpec = {
   viewBox: [960, 560],
   zones: [
-    { id: "z-lan", title: `LAN ${"10.20.0.0/24"}`, rect: { x: 20, y: 20, w: 640, h: 330 }, tone: "lan" },
+    { id: "z-lan", title: `LAN ${"10.20.0.0/24"}`, rect: { x: 20, y: 20, w: 680, h: 330 }, tone: "lan" },
   ],
   nodes: [
     { id: "lia", kind: "laptop", label: "Lia", sub: `${LIA.ip}`, at: [110, 100] },
     { id: "sw", kind: "switch", label: "Switch do laboratório", sub: "portas 1 a 3", at: [340, 190], w: 190 },
     { id: "malu", kind: "attacker", label: "Malu", sub: `${MALU.ip}`, at: [110, 290] },
-    { id: "gw", kind: "router", label: "Roteador do campus", sub: GW.ip, at: [570, 190], w: 170 },
-    { id: "net", kind: "cloud", label: "Internet", at: [830, 190] },
+    { id: "gw", kind: "router", label: "Roteador do campus", sub: GW.ip, at: [585, 190], w: 170 },
+    { id: "net", kind: "cloud", label: "Internet", at: [850, 190] },
     { id: "ids", kind: "box", label: "Monitor (IDS)", sub: "porta espelhada", at: [340, 300], w: 170 },
   ],
   links: [

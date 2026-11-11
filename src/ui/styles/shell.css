@@ -547,6 +547,7 @@
 
 /* Events drawer */
 .events {
+  container: events / inline-size;
   grid-area: events;
   display: flex;
   flex-direction: column;
@@ -572,6 +573,10 @@
 }
 .events-head h2 {
   flex: 1;
+}
+/* The buttons spell out their action; the tooltip is only for the icon-only form below. */
+.events-head .btn[data-tip]::after {
+  content: none;
 }
 .events-scroll {
   flex: 1;
@@ -1173,8 +1178,8 @@
   display: none;
 }
 
-/* ≤ 1199px: index becomes a drawer */
-@container app (max-width: 1199px) {
+/* ≤ 1439px: index becomes a drawer, so laptop screens give its width to the scene */
+@container app (max-width: 1439px) {
   .app {
     --side-w: 320px;
     grid-template-columns: minmax(0, 1fr) var(--side-w);
@@ -1220,6 +1225,13 @@
   .app[data-index="closed"] .index-head {
     justify-content: space-between;
     padding: 10px 10px 8px 14px;
+  }
+  /* Four tabs in a 320px column: tighter padding keeps "Quiz" inside it. */
+  .side .tabs {
+    padding-inline: 6px;
+  }
+  .side .tabs [role="tab"] {
+    padding-inline: 8px;
   }
 }
 
@@ -1322,13 +1334,25 @@
   .crumbs {
     display: none;
   }
-  .events-head {
-    flex-wrap: wrap;
-    row-gap: 0;
+}
+
+/* Narrow events panel (phones, or beside the scene on short screens): one card per event. */
+@container events (max-width: 639px) {
+  /* The header stays one row: the buttons keep their icon, the text goes to screen readers. */
+  .events-head .ev-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
-  .events-head h2 {
-    flex-basis: 100%;
-    padding-top: 6px;
+  .events-head .btn {
+    min-width: 36px;
+    padding-inline: 8px;
+  }
+  .events-head .btn[data-tip]:is(:hover, :focus-visible)::after {
+    content: attr(data-tip);
   }
   .ev-table thead {
     display: none;
@@ -1406,7 +1430,6 @@
     margin-inline: -10px;
   }
   /* Outer frames in the strong blue line, dividers inside stay soft (as in the reference). */
-  .index,
   .stage,
   .side,
   .events {
@@ -1418,5 +1441,37 @@
   .side .tabs,
   .events-head {
     min-height: 44px;
+  }
+}
+@container app (min-width: 1440px) {
+  .index {
+    border: 1px solid var(--line-strong);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+}
+
+/* Short screens (most laptops): the events table moves under the explanation, so the scene
+   keeps the full height. Below 900px wide the page is one column and this does not apply. */
+@media (max-height: 900px) {
+  @container app (min-width: 900px) {
+    .app {
+      --events-h: 36vh;
+      grid-template-areas:
+        "top top top"
+        "index stage side"
+        "index stage events";
+    }
+    .events {
+      border-inline-start: 1px solid var(--line);
+    }
+  }
+  @container app (min-width: 900px) and (max-width: 1439px) {
+    .app {
+      grid-template-areas:
+        "top top"
+        "stage side"
+        "stage events";
+    }
   }
 }

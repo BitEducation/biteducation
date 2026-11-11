@@ -1,4 +1,5 @@
 import type { Frame, LessonModule, Params, Role, SceneSpec } from "../../../contracts/types.ts";
+import { spreadRow } from "../../../scene/geometry.ts";
 import { type Proc, type SchedEvent, type SchedResult, schedule } from "../../../sim/os/sched.ts";
 import { lessonBuilder } from "../../../sim/shared/builder.ts";
 import { roundRobin as practice } from "../practice.ts";
@@ -44,11 +45,24 @@ function scene(p: Params): SceneSpec {
   const { quantum, cost, procs } = readParams(p);
   const r = schedule(procs, { algo: "rr", quantum, switchCost: cost });
   const span = Math.max(10, Math.ceil(r.makespan / 5) * 5);
+  // Six processes do not fit one row at their label widths: a second row pushes the rest down.
+  const row = spreadRow(
+    procs.map((x, i) => ({
+      id: `p${i}`,
+      kind: "process" as const,
+      label: x.pid,
+      sub: `chega ${x.arrival} · CPU ${x.burst}`,
+      at: [0, 0] as const,
+      hidden: true,
+    })),
+    { x0: 40, x1: 920, y: 272, rowGap: 72 },
+  );
+  const dy = (row.rows - 1) * 72;
   return {
-    viewBox: [960, 640],
+    viewBox: [960, 640 + dy],
     zones: [
       { id: "kernel", title: "Kernel", rect: { x: 20, y: 20, w: 600, h: 170 }, tone: "kernel" },
-      { id: "procs", title: "Processos", rect: { x: 20, y: 205, w: 920, h: 125 }, tone: "user" },
+      { id: "procs", title: "Processos", rect: { x: 20, y: 205, w: 920, h: 125 + dy }, tone: "user" },
     ],
     nodes: [
       { id: "timer", kind: "timer", label: "Timer", sub: `quantum = ${quantum}`, at: [530, 72], w: 160 },
@@ -61,15 +75,7 @@ function scene(p: Params): SceneSpec {
         w: 160,
       },
       { id: "cpu", kind: "cpu", label: "CPU", sub: "1 núcleo", at: [820, 105] },
-      ...NAMES.map((name, i) => ({
-        id: `p${i}`,
-        kind: "process" as const,
-        label: name,
-        sub: procs[i] ? `chega ${procs[i]?.arrival} · CPU ${procs[i]?.burst}` : "",
-        at: [100 + i * 150, 272] as const,
-        w: 136,
-        hidden: true,
-      })),
+      ...row.nodes,
     ],
     links: [{ id: "l-disp-cpu", from: "disp", to: "cpu", style: "dashed" }],
     widgets: [
@@ -78,7 +84,7 @@ function scene(p: Params): SceneSpec {
         kind: "gantt",
         id: "gantt",
         title: "Linha do tempo da CPU (ticks)",
-        at: [40, 375],
+        at: [40, 375 + dy],
         lanes: ["CPU"],
         span,
         width: 880,
@@ -87,7 +93,7 @@ function scene(p: Params): SceneSpec {
         kind: "table",
         id: "res",
         title: "Resultado por processo",
-        at: [40, 448],
+        at: [40, 448 + dy],
         columns: ["Processo", "Espera", "Retorno", "Resposta"],
         widths: [120, 80, 80, 90],
         rows: 6,
@@ -96,7 +102,7 @@ function scene(p: Params): SceneSpec {
         kind: "table",
         id: "cmp",
         title: "E com outro quantum?",
-        at: [490, 448],
+        at: [490, 448 + dy],
         columns: ["Política", "Espera média", "Trocas", "Uso da CPU"],
         widths: [130, 110, 70, 110],
         rows: 4,

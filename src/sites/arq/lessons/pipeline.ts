@@ -1,4 +1,5 @@
 import type { CellMark, Frame, LessonModule, Params, SceneSpec } from "../../../contracts/types.ts";
+import { spreadRow } from "../../../scene/geometry.ts";
 import { type PipeInstr, type PipeResult, runPipeline, STAGES } from "../../../sim/arch/pipeline.ts";
 import { type AsmLine, assemble, OPS } from "../../../sim/arch/riscv.ts";
 import { type LessonBuilder, lessonBuilder } from "../../../sim/shared/builder.ts";
@@ -40,24 +41,28 @@ function scene(p: Params): SceneSpec {
       // build() reports the error to the reader; the scene keeps the default width
     }
   const cellW = Math.max(18, Math.min(56, Math.floor(820 / cycles) - 3));
-  const xs = [100, 290, 480, 670, 860];
-  return {
-    viewBox: [960, custom ? 420 : 610],
-    nodes: [
-      { id: "IF", kind: "imem", label: "IF", sub: "busca", at: [xs[0] as number, 80], w: 112 },
-      { id: "ID", kind: "regfile", label: "ID", sub: "decodifica", at: [xs[1] as number, 80], w: 112 },
-      { id: "EX", kind: "alu", label: "EX", sub: "ULA", at: [xs[2] as number, 80], w: 112 },
-      { id: "MEM", kind: "dmem", label: "MEM", sub: "dados", at: [xs[3] as number, 80], w: 112 },
-      { id: "WB", kind: "regfile", label: "WB", sub: "escreve", at: [xs[4] as number, 80], w: 112 },
-      ...["IF/ID", "ID/EX", "EX/MEM", "MEM/WB"].map((id, i) => ({
-        id: id.replace("/", "-"),
-        kind: "box" as const,
-        label: id,
-        at: [((xs[i] as number) + (xs[i + 1] as number)) / 2, 80] as const,
-        w: 46,
-        h: 64,
-      })),
+  // Stages alternate with the latches between them, packed at their drawn widths.
+  const stage = (id: string, kind: "imem" | "regfile" | "alu" | "dmem", sub: string) =>
+    ({ id, kind, label: id, sub, at: [0, 0], w: 112 }) as const;
+  const latch = (id: string) =>
+    ({ id: id.replace("/", "-"), kind: "box", label: id, at: [0, 0], w: 46, h: 64 }) as const;
+  const row = spreadRow(
+    [
+      stage("IF", "imem", "busca"),
+      latch("IF/ID"),
+      stage("ID", "regfile", "decodifica"),
+      latch("ID/EX"),
+      stage("EX", "alu", "ULA"),
+      latch("EX/MEM"),
+      stage("MEM", "dmem", "dados"),
+      latch("MEM/WB"),
+      stage("WB", "regfile", "escreve"),
     ],
+    { x0: 20, x1: 980, y: 80, rowGap: 0, gap: 8 },
+  );
+  return {
+    viewBox: [1000, custom ? 420 : 610],
+    nodes: row.nodes,
     widgets: custom
       ? [
           {
